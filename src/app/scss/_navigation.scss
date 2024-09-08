@@ -1,0 +1,124 @@
+//NAVIGATION COLOR
+$navigation-text-color: #2e2e2e;
+$main-color: #3fbd00;
+
+// NAVIGATION PANEL
+.nav-panel {
+  &__navigation {
+    margin-bottom: 20px;
+    color: $navigation-text-color;
+    font-size: 20px;
+    font-weight: 600;
+    @include mobile-xl {
+      font-size: 15px;
+      margin-bottom: 10px;
+    }
+    a {
+      color: $navigation-text-color;
+      font-size: 20px;
+      font-weight: 600;
+      position: relative;
+      text-decoration: none;
+      @include mobile-xl {
+        font-size: 15px;
+      }
+      &:before {
+        content: "";
+        position: absolute;
+        bottom: -2px;
+        height: 2px;
+        width: 0;
+        background: $main-color;
+        transition: width 0.3s ease;
+      }
+      &:hover:before {
+        width: 100%;
+      }
+    }
+  }
+  &__dropdown {
+    padding: 10px;
+    background: #fff;
+    box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.25);
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    align-items: center;
+    transition: 0.25s;
+    display: none;
+    cursor: pointer;
+    &:hover {
+      background: #f1f1f1;
+    }
+    &.openDropdown {
+      i {
+        transform: rotate(-180deg);
+      }
+    }
+    @include tablet-l {
+      display: flex;
+      width: 100%;
+      margin-bottom: 10px;
+    }
+    p {
+      margin-bottom: 0;
+      font-size: 18px;
+      font-weight: 500;
+      @include mobile-xl {
+        font-size: 15px;
+      }
+    }
+    i {
+      color: $main-color;
+      transition: 0.5s;
+      @include mobile-xl {
+        font-size: 10px;
+      }
+    }
+  }
+  &__main-title {
+    margin-bottom: 20px;
+    color: $navigation-text-color;
+    font-size: 32px;
+    font-weight: 600;
+  }
+  &__game-list {
+    width: 100%;
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: calc(50% - 15px);
+    column-gap: 15px;
+    @include tablet-l {
+      grid-auto-columns: 100%;
+      grid-auto-flow: row;
+      display: none;
+      &.openDropdown {
+        display: grid;
+        row-gap: 10px;
+      }
+    }
+    &__game-item {
+      padding: 10px;
+      border-radius: 5px;
+      background: #fff;
+      box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.25);
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      align-items: center;
+      transition: 0.25s;
+      &:hover {
+        background: #f1f1f1;
+      }
+      p {
+        margin-bottom: 0;
+        color: $navigation-text-color;
+        font-size: 18px;
+        font-weight: 500;
+        @include mobile-xl {
+          font-size: 15px;
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,165 @@
+@import "styles";
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+.lv-compo-holder{
+  position: relative;
+  height: 56px;
+  @include tablet{
+    height: 42px;
+  }
+}
+.level-container{
+  position: absolute;
+  width: 733px;
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: calc(100%/4);
+  overflow: hidden;
+  @include tablet-l{
+    width: 641px;
+  }
+  @include tablet{
+    width: 627px;
+  }
+  @include mobile-xl{
+    width: 420px;
+  }
+  @include mobile-l{
+    width: 200px;
+    grid-auto-flow: row;
+    grid-auto-columns: 100%;
+    grid-auto-rows: calc((100%/4) - 1px);
+  }
+}
+.level-container > .wrd-lv > button{
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  padding: 16px 54px;
+  color: #000;
+  font-size: 16px;
+  font-weight: 500;
+  border-radius: 8px 8px 0px 0px;
+  border: none;
+  @include tablet{
+    padding: 12px 44px;
+    font-size: 12px;
+  }
+  @include mobile-l{
+    border-radius: 0;
+  }
+}
+a.wrd-lv > button.first{
+  @include mobile-l{
+    border-radius: 8px 8px 0 0;
+  }
+}
+a.wrd-lv > button.fourth{
+  @include mobile-l{
+    border-radius: 0 0 8px 8px;
+  }
+}
+.wrd-lv > button > p{
+  margin-bottom: 0;
+  @include tablet-l{
+    font-size: 14px;
+  }
+  @include mobile-xl{
+    font-size: 10px;
+  }
+  @include mobile-l{
+    font-size: 12px;
+  }
+}
+.first-link{
+  z-index:444;
+  button{
+    background-color: #fff;
+    transition: 0.2s;
+    &:hover{
+      background-color: #f8f8f8;
+      @include mobile-l{
+        background-color: #fff;
+      }
+    }
+    i {
+      transition: 0.2s;
+      @include mobile-l{
+        transform: rotate(90deg);
+      }
+    }
+  }
+}
+.second-link{
+  z-index: 333;
+  transform: translateX(-11.5rem);
+  transition: 0.3s;
+  button{
+    background-color: #E6E6E6;
+  }
+  @include mobile-l{
+    transform: translateX(0);
+    transform: translateY(-100rem);
+  }
+}
+.third-link{
+  z-index: 222;
+  transform: translateX(-23rem);
+  transition: 0.5s;
+  button{
+    background-color: #CCC;
+  }
+  @include mobile-l{
+    transform: translateX(0);
+    transform: translateY(-200rem);
+  }
+}
+.fourth-link{
+  z-index: 111;
+  transform: translateX(-34.4rem);
+  transition: 0.7s;
+  button{
+    background-color: #b3b3b3;
+  }
+  @include mobile-l{
+    transform: translateX(0);
+    transform: translateY(-300rem);
+  }
+}
+.first-link.active{
+  i {
+    transform: rotate(180deg);
+    @include mobile-l{
+      transform: rotate(270deg);
+    }
+  }
+}
+.second-link.active{
+  transform: translateX(-0.5rem);
+  @include mobile-l{
+    transform: translateY(0);
+  }
+}
+.third-link.active{
+  transform: translateX(-1.5rem);
+  @include tablet{
+    transform: translateX(-0.8rem);
+  }
+  @include mobile-l{
+    transform: translateY(0);
+  }
+}
+.fourth-link.active{
+  transform: translateX(-2.5rem);
+  @include tablet{
+    transform: translateX(-1.5rem);
+  }
+  @include mobile-l{
+    transform: translateY(0);
+  }
+}

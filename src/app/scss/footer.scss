@@ -1,0 +1,130 @@
+@import "styles";
+
+#footer {
+  position: absolute;
+  bottom: 0;
+}
+
+@mixin footerSideText {
+  color: #f3f3f3;
+  font-size: 19px;
+  font-weight: 600;
+}
+
+.footer {
+  @include flexP;
+  a {
+    color: grey;
+  }
+  background-color: #226500;
+  flex-direction: column;
+  &__container {
+    display: flex;
+    padding: 80px;
+    justify-content: space-between;
+
+    h3 {
+      font-size: 19px;
+      font-weight: 600;
+      line-height: 30px;
+      color: white;
+    }
+    &__left {
+      width: 40%;
+      .left {
+        &__logo {
+          h1 {
+            color: white;
+            font-size: 70px;
+            font-weight: bold;
+          }
+          &__des {
+            color: white;
+          }
+        }
+      }
+    }
+    &__right {
+      display: flex;
+      justify-content: center;
+      width: 50%;
+      gap: 30px;
+      h1 {
+        color: white;
+        font-size: 24px;
+        font-weight: 700;
+      }
+      h3 {
+        @include footerSideText();
+      }
+      .right {
+        &__contact {
+          display: flex;
+          width: 32%;
+          flex-direction: column;
+        }
+        &__ourservices {
+          width: 32%;
+          a {
+            @include footerSideText();
+          }
+        }
+        &__partner {
+          width: 32%;
+        }
+      }
+    }
+  }
+  &__rights {
+    h3 {
+      @include footerSideText();
+      margin-right: 10px;
+      margin-bottom: 40px;
+    }
+    display: flex;
+    a {
+      @include footerSideText();
+      margin-left: 10px;
+    }
+  }
+}
+@media (max-width: 769px) {
+  .footer {
+    &__container {
+      flex-direction: column;
+      &__left {
+        width: 100%;
+        margin-bottom: 30px;
+      }
+
+      &__right {
+        width: 100%;
+        flex-direction: column;
+        .right {
+          &__contact {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+          }
+          &__ourservices {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+          }
+          &__partner {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+          }
+        }
+      }
+    }
+    &__rights {
+      flex-direction: column;
+      align-items: center;
+    }
+  }
+}

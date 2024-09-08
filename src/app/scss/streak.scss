@@ -1,0 +1,293 @@
+// IMPORT COMPONENTS
+@import "styles";
+@import "topnav";
+@import "footer";
+@import "login";
+
+// COLORS
+$main-color: #ffce51;
+$side-color: #8c8c8c;
+$main-text-color: #383838;
+
+// MIXIN
+@mixin main-text {
+  color: $main-text-color;
+  font-weight: 700;
+  margin-bottom: 5px;
+}
+@mixin side-text {
+  color: $side-color;
+  font-weight: 500;
+  margin: 0;
+}
+
+// STYLING
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  transition: 150ms;
+}
+
+#topNav {
+  height: 100px;
+}
+
+#footer {
+  position: relative;
+}
+
+main {
+  width: 100%;
+  height: 75vh;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0 10vw;
+  margin: 0;
+  @include mobile-l {
+    padding: 0;
+  }
+  .background {
+    z-index: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .info {
+    display: flex;
+    gap: 60px;
+    justify-content: center;
+    flex-direction: column;
+    z-index: 1;
+    width: 100%;
+    background: #fff;
+    border-radius: 15px;
+    padding: 85px 80px;
+    @include tablet {
+      padding: 75px 60px;
+    }
+    @include mobile-xl {
+      gap: 40px;
+      padding: 40px;
+    }
+    &__streak {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      .detail {
+        display: flex;
+        gap: 20px;
+        align-items: center;
+        &__icon {
+          width: 130px;
+          @include laptop {
+            width: 115px;
+          }
+          @include tablet {
+            width: 100px;
+          }
+          @include mobile-xl {
+            display: none;
+          }
+        }
+        &__text {
+          h1 {
+            @include main-text();
+            font-size: 75px;
+            @include laptop {
+              font-size: 70px;
+            }
+            @include tablet {
+              font-size: 60px;
+            }
+            @include mobile-xl {
+              font-size: 27px;
+            }
+            span {
+              color: $main-color;
+            }
+          }
+          p {
+            @include side-text();
+            font-weight: 600;
+            font-size: 20px;
+            @include laptop {
+              font-size: 16px;
+            }
+            @include tablet {
+              font-size: 14px;
+            }
+            @include mobile-xl {
+              display: none;
+            }
+          }
+        }
+      }
+      .reward-ico {
+        width: 70px;
+        cursor: pointer;
+        @include laptop {
+          width: 65px;
+        }
+        @include tablet {
+          width: 40px;
+        }
+        @include mobile-xl {
+          display: none;
+        }
+      }
+    }
+    &__progress {
+      .indi {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        p {
+          font-size: 20px;
+          font-weight: 600;
+          color: $side-color;
+          @include tablet {
+            font-size: 15px;
+            margin-bottom: 0.75em;
+          }
+        }
+      }
+      .progress-bar {
+        width: 100%;
+        height: 25px;
+        background: #afafaf;
+        border-radius: 50px;
+        position: relative;
+        @include laptop {
+          height: 15px;
+        }
+        span {
+          position: absolute;
+          border-radius: 50px;
+          background: $main-color;
+          height: 100%;
+          width: 0%;
+          transition: width 1s ease-out;
+        }
+      }
+    }
+    &__streak-btn {
+      display: none;
+      gap: 15px;
+      align-items: start;
+      .reward-ico {
+        width: 35px;
+      }
+      .text {
+        h4 {
+          @include main-text();
+          font-size: 20px;
+        }
+        p {
+          @include side-text();
+          font-size: 12px;
+          @include mobile-xl {
+          }
+        }
+      }
+      @include mobile-xl {
+        display: flex;
+      }
+    }
+  }
+}
+
+.reward-list {
+  top: 0;
+  position: absolute;
+  background-color: #000000e1;
+  width: 100%;
+  height: 100%;
+  z-index: 22;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0 10vw;
+  transition: 0.5s;
+  &.deactivate {
+    display: none;
+    .reward {
+      opacity: 0;
+      transform: translateY(-10px);
+      pointer-events: none;
+    }
+  }
+  .rewards {
+    position: relative;
+    width: 100%;
+    background-color: #fff;
+    padding: 50px;
+    border-radius: 15px;
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 150ms ease-in-out, transform 150ms ease-in-out;
+    pointer-events: auto;
+    &__title {
+      @include main-text();
+      font-size: 36px;
+    }
+    &__des {
+      @include side-text();
+      font-size: 20px;
+      margin-bottom: 40px;
+    }
+    .reward {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 30px;
+      .content {
+        display: flex;
+        gap: 40px;
+        align-items: center;
+        .achievement {
+          width: 100px;
+          height: 100px;
+        }
+        .text {
+          &__title {
+            @include main-text();
+            font-size: 36px;
+          }
+          &__des {
+            @include side-text();
+            font-size: 18px;
+          }
+          &__reward {
+            @include side-text();
+            font-size: 18px;
+          }
+        }
+      }
+      .complete {
+        display: block;
+        color: $main-color;
+        font-size: 3.5em;
+        &.deactivate {
+          display: none;
+        }
+      }
+    }
+    .cancel {
+      top: 20px;
+      right: 28px;
+      position: absolute;
+      font-size: 2.5em;
+      cursor: pointer;
+      transition: 150ms ease-in-out;
+      &:hover {
+        color: $main-color;
+      }
+    }
+  }
+}

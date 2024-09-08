@@ -1,0 +1,29 @@
+@import "topnav";
+a.title {
+  color: #580003;
+}
+.buttons {
+  a {
+    .fa-solid {
+      color: white;
+    }
+    .fa-user:hover {
+      color: black;
+    }
+  }
+}
+.open-popup {
+  background-color: #580003;
+}
+.hambutton {
+  .hambricon {
+    .bar {
+      background-color: #580003;
+    }
+  }
+}
+.hamburger_menu {
+  a {
+    color: #580003;
+  }
+}

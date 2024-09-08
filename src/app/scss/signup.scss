@@ -1,0 +1,194 @@
+@import "topnav";
+@import "footer";
+@import "styles";
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+a {
+  text-decoration: none;
+  font-weight: bold;
+}
+main {
+  position: relative;
+  top: 0;
+  @include flexP;
+  background-color: #162938;
+  min-height: 100vh;
+}
+.wrapper {
+  position: absolute;
+  top: 30px;
+  width: 500px;
+  height: 640px;
+  background-color: rgb(255, 255, 255);
+  border: 2px solid rgba(255, 255, 255, 5);
+  border-radius: 20px;
+  backdrop-filter: blur(20px);
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+  @include flexP;
+  overflow: hidden;
+  transition: height 0.2s ease;
+  transition: 0.2s ease-in-out;
+}
+.wrapper.active {
+  height: 600px;
+
+  .form-box.login {
+    transition: transform 0.18s ease;
+    transform: translateX(0);
+  }
+  .form-box.register {
+    transition: none;
+    transform: translateX(400px);
+  }
+}
+.wrapper.form-box {
+  width: 100%;
+  padding: 40px;
+}
+.wrapper .form-box.login {
+  position: absolute;
+  transition: none;
+  transform: translateX(400px);
+}
+
+.wrapper .form-box.register {
+  transition: transform 0.18s ease;
+  transform: translateX(0);
+}
+
+.form-box h2 {
+  font-size: 2em;
+  color: $main-color;
+  text-align: center;
+}
+.input-box {
+  position: relative;
+  width: 100%;
+  height: 60px;
+  border-bottom: 2px solid $main-color;
+  margin: 50px 0;
+
+  label {
+    position: absolute;
+    top: 50%;
+    left: 5px;
+    transform: translateY(-50%);
+    font-size: 1.2em;
+    color: $main-color;
+    font-weight: 500;
+    pointer-events: none;
+    transition: 0.5s;
+  }
+  input:focus ~ label,
+  input:valid ~ label {
+    top: -5px;
+  }
+  input {
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    border: none;
+    outline: none;
+    font-size: 1em;
+    color: $main-color;
+    font-weight: 600;
+    padding: 0 35px 0 5px;
+  }
+  .icon {
+    position: absolute;
+    right: 8px;
+    font-size: 1.2em;
+  }
+}
+.remember-forgot {
+  font-size: 1em;
+  color: $main-color;
+  font-weight: 400;
+  margin: -25px 0 25px;
+  display: flex;
+  justify-content: space-between;
+  label {
+    margin-right: 20px;
+
+    label input {
+      accent-color: #162938;
+      margin-right: 3px;
+    }
+  }
+  a {
+    color: $main-color;
+    text-decoration: none;
+  }
+  a:hover {
+    text-decoration: underline;
+  }
+}
+.btnDk {
+  @include btn;
+}
+.btnDn {
+  @include btn;
+}
+.googleDn{
+
+  @include btn;
+  @include flexP;
+  margin-top:10px;
+  background-color:white;
+  justify-content: space-around;
+  border: 0.5px solid rgba(0, 0, 0, 0.363);
+}
+.login-register {
+  font-size: 1em;
+  color: $main-color;
+  text-align: center;
+  font-weight: 500;
+  margin: 25px 0 10px;
+
+  p {
+    a {
+      color: $main-color;
+      text-decoration: none;
+      font-weight: 600;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+}
+
+@media (max-width: 1024px) {
+  .wrapper {
+    top: 30px;
+  }
+}
+@media (max-width: 425px) {
+  .wrapper {
+    width: 100%;
+  }
+  .form-box h2 {
+    font-size: 1.8em;
+  }
+  .btnDn {
+    font-size: 1em;
+  }
+  .btnDk {
+    font-size: 1em;
+  }
+}
+@media (max-width: 320px) {
+  .input-box {
+    font-size: 0.8em;
+  }
+}
+@media (min-height: 800px) {
+  .wrapper {
+    top: 130px;
+  }
+}

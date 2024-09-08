@@ -1,0 +1,313 @@
+@import "styles";
+@import "topnav";
+@import "footer";
+@import "login";
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+#topNav {
+  z-index: 999;
+  height: 100px;
+}
+
+// MAIN
+.setting {
+  position: relative;
+  &__main {
+    z-index: 2;
+    position: relative;
+    width: 100%;
+    padding: 0 10vw;
+    .title {
+      z-index: 2;
+      font-size: 25px;
+      color: #fff;
+      font-weight: 500;
+      margin-bottom: 20px;
+      padding-top: 50px;
+      a {
+        color: #fff;
+        font-weight: 500;
+      }
+    }
+    .content {
+      z-index: 2;
+      background-color: #fff;
+      width: 100%;
+      padding: 70px;
+      border-radius: 15px;
+      box-shadow: 0px 3px 5px #b0b0b0;
+      @include tablet-l {
+        padding: 50px;
+      }
+      @include mobile-l {
+        padding: 40px;
+      }
+      &__user-info {
+        display: flex;
+        gap: 55px;
+        justify-content: space-between;
+        align-items: center;
+        @include tablet-l {
+          gap: 30px;
+        }
+        @include tablet {
+          flex-direction: column;
+          text-align: center;
+        }
+        .userinfos {
+          display: flex;
+        }
+        .user-img {
+          width: 150px;
+          height: 150px;
+          border-radius: 100px;
+          object-fit: cover;
+          margin-right: 20px;
+        }
+        .user-text {
+          p {
+            font-size: 18px;
+            color: #878787;
+            font-weight: 500;
+            margin-bottom: 10px;
+            @include tablet-l {
+              font-size: 14px;
+            }
+            @include mobile-l {
+              font-size: 10px;
+            }
+          }
+          h2 {
+            font-size: 45px;
+            color: #000;
+            font-weight: 500;
+            @include tablet-l {
+              font-size: 30px;
+            }
+            @include mobile-l {
+              font-size: 25px;
+            }
+          }
+        }
+      }
+      &__options {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        justify-content: center;
+        align-items: start;
+        @include tablet-l {
+          gap: 10px;
+        }
+        h5 {
+          font-size: 22px;
+          color: #878787;
+          font-weight: 500;
+          margin-bottom: 0;
+          @include tablet-l {
+            font-size: 16px;
+          }
+        }
+        .cta {
+          width: 100%;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 15px;
+          transition: 0.2s;
+          background-color: #fff;
+          border-radius: 5px;
+          @include mobile-xl {
+            padding: 15px 0 15px 0;
+          }
+          h6 {
+            font-size: 20px;
+            color: #000;
+            font-weight: 500;
+            margin-bottom: 0;
+            @include tablet-l {
+              font-size: 15px;
+            }
+            @include mobile-l {
+              font-size: 13px;
+            }
+          }
+          i {
+            font-size: 15px;
+            color: #000;
+          }
+          &:hover {
+            background-color: #f5f5f5;
+          }
+        }
+      }
+      hr {
+        border: 2px solid #b4b4b4;
+        margin-top: 30px;
+        margin-bottom: 30px;
+      }
+      &__social {
+        margin-top: 40px;
+        width: 100%;
+        @include flexP;
+        gap: 40px;
+      }
+      &__stats {
+        width: 100%;
+        @include flexP;
+        flex-wrap: wrap;
+        justify-content: start;
+        gap: 20px;
+        .stat {
+          width: 320px;
+          height: 100px;
+          border-radius: 15px;
+          border: 0.5px solid rgba(128, 128, 128, 0.435);
+          padding: 20px;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          .icon {
+            width: 20%;
+            height: 100%;
+            @include flexP;
+            img {
+              width: 100%;
+            }
+          }
+          .text {
+            @include flexP;
+            align-items: start;
+            width: 75%;
+            height: 100%;
+            flex-direction: column;
+            h1 {
+              font-size: 25px;
+            }
+            h3 {
+              font-size: 15px;
+              color: grey;
+            }
+            .title {
+              margin: 0;
+              padding: 0;
+            }
+          }
+        }
+      }
+    }
+  }
+  &__bkg {
+    z-index: 1;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 600px;
+    background-color: $main-color;
+    border-radius: 0 0 10px 10px;
+  }
+}
+.popup-container {
+  z-index: 999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #0000008a;
+  padding: 0 10vw;
+  &.hidden {
+    display: none;
+  }
+  .popup {
+    width: 100%;
+    background-color: #fff;
+    padding: 35px;
+    border-radius: 20px;
+    .button-container {
+      margin-top: 40px;
+      width: 100%;
+      display: flex;
+      gap: 20px;
+      .btn-primary,
+      .btn-secondary {
+        flex: 1;
+      }
+      .btn-primary {
+        background-color: #226500;
+        border: 1px solid #226500;
+      }
+      .btn-secondary {
+        background-color: #00000000;
+        border: 1px solid #226500;
+        color: #226500;
+      }
+    }
+  }
+}
+@media (max-width: 493px) {
+  .userinfos {
+    flex-direction: column;
+    align-items: center;
+    .user-img {
+      margin: 0;
+    }
+  }
+}
+
+#avatar-list {
+  background-color: #fff;
+  width: 60vw;
+  justify-content: center;
+  display: flex;
+  position: absolute;
+  top: 30vh;
+  left: 20%;
+  border: 0.5px solid;
+  z-index: 999;
+  border-radius: 20px;
+  padding: 50px;
+  flex-wrap: wrap;
+  img {
+    margin: 10px;
+  }
+  #closebtn {
+    position: absolute;
+    top: 10px;
+    right: 40px;
+    font-size: 30px;
+  }
+  #addAvatar {
+    background-color: gray;
+    display: flex;
+    border-radius: 50%;
+    width: 100px;
+    justify-content: center;
+    align-items: center;
+    height: 100px;
+    span {
+      color: #fff;
+      position: relative;
+      font-size: 50px;
+    }
+  }
+}
+.word-box-overlay {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  z-index: 998;
+  top: 0;
+  left: 0;
+  background: rgba(0, 0, 0, 0.7);
+}

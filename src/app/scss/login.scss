@@ -1,0 +1,374 @@
+@import "styles";
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+a {
+  text-decoration: none;
+  font-weight: bold;
+}
+
+// main {
+//   position: relative;
+//   background-color: #162938;
+//   top: 0;
+//   @include flexP;
+//   min-height: 100vh;
+// }
+.wrapper {
+  z-index: 100000;
+  position: fixed;
+  top: 50%; // Position from the top
+  left: 50%; // Position from the left
+  transform: translate(-50%, -50%); // Center the element
+  width: 450px;
+  height: 0;
+  background-color: rgb(255, 255, 255);
+  border: 0.5px solid rgba(128, 128, 128, 0.408);
+  border-radius: 35px;
+  backdrop-filter: blur(20px);
+  @include flexP; // Assuming flexP is a mixin for flexbox
+  overflow: hidden;
+  transition: height 0.2s ease, opacity 0.2s ease; // Combined transitions
+  opacity: 0;
+  pointer-events: none;
+
+  &.active-popup {
+    height: 600px; // Height when active
+    opacity: 1;
+    pointer-events: auto; // Enable interaction
+  }
+
+
+  .closebtn {
+    position: absolute;
+    right: 30px;
+    top: 35px;
+    cursor: pointer;
+  }
+}
+
+.wrapper.active {
+  height: 750px;
+
+  .form-box.forgot {
+    transition: transform 0.18s ease;
+    transform: translateX(-1000px);
+  }
+
+  .form-box.login {
+    transition: none;
+    transform: translateX(-500px);
+  }
+  .form-box.rpassword {
+    transition: transform 0.18s ease;
+    transform: translateX(-1500px);
+  }
+
+  .form-box.register {
+    transition: transform 0.18s ease;
+    transform: translateX(0);
+  }
+}
+
+.wrapper.active2 {
+  .form-box.forgot {
+    transition: transform 0.18s ease;
+    transform: translateX(0);
+  }
+
+  .form-box.login {
+    transition: none;
+    transform: translateX(500px);
+  }
+
+  .form-box.register {
+    transition: transform 0.18s ease;
+    transform: translateX(1000px);
+  }
+}
+
+.wrapper.active3 {
+  .form-box.forgot {
+    transition: transform 0.18s ease;
+    transform: translateX(500px);
+  }
+
+  .form-box.OTP {
+    transition: transform 0.18s ease;
+    transform: translateX(0);
+  }
+
+  .form-box.login {
+    transition: none;
+    transform: translateX(1000px);
+  }
+
+  .form-box.register {
+    transition: transform 0.18s ease;
+    transform: translateX(1500px);
+  }
+}
+
+.wrapper.active4 {
+  .form-box.forgot {
+    transition: transform 0.18s ease;
+    transform: translateX(500px);
+  }
+
+  .form-box.OTP {
+    transition: transform 0.18s ease;
+    transform: translateX(500px);
+  }
+  .form-box.rpassword {
+    transition: transform 0.18s ease;
+    transform: translateX(0);
+  }
+  .form-box.login {
+    transition: none;
+    transform: translateX(1000px);
+  }
+
+  .form-box.register {
+    transition: transform 0.18s ease;
+    transform: translateX(1500px);
+  }
+}
+
+.wrapper.form-box {
+  width: 100%;
+  padding: 40px;
+}
+
+.wrapper .form-box.login {
+  transition: transform 0.18s ease;
+  transform: translateX(0);
+}
+
+.wrapper .form-box.forgot {
+  position: absolute;
+  transition: none;
+  transform: translateX(-500px);
+}
+
+
+.wrapper .form-box.OTP {
+  #OTP {
+    display: flex;
+    gap: 10px;
+    .input-box {
+      height: 80px;
+      input{
+        padding:0;
+        font-size: 2.5rem;
+        text-align: center;
+      }
+    }
+  }
+  padding:30px;
+  position: absolute;
+  transition: none;
+  transition: transform 0.18s ease;
+  transform: translateX(-1000px);
+}
+
+.wrapper .form-box.register {
+  position: absolute;
+  transition: none;
+  transform: translateX(400px);
+}
+
+.form-box h2 {
+  font-size: 2.5em;
+  color: $main-color;
+  text-align: center;
+  font-weight: 650;
+}
+
+.form-box h3 {
+  font-size: 1em;
+  color: grey;
+  text-align: center;
+  font-weight: 600;
+}
+
+.input-box {
+  position: relative;
+  width: 100%;
+  height: 60px;
+  border: 0.5px solid rgba(128, 128, 128, 0.468);
+  margin: 30px 0;
+  border-radius: 10px;
+
+  label {
+    position: absolute;
+    top: 50%;
+    left: 20px;
+    transform: translateY(-50%);
+    color: rgb(110, 110, 110);
+    font-weight: 500;
+    pointer-events: none;
+    transition: 0.5s;
+  }
+
+  input:focus~label,
+  input:valid~label, 
+  input:user-invalid~label{
+    display: none;
+  }
+
+  input {
+    border-radius: 10px;
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    border: none;
+    outline: none;
+    font-size: 1em;
+    color: $main-color;
+    font-weight: 600;
+    padding: 0 35px 0 5px;
+  }
+
+  .icon {
+    position: absolute;
+    right: 8px;
+    font-size: 1.2em;
+  }
+}
+.wrapper .form-box.rpassword {
+  position: absolute;
+  transition: none;
+  transform: translateX(-1500px);
+  input:focus~label,
+  input:valid~label {
+    top:-10px;
+  }
+}
+.remember-forgot {
+  font-size: 1em;
+  font-weight: 400;
+  color: black;
+  margin: 25px 0 25px;
+  display: flex;
+  justify-content: space-between;
+
+  label input {
+    accent-color: $main-color;
+    margin-right: 10px;
+  }
+
+  label {
+    margin-right: 20px;
+  }
+
+  a {
+    color: $main-color;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+.btnDk {
+  @include btn;
+}
+
+.btnDn {
+  @include btn;
+}
+
+.btnFg {
+  @include btn;
+}
+
+.btnotp {
+  @include btn;
+}
+
+.login-register {
+  font-size: 1em;
+  color: black;
+  text-align: center;
+  font-weight: 500;
+  margin: 25px 0 10px;
+
+  p {
+    a {
+      color: $main-color;
+      text-decoration: none;
+      font-weight: 600;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+}
+
+.register-link {
+  margin-left: 10px;
+}
+
+.disable-ov {
+  overflow-y: hidden;
+}
+
+.wrapper-background {
+  display: none;
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  z-index: 20;
+  background: rgba(49, 49, 49, 0.5); /* Adjust opacity as needed */
+
+
+  &.active {
+    display: block;
+  }
+}
+
+@media (max-width: 1024px) {
+  .wrapper {
+    top: 30px;
+  }
+}
+
+@media (max-width: 426px) {
+  .wrapper {
+    &.active-popup {
+      width: 100%;
+    }
+  }
+
+  .form-box h2 {
+    font-size: 1.8em;
+  }
+
+  .btnDn {
+    font-size: 1em;
+  }
+
+  .btnDk {
+    font-size: 1em;
+  }
+}
+
+@media (max-width: 321px) {
+  .input-box {
+    font-size: 0.8em;
+  }
+}
+
+@media (max-height: 700px) {
+  .wrapper {
+    height: 550px;
+    top: 0px;
+  }
+}

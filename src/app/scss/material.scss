@@ -1,0 +1,338 @@
+@import "topnav";
+@import "login";
+@import "navigation";
+@import "footer";
+@import "styles";
+
+// MIXIN
+@mixin itemAlign {
+  padding-left: 8vw;
+  padding-right: 8vw;
+  @include mobile-l {
+    padding-left: 5vw;
+    padding-right: 5vw;
+  }
+}
+
+// NAVIGATION PANEL
+.nav-panel {
+  @include itemAlign();
+  margin: 50px 0;
+  &__game-list {
+    grid-auto-columns: calc((100% / 3) - 15px);
+    @include tablet-l {
+      grid-auto-columns: 100%;
+    }
+  }
+}
+
+// MAIN
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+  transition: 0.2s;
+}
+
+#topNav {
+  height: 100px;
+}
+
+body {
+  background-color: #f8f8f8;
+  .material {
+    @include itemAlign();
+    position: relative;
+    margin: 50px 0;
+  }
+  .materials {
+    cursor: pointer;
+  }
+  .material-title {
+    text-align: center;
+    color: $text-color;
+    font-weight: 800;
+    font-size: 40px;
+    @include mobile-m {
+      font-size: 30px;
+    }
+  }
+  .material-content-box {
+    display: flex;
+    justify-self: center;
+    justify-content: center;
+    background-color: #f2f2f2;
+    border-radius: 20px;
+    padding: 30px 15px;
+    @include tablet {
+      border-radius: 5px;
+      padding: 10px;
+    }
+    .grid-container {
+      display: grid;
+      grid-template-columns: 1fr;
+      grid-template-rows: repeat(1fr, 4);
+      gap: 20px;
+      width: 98%;
+      background-color: #f2f2f2;
+      .materials {
+        display: flex;
+        gap: 40px;
+        align-items: start;
+        justify-content: space-between;
+        border-radius: 20px;
+        background-color: #fff;
+        padding: 40px;
+        box-shadow: 0px 2px 1px #8f8f8f;
+        transition: 0.2s;
+        &.reverse {
+          flex-direction: row-reverse;
+        }
+        &:hover {
+          box-shadow: none;
+        }
+        @include tablet {
+          flex-direction: column;
+          gap: 15px;
+          border-radius: 5px;
+          padding: 30px;
+          &.reverse {
+            flex-direction: column;
+          }
+        }
+        @include mobile-m {
+          padding: 15px;
+        }
+        a {
+          @include tablet-l {
+            width: 40%;
+            height: 100%;
+          }
+          @include tablet {
+            width: 100%;
+          }
+          .material-img {
+            width: 388px;
+            border-radius: 5px;
+            border: 1px solid $text-color;
+            @include tablet-l {
+              width: 100%;
+              height: 100%;
+              object-fit: cover;
+            }
+            @include tablet {
+              width: 100%;
+              grid-row: 1/2;
+            }
+          }
+        }
+        .text-container {
+          @include tablet-l {
+            width: 60%;
+          }
+          @include tablet {
+            width: 100%;
+          }
+        }
+
+        .text-container {
+          h2,
+          p {
+            margin-bottom: 10px;
+            color: $text-color;
+          }
+          h2 {
+            @include laptop {
+              font-size: 25px;
+            }
+            @include mobile-l {
+              font-size: 22px;
+            }
+            @include mobile-s {
+              font-size: 22px;
+            }
+            br {
+              display: none;
+              @include tablet-l {
+                display: inline-block;
+              }
+            }
+            .tag {
+              font-size: 11px;
+              padding: 5px 10px;
+              border-radius: 10px;
+            }
+          }
+          p {
+            font-size: 17px;
+            display: -webkit-box; /* Dùng cho Safari */
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            -webkit-line-clamp: 5;
+            @include laptop {
+              font-size: 15px;
+            }
+            @include tablet {
+              font-size: 16px;
+            }
+            @include mobile-l {
+              display: none;
+            }
+          }
+        }
+      }
+    }
+  }
+  .msg-bubble {
+    display: inline-block;
+    padding: 10px;
+    background-color: #fff;
+    border: 1px solid #8f8f8f;
+  }
+
+  // Styling for popup
+  .popup-flex-container {
+    z-index: 22;
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    padding: 5vw;
+    .popup {
+      position: relative;
+      background-color: #fff;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 10px;
+      @include mobile-xl {
+        flex-direction: column;
+      }
+      .image-holder {
+        width: 40%;
+        height: 100%;
+        overflow: hidden;
+        border-top-left-radius: 10px;
+        border-bottom-left-radius: 10px;
+        @include tablet-l {
+          width: 30%;
+        }
+        @include mobile-xl {
+          width: 100%;
+          height: 35%;
+          border-bottom-left-radius: 0;
+          border-top-right-radius: 10px;
+        }
+        img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+      }
+      .text-holder {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 60%;
+        height: 100%;
+        background-color: #fff;
+        border-top-right-radius: 10px;
+        border-bottom-right-radius: 10px;
+        padding: 50px;
+        @include tablet-l {
+          width: 70%;
+        }
+        @include mobile-xl {
+          width: 100%;
+          height: 65%;
+          border-bottom-left-radius: 10px;
+          padding: 40px;
+        }
+        @include mobile-m {
+          padding: 30px;
+        }
+        .popup-close-button {
+          position: absolute;
+          top: 0;
+          right: 0;
+          margin: 20px;
+          cursor: pointer;
+          &:hover {
+            filter: brightness(120%);
+            transition-duration: 250ms;
+          }
+        }
+        .text-container {
+          @include mobile-xl {
+            height: 100%;
+          }
+          h3 {
+            font-size: 35px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            @include laptop-l {
+              font-size: 25px;
+            }
+            @include mobile-l {
+              display: -webkit-box; /* Dùng cho Safari */
+              -webkit-box-orient: vertical;
+              overflow: hidden;
+              -webkit-line-clamp: 3;
+            }
+          }
+          .scroll-box {
+            width: 100%;
+            height: 320px;
+            overflow: auto;
+            padding-right: 15px;
+            &::-webkit-scrollbar {
+              width: 5px;
+            }
+            &::-webkit-scrollbar-thumb {
+              width: 5px;
+              background-color: #8f8f8f;
+            }
+            &::-webkit-scrollbar-track {
+              width: 3px;
+              background-color: #cfcece;
+              border-radius: 10px;
+            }
+            .left {
+              text-align: left;
+              u {
+                font-weight: 700;
+                color: #226500;
+                cursor: pointer;
+              }
+            }
+            @include mobile-xl {
+              height: 180px;
+            }
+            @include mobile-l {
+              height: 230px;
+            }
+            p {
+              font-size: 19px;
+              @include tablet-l {
+                font-size: 15px;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .hidden {
+    visibility: hidden;
+  }
+  .popup-hidden {
+    display: none !important;
+  }
+}

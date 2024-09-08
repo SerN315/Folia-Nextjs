@@ -1,0 +1,166 @@
+@import "styles";
+@import "topnav";
+@import "footer";
+@import "login";
+
+// COLOR
+$side-text: #8c8c8c;
+
+body {
+}
+.challenge {
+  position: relative;
+  top: 100px;
+  width: 100%;
+  @include flexP;
+  &__container {
+    width: 90%;
+    .titles {
+      margin-top: 85px;
+      color: black;
+      font-weight: 600;
+      .leaderboard {
+        font-size: 20px;
+        color: $side-text;
+        font-weight: 500;
+        transition: 150ms color linear;
+        &:hover {
+          color: #4d4d4d;
+        }
+      }
+    }
+    .challenges {
+      margin-top: 60px;
+      width: 100%;
+      height: 1000px;
+      background: #fff;
+      box-shadow: 1px 3px 5px 3px #0000003d;
+      padding: 20px;
+      border-radius: 30px;
+      &__item {
+        width: 100%;
+        height: 265px;
+        background-color: white;
+        border-radius: 20px;
+        border: 1px solid rgba(0, 0, 0, 0.389);
+        @include flexP;
+        justify-content: space-evenly;
+        transition: 0.2s ease-in-out;
+        &__left {
+          width: 42%;
+          height: 80%;
+          display: flex;
+          justify-content: space-around;
+          flex-direction: column;
+          pointer-events: none;
+          .title {
+            h2 {
+              font-size: calc(1rem + 0.9vw);
+              font-weight: 600;
+            }
+          }
+          .tquestion {
+            display: flex;
+            h3 {
+              font-size: calc(0.7rem + 0.6vw);
+              &:first-child {
+                margin-right: 20px;
+              }
+            }
+          }
+        }
+        &__middle {
+          display: flex;
+          width: 25%;
+          height: 60%;
+          justify-content: space-between;
+          align-items: center;
+          flex-direction: column;
+          padding: 10px;
+          border-left: 1px solid;
+          border-right: 1px solid;
+          .title {
+            pointer-events: none;
+            h2 {
+              font-size: calc(1rem + 0.9vw);
+              font-weight: 600;
+            }
+          }
+          .tquestion {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            a {
+              font-size: calc(0.7rem + 0.6vw);
+              text-decoration: none;
+            }
+          }
+        }
+        &__right {
+          @include flexP;
+          height: 60%;
+          flex-direction: column;
+          justify-content: space-evenly;
+          .checks {
+            i {
+              font-size: 30px;
+              color: $main-color;
+            }
+          }
+          #startchallenge {
+            width: 0px;
+            height: 0px;
+            background-color: $main-color;
+            padding: 10px;
+            border-radius: 15px;
+            transition: 0.5s ease-in-out;
+            opacity: 0;
+            a {
+              color: white;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+.challenges__item:hover {
+  background-color: #f5f5f5;
+  .challenges__item__right {
+    #startchallenge {
+      @include flexP;
+      width: 100px;
+      height: 50px;
+      opacity: 1;
+    }
+  }
+}
+@media (max-width: 580px) {
+  .challenge {
+    &__container {
+      .challenges {
+        &__item {
+          width: 100%;
+          height: 265px;
+          flex-direction: column;
+          &__left {
+            width: 90%;
+            height: auto;
+            padding: 20px;
+          }
+          &__middle {
+            width: 80%;
+            height: auto;
+          }
+          &__right {
+            width: 60%;
+            height: auto;
+            padding: 20px;
+            @include flexP;
+            flex-direction: row;
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,88 @@
+@import "topnav";
+@import "subnav";
+@import "footer";
+@import "styles";
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+body {
+  background-color: #f8f8f8;
+  main {
+    position: relative;
+  }
+  .practice-title {
+    text-align: center;
+    color: $text-color;
+    font-weight: 800;
+    font-size: 40px;
+    @include mobile-m {
+      font-size: 30px;
+    }
+  }
+  .practice-content-box {
+    display: flex;
+    justify-content: center;
+    margin: 50px 0 50px 0;
+    @include tablet {
+      margin-top: 50px;
+    }
+    .grid-container {
+      display: grid;
+      width: 50%;
+      height: 550px;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 1fr 1fr;
+      gap: 20px;
+      margin-bottom: 50px;
+      @include laptop {
+        width: 70%;
+      }
+      @include tablet {
+        width: 60%;
+        grid-template-columns: 1fr;
+        grid-template-rows: repeat(4, 1fr);
+        gap: 15px;
+      }
+      @include mobile-l {
+        width: 85%;
+      }
+      .multi-choice {
+        background-image: url("../img/practice-multi-choice.jpg");
+        background-position: center;
+      }
+      .flashcard {
+        background-image: url("../img/practifce-flashcard.jpg");
+        background-position: center;
+      }
+      .text-ex {
+        background-image: url("../img/practice-text-excercise.jpg");
+        background-position: center;
+      }
+      .matching {
+        background-image: url("../img/practice-matching.jpg");
+        background-position: center;
+      }
+      .practice-button {
+        width: 100%;
+        height: 100%;
+        border: none;
+        border-radius: 20px;
+        color: white;
+        font-size: 40px;
+        font-weight: 700;
+        cursor: pointer;
+        @include tablet {
+          font-size: 30px;
+        }
+        @include mobile-l {
+          font-size: 25px;
+        }
+      }
+    }
+  }
+}

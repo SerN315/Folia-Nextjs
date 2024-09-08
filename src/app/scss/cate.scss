@@ -1,0 +1,194 @@
+//File chỉ dùng cho file home.html
+@import "styles";
+@import "topnav";
+@import "footer";
+@import "login";
+
+// NEW CODE
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  transition: 1s;
+}
+
+// MIXIN
+@mixin itemAlign {
+  padding-left: 6.5vw;
+}
+
+#topNav {
+  height: 100px;
+}
+
+.category {
+  margin: 70px 0 0 0;
+  &__title {
+    display: flex;
+    gap: 25px;
+    align-items: center;
+    @include itemAlign();
+    font-size: 32px;
+    font-weight: 600;
+    color: black;
+    @include mobile-xl {
+      font-size: 26px;
+    }
+    @include mobile-l {
+      font-size: 23px;
+      i {
+        display: none;
+      }
+    }
+    margin-bottom: 30px;
+    i {
+      color: $main-color;
+    }
+  }
+
+  // PLACHOLDERS
+  &__content {
+    .placeholder-item {
+      @include itemAlign();
+      width: 100%;
+      .title {
+        margin-bottom: 25px;
+        @include tablet {
+          width: 50%;
+          span {
+            width: 100%;
+          }
+        }
+      }
+      .ph-item-list {
+        display: grid;
+        gap: 15px;
+        grid-auto-flow: column;
+        grid-auto-columns: calc(24% - 10px);
+        margin-bottom: 50px;
+        @include laptop {
+          grid-auto-columns: calc(32% - 10px);
+        }
+        .ph-item {
+          height: 200px;
+          .img {
+            width: 100%;
+            height: 60%;
+            margin-bottom: 20px;
+            span {
+              width: 100%;
+              height: 100%;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  // MAIN CONTENT
+  &__content {
+    .item {
+      margin-bottom: 50px;
+      h1 {
+        @include itemAlign();
+        font-size: 24px;
+        font-weight: 600;
+        color: black;
+        margin-bottom: 25px;
+        @include mobile-l {
+          font-size: 20px;
+        }
+      }
+      .topic-container {
+        @include itemAlign();
+        width: 100%;
+        display: grid;
+        gap: 15px;
+        grid-auto-flow: column;
+        grid-auto-columns: calc(24% - 10px);
+        overflow: auto;
+        @include laptop-l {
+          grid-auto-columns: calc(30% - 10px);
+        }
+        @include tablet-l {
+          grid-auto-columns: 45%;
+        }
+        @include mobile-l {
+          grid-auto-columns: 58%;
+        }
+        &::-webkit-scrollbar {
+          width: 0;
+          height: 0;
+        }
+        .topic {
+          width: 100%;
+          height: 200px;
+          background-color: #fff;
+          border-radius: 10px;
+          border: 1px solid #c9c9c9;
+          &:hover {
+            .topic__img {
+              img {
+                transform: scale(1.1);
+              }
+            }
+          }
+          &__img {
+            width: 100%;
+            height: 60%;
+            border-radius: 10px 10px 0 0;
+            overflow: hidden;
+            img {
+              width: 100%;
+              height: 100%;
+              object-fit: cover;
+              border-radius: 10px 10px 0 0;
+              transition: 0.5s ease;
+            }
+          }
+          &__text {
+            height: 40%;
+            display: flex;
+            gap: 7px;
+            flex-direction: column;
+            justify-content: center;
+            padding: 0 15px;
+            h3 {
+              color: #242424;
+              font-size: 24px;
+              font-weight: 600;
+              margin-bottom: 0;
+              @include laptop {
+                font-size: 21px;
+              }
+              @include tablet {
+                font-size: 19px;
+              }
+              @include mobile-xl {
+                font-size: 17px;
+              }
+              @include mobile-l {
+                font-size: 15px;
+              }
+            }
+            p {
+              color: #818181;
+              font-size: 15px;
+              font-weight: 500;
+              margin-bottom: 0;
+              @include tablet {
+                font-size: 13px;
+              }
+              @include mobile-m {
+                font-size: 12px;
+              }
+            }
+          }
+          &:last-child {
+            margin-right: 10px;
+          }
+        }
+      }
+    }
+  }
+}

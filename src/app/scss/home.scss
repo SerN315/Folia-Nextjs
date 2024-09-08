@@ -1,0 +1,474 @@
+//File chỉ dùng cho file home.html
+@import "styles";
+@import "topnav";
+@import "footer";
+@import "login";
+
+@keyframes hoverAnimationHorizontal {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes hoverAnimationVertical {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-10px);
+  }
+}
+
+// MIXINS
+@mixin titleStyle {
+  color: #000;
+  font-size: 24px;
+  font-weight: 600;
+}
+
+// STYLING FOR HEADER
+#topNav {
+  height: 100px;
+}
+
+.home {
+  background: #fdfdfd;
+  // Hero Section
+  &__hero-section {
+    @include mobile-xl {
+      overflow: hidden;
+    }
+    background-color: #226500;
+    padding: 120px 12.5vw;
+    margin-bottom: 80px;
+    @include laptop-m {
+      padding: 120px 7vw;
+    }
+    @include laptop {
+      padding: 120px 5.7vw;
+    }
+    @include tablet-l {
+      padding: 120px 5.7vw 60px 5.7vw;
+    }
+    &__container {
+      display: flex;
+      flex-direction: row-reverse;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      @include tablet-l {
+        flex-direction: column;
+        align-items: start;
+        row-gap: 100px;
+      }
+      .home-hero-img {
+        display: flex;
+        justify-content: center;
+        width: 55%;
+        @include tablet-l {
+          justify-content: start;
+          width: 100%;
+        }
+        &__container {
+          width: 497px;
+          height: 365px;
+          position: relative;
+          background: #afe893;
+          @include mobile-l {
+            width: 297px;
+            height: 207px;
+          }
+          &__img1 {
+            position: absolute;
+            top: -70px;
+            left: 30px;
+            object-fit: cover;
+            animation: hoverAnimationHorizontal 6s infinite alternate;
+            transition: 0.8s;
+            @include mobile-l {
+              animation: none;
+            }
+          }
+          &__img2 {
+            position: absolute;
+            right: -50px;
+            object-fit: cover;
+            animation: hoverAnimationVertical 5s infinite alternate;
+            @include mobile-l {
+              animation: none;
+            }
+          }
+          &__img3 {
+            position: absolute;
+            bottom: -50px;
+            left: 120px;
+            object-fit: cover;
+            animation: hoverAnimationHorizontal 5s infinite alternate;
+            @include mobile-l {
+              bottom: -40px;
+              left: 100px;
+              animation: none;
+            }
+          }
+          &__box1 {
+            position: absolute;
+            right: 160px;
+            top: -40px;
+            background: #afe893;
+            width: 11.7%;
+            height: 7.7%;
+            animation: hoverAnimationHorizontal 3s infinite alternate;
+            @include mobile-l {
+              top: -30px;
+              right: 75px;
+              animation: none;
+            }
+          }
+          &__box2 {
+            position: absolute;
+            bottom: -40px;
+            left: 70px;
+            background: #afe893;
+            width: 5.9%;
+            height: 4.4%;
+            animation: hoverAnimationHorizontal 2s infinite alternate;
+            @include mobile-l {
+              animation: none;
+            }
+          }
+        }
+      }
+      .home-hero-text {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 45%;
+        @include tablet-l {
+          width: 100%;
+        }
+        &__container {
+          width: 95%;
+          h5 {
+            color: #fcfcfc;
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            @include mobile-m {
+              font-size: 20px;
+              margin-bottom: 10px;
+            }
+          }
+          h1 {
+            color: #fff;
+            font-size: 60px;
+            line-height: 85px;
+            font-weight: 700;
+            margin-bottom: 50px;
+            @include laptop-l {
+              font-size: 50px;
+            }
+            @include laptop-m {
+              font-size: 40px;
+              line-height: 65px;
+            }
+            @include mobile-m {
+              font-size: 30px;
+              line-height: 45px;
+              margin-bottom: 25px;
+            }
+          }
+          &__cate-link {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            justify-content: start;
+            color: white;
+            transition: 0.2s;
+            &:hover {
+              gap: 15px;
+            }
+            a {
+              color: white;
+              font-size: 24px;
+              font-weight: 700;
+              @include laptop-m {
+                font-size: 20px;
+              }
+              @include mobile-m {
+                font-size: 15px;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  // End of Hero Secton
+  &__most-learned {
+    margin-bottom: 40px;
+    &__title {
+      padding: 0 12.5vw;
+      margin-bottom: 25px;
+      @include laptop-m {
+        padding: 0 7vw;
+      }
+      @include laptop {
+        padding: 0 5.7vw;
+      }
+      h4 {
+        @include titleStyle();
+        margin-bottom: 10px;
+      }
+      h6 {
+        color: #7c7c7c;
+        font-size: 20px;
+        font-weight: 500;
+      }
+    }
+    &__list {
+      height: 280px;
+      padding-left: 12.5vw;
+      padding-right: 20px;
+      display: grid;
+      column-gap: 15px;
+      grid-auto-flow: column;
+      grid-auto-columns: calc(28% - 10px);
+      overflow: auto;
+      &::-webkit-scrollbar {
+        width: 0;
+        height: 0;
+      }
+      @include laptop-m {
+        padding-left: 7vw;
+        grid-auto-columns: 45%;
+      }
+      @include laptop {
+        padding-left: 5.7vw;
+      }
+      @include mobile-xl {
+        grid-auto-columns: 70%;
+      }
+      @include mobile-m {
+        grid-auto-columns: 90%;
+      }
+      .card {
+        height: 250px;
+        border: none;
+        overflow: hidden;
+        &:hover {
+          .card-img {
+            transform: scale(1.1);
+          }
+        }
+        .card-img {
+          filter: opacity(0.45);
+          height: 100%;
+          object-fit: cover;
+          transition: 0.5s ease;
+        }
+        .card-img-overlay {
+          padding: 25px;
+          h6 {
+            color: #ccc;
+            font-size: 20px;
+            font-weight: 600;
+          }
+          h4 {
+            color: #fff;
+            font-size: 28px;
+            font-weight: 600;
+          }
+          p {
+            color: #ccc;
+            font-size: 16px;
+            font-weight: 600;
+          }
+        }
+      }
+    }
+  }
+  &__suggest {
+    &__title {
+      padding: 0 12.5vw;
+      margin-bottom: 15px;
+      @include laptop-m {
+        padding: 0 7vw;
+      }
+      @include laptop {
+        padding: 0 5.7vw;
+      }
+      h4 {
+        @include titleStyle();
+      }
+    }
+    &__cate {
+      &__title {
+        padding: 0 12.5vw;
+        margin-bottom: 20px;
+        @include laptop-m {
+          padding: 0 7vw;
+        }
+        @include laptop {
+          padding: 0 5.7vw;
+        }
+        h4 {
+          @include titleStyle();
+          font-size: 23px;
+        }
+      }
+      &__list {
+        height: 250px;
+        display: grid;
+        grid-auto-flow: column;
+        grid-auto-columns: calc(27% - 10px);
+        gap: 15px;
+        padding-left: 12.5vw;
+        padding-right: 20px;
+        overflow: auto;
+        &::-webkit-scrollbar {
+          width: 0;
+          height: 0;
+        }
+        @include laptop-m {
+          padding-left: 7vw;
+          grid-auto-columns: 40%;
+        }
+        @include laptop {
+          padding-left: 5.7vw;
+        }
+        @include mobile-xl {
+          grid-auto-columns: 60%;
+        }
+        @include mobile-m {
+          grid-auto-columns: 85%;
+        }
+        &__item {
+          display: flex;
+          gap: 30px;
+          width: 100%;
+          a {
+            height: 200px;
+            border-radius: 10px;
+            border: 1px solid rgb(201, 201, 201);
+            padding-bottom: 10px;
+            .card {
+              height: 200px;
+              width: 100%;
+              background: transparent;
+              border: none;
+              padding-bottom: 30px;
+              .card-img-top {
+                border-radius: 10px 10px 0 0;
+                height: 65%;
+                object-fit: cover;
+              }
+              .card-body {
+                padding: 15px 15px 15px 15px;
+                &__title {
+                  @include titleStyle();
+                  @include mobile-xl {
+                    font-size: 20px;
+                  }
+                }
+                &__wrd-cnt {
+                  color: #818181;
+                  font-size: 16px;
+                  font-weight: 600;
+                  margin-bottom: 0;
+                }
+              }
+            }
+          }
+
+          .vl {
+            height: 200px;
+            border: 1px solid rgb(184, 184, 184);
+          }
+        }
+      }
+    }
+  }
+  &__cate-list {
+    margin-bottom: 50px;
+    &__title {
+      padding: 0 12.5vw;
+      @include laptop-m {
+        padding: 0 7vw;
+      }
+      @include laptop {
+        padding: 0 5.7vw;
+      }
+      h4 {
+        @include titleStyle();
+        margin-bottom: 20px;
+      }
+    }
+    &__container {
+      padding: 0 12.5vw;
+      width: 100%;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      row-gap: 15px;
+      margin-bottom: 20px;
+      @include laptop-m {
+        padding: 0 7vw;
+      }
+      @include laptop {
+        padding: 0 5.7vw;
+      }
+      &__item {
+        border-radius: 10px;
+        background: #fff;
+        box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+        padding: 15px 25px;
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        align-items: center;
+        transition: 0.2s;
+        &:hover {
+          box-shadow: 0px 4px 20px 0px rgba(0, 0, 0, 0.25);
+        }
+        @include tablet-l {
+          padding: 12px 20px;
+        }
+        i {
+          font-size: 1.5em;
+        }
+        p {
+          color: #000;
+          font-size: 20px;
+          font-weight: 600;
+          margin-bottom: 0;
+          @include tablet-l {
+            font-size: 18px;
+          }
+        }
+      }
+    }
+    &__cta {
+      padding: 0 12.5vw;
+      display: flex;
+      align-items: center;
+      color: #8c8c8c;
+      gap: 10px;
+      transition: 0.5s;
+      @include laptop-m {
+        padding: 0 7vw;
+      }
+      @include laptop {
+        padding: 0 5.7vw;
+      }
+      p {
+        margin-bottom: 0;
+      }
+      &:hover {
+        gap: 15px;
+      }
+    }
+  }
+}

@@ -1,0 +1,371 @@
+@import "styles";
+@import "topnav";
+@import "footer";
+@import "login";
+@mixin interactB {
+  @include flexR;
+  width: 200px;
+  height: 70px;
+  font-size: 2rem;
+  background-color: #e7e7e7;
+  justify-content: center;
+  border-radius: 30px;
+  color: #8d8d8d;
+  bottom: -35px;
+}
+
+#footer {
+  position: relative;
+}
+
+body {
+  background-image: url("../img/Rectangle\ 1694.png");
+  // background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.limiters {
+  width: 80%;
+  @include flexP;
+  justify-content: space-between;
+  .timer {
+    width: 200px;
+    background-color: white;
+    border-radius: 20px;
+    height: 100px;
+    @include flexP;
+    font-size: 20px;
+    color: $main-color;
+    font-weight: bold;
+    #timerText {
+      margin-left: 15px;
+    }
+  }
+  .point {
+    width: 400px;
+    height: 100px;
+    border-radius: 20px;
+    background-color: white;
+    @include flexP;
+    .correct-point {
+      width: 45%;
+      height: 100%;
+      @include flexP;
+      font-size: 20px;
+      color: $main-color;
+      font-weight: bold;
+      #points {
+        height: 100%;
+        margin-left: 15px;
+        @include flexP;
+      }
+    }
+    .bonus-point {
+      width: 45%;
+      height: 100%;
+      font-size: 20px;
+      color: $main-color;
+      font-weight: bold;
+      @include flexP;
+      #bonus {
+        margin-left: 15px;
+        height: 100%;
+        @include flexP;
+      }
+    }
+  }
+  .streak {
+    width: 200px;
+    height: 100px;
+    border-radius: 20px;
+    background-color: white;
+    @include flexP;
+    font-size: 20px;
+    color: $main-color;
+    font-weight: bold;
+    #streak {
+      margin-left: 15px;
+    }
+  }
+}
+.no-js {
+  height: 0;
+}
+.main_content {
+  height: 100vh;
+  position: relative;
+  top: 100px;
+  @include flexP;
+  width: 100%;
+  flex-direction: column;
+  margin-bottom: 200px;
+}
+.progress_bar {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: 20px;
+  background-color: rgba(128, 128, 128, 0.736);
+  overflow: hidden;
+  .indicator {
+    width: 0%;
+    background-color: $main-color;
+    height: 100%;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+    transition: 0.2s ease-in-out;
+  }
+}
+.timeAttack {
+  margin-top: 0;
+  @include flexP;
+  flex-direction: column;
+
+  //   #Timer {
+  //     @include flexP;
+  //     position: relative;
+  //     right: -30vw;
+  //     margin: 30px;
+  //     border-radius: 15px;
+  //     color: white;
+  //     width: 250px;
+  //     height: 60px;
+  //     font-size: larger;
+  //     background-color: aqua;
+
+  //     span {
+  //       color: white;
+  //       margin-right: 5px;
+  //     }
+  //   }
+  .multiChoice {
+    position: relative;
+    top: 50px;
+    @include flexP;
+    flex-direction: column;
+    width: 75%;
+    max-width: 80%;
+    min-width: 60%;
+    margin-right: 20px;
+    margin-left: 20px;
+    border-radius: 5px;
+    .nextButton {
+      @include interactB;
+      margin-right: 10px;
+      background-color: #40bf008e;
+      border: none;
+      font-size: 20px;
+      font-weight: 600;
+      bottom: 0;
+      &:hover {
+        color: white;
+        background-color: $main-color;
+        border: 0.2px solid rgba(128, 128, 128, 0.563);
+      }
+    }
+    .questionno-skeleton {
+      @include interactB;
+      animation: loading 1s infinite alternate;
+    }
+    .Q-content-skeleton {
+      width: 85%;
+      padding: 40px;
+      padding-top: 60px;
+      margin-bottom: 20px;
+      border: 0.3px solid rgba(128, 128, 128, 0.572);
+      border-radius: 5px;
+      animation: loading 1s infinite alternate;
+    }
+    .questionno {
+      @include interactB;
+      h2 {
+        margin: 0;
+        color: $main-color;
+      }
+    }
+    .Q-content {
+      background-color: #ffff;
+      text-align: center;
+      width: 85%;
+      padding: 40px;
+      padding-top: 60px;
+      margin-bottom: 20px;
+      @include flexP;
+      border: 0.3px solid rgba(128, 128, 128, 0.572);
+      border-radius: 5px;
+      img {
+        margin: 20px;
+        min-width: 50%;
+        max-height: 100px;
+      }
+    }
+    .choices {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      .hidden{
+        display: none;
+      }
+      ul {
+        width: 85%;
+        padding-left: 0;
+        list-style: none;
+        columns: 2;
+        column-gap: 20px;
+        list-style-type: none;
+      }
+      li {
+        padding: 5px;
+        width: 100%;
+        height: 100px;
+        @include flexR;
+        border-radius: 5px;
+        break-inside: avoid-column;
+      }
+      #choice-skeleton {
+        label {
+          animation: loading 1s infinite alternate;
+        }
+      }
+      input {
+        cursor: pointer;
+        display: none;
+      }
+      label {
+        width: 100%;
+        height: 100%;
+        background: #ffff;
+        border: 0.3px solid rgba(128, 128, 128, 0.572);
+        border-radius: 5px;
+        padding: 10px;
+        font-size: 20px;
+        cursor: pointer;
+        @include flexP;
+        &:hover {
+          background-color: rgba(128, 128, 128, 0.331);
+        }
+      }
+      .correct-answer {
+        background-color: $main-color;
+      }
+    }
+  }
+}
+
+.result_shower {
+  margin-bottom: 100px;
+  @include flexP;
+  text-align: center;
+  width: 70%;
+  height: 500px;
+  border: 0.3px solid rgba(128, 128, 128, 0.533);
+  background-color: #ffff;
+  border-radius: 5px;
+  flex-direction: column;
+  .result_content {
+    width: 100%;
+    @include flexP;
+    justify-content: space-around;
+    .point-result {
+      width: 50%;
+      height: 100%;
+      @include flexP;
+      flex-direction: column;
+      font-size: 30px;
+      color: $main-color;
+      font-weight: bold;
+      .score-points {
+        margin-bottom: 20px;
+      }
+    }
+    .percentage-result {
+      width: 50%;
+      height: 50%;
+      @include flexP;
+      .circular-progress {
+        @include flexP;
+        width: 300px;
+        height: 300px;
+        border-radius: 50%;
+        flex-shrink: 0;
+        background: conic-gradient($main-color 3.6deg, rgb(237, 237, 237) 0deg);
+        &::before {
+          content: "";
+          position: absolute;
+          border-radius: 50%;
+          flex-shrink: 0;
+          width: 260px;
+          height: 260px;
+          background-color: white;
+        }
+        span {
+          position: relative;
+          font-size: 35px;
+          color: $main-color;
+          font-weight: bold;
+        }
+      }
+    }
+  }
+}
+.interact {
+  @include flexR;
+  top: -40px;
+  justify-content: center;
+  button {
+    @include interactB;
+    margin-right: 10px;
+    background-color: #40bf008e;
+    border: none;
+    font-size: 20px;
+    font-weight: 600;
+    bottom: 0;
+  }
+  button:hover {
+    background-color: $main-color;
+    border: 0.2px solid rgba(128, 128, 128, 0.563);
+  }
+}
+@media (max-width: 769px) {
+  .timeAttack {
+    .multiChoice {
+      max-width: 85%;
+      .Q-content {
+        width: 100%;
+      }
+      .choices {
+        width: 100%;
+        ul {
+          width: 100%;
+          columns: unset;
+        }
+      }
+    }
+  }
+  .result_shower {
+    width: 85%;
+  }
+}
+@media (max-width: 426px) {
+  .timeAttack {
+    .multiChoice {
+      max-width: 100%;
+      .Q-content {
+        width: 100%;
+      }
+      .choices {
+        width: 100%;
+        ul {
+          width: 100%;
+          columns: unset;
+          li {
+            height: 150px;
+          }
+        }
+      }
+    }
+  }
+  .result_shower {
+    width: 100%;
+  }
+}

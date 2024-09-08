@@ -1,0 +1,125 @@
+//File dùng chung cho tất cả các file (toàn bộ file html sẽ dùng file này)
+
+$main-color: #3fbd00;
+
+$fa-font-path: "../webfonts";
+$primary-color: #77b255;
+$primary: $main-color; // Đổi màu chính của Bootstrap
+@import url("https://fonts.cdnfonts.com/css/poppins");
+
+// MAIN COLOR
+$text-color: #18264c;
+$sub-text-color: #696969;
+
+@mixin flexP {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+@mixin btn {
+  width: 100%;
+  height: 60px;
+  background: $main-color;
+  color: #ffff;
+  border: none;
+  outline: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1.2em;
+}
+@mixin flexR {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+// RESPONSIVE
+$laptop-xl-width: 1550px;
+$laptop-l-width: 1440px;
+$laptop-m-width: 1390px;
+$laptop-width: 1024px;
+$tablet-l-width: 930px;
+$tablet-width: 769px;
+$mobile-xl-width: 686px;
+$mobile-l-width: 426px;
+$mobile-m-width: 376px;
+$mobile-s-width: 321px;
+
+@mixin laptop-xl {
+  @media (max-width: $laptop-xl-width) {
+    @content;
+  }
+}
+@mixin laptop-l {
+  @media (max-width: $laptop-l-width) {
+    @content;
+  }
+}
+@mixin laptop-m {
+  @media (max-width: $laptop-m-width) {
+    @content;
+  }
+}
+@mixin laptop {
+  @media (max-width: $laptop-width) {
+    @content;
+  }
+}
+@mixin tablet-l {
+  @media (max-width: $tablet-l-width) {
+    @content;
+  }
+}
+@mixin tablet {
+  @media (max-width: $tablet-width) {
+    @content;
+  }
+}
+@mixin mobile-xl {
+  @media (max-width: $mobile-xl-width) {
+    @content;
+  }
+}
+@mixin mobile-l {
+  @media (max-width: $mobile-l-width) {
+    @content;
+  }
+}
+@mixin mobile-m {
+  @media (max-width: $mobile-m-width) {
+    @content;
+  }
+}
+@mixin mobile-s {
+  @media (max-width: $mobile-s-width) {
+    @content;
+  }
+}
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", "sans-serif";
+}
+a {
+  text-decoration: none;
+  color: $main-color;
+}
+
+@keyframes loading {
+  0% {
+    background-color: rgb(255, 255, 255);
+  }
+  100% {
+    background-color: rgba(128, 128, 128, 0.329);
+  }
+}
+
+// KEEPING FOOTER AT THE BOTTOM OF THE PAGE
+body {
+  height: 100%;
+  min-height: 100vh;
+  position: relative;
+}
+main {
+  padding-bottom: 500px;
+}

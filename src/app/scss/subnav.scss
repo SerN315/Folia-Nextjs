@@ -1,0 +1,128 @@
+@import "styles";
+
+.subnav-container {
+  @include laptop {
+    display: none;
+  }
+  .subnav-flex {
+    display: flex;
+    justify-content: center;
+    margin: 70px 0 50px 0;
+  }
+  .subnav {
+    display: grid;
+    grid-template-columns: 1fr 1fr 2fr 1fr 1fr;
+    justify-content: center;
+    .subnav-topic-name {
+      h2 {
+        text-align: center;
+        padding-bottom: 12px;
+        border-radius: 19px;
+        font-size: 35px;
+        color: $main-color;
+        border-bottom: solid 4px $main-color;
+        cursor: default;
+      }
+    }
+    a {
+      text-decoration: none;
+      .subnav-learn-ex {
+        text-align: center;
+        width: 200px;
+        h3 {
+          color: #929395;
+          font-weight: 700;
+          font-size: 25px;
+          margin: 0;
+          padding-bottom: 12px;
+          border-bottom: #929395 solid 4px;
+          cursor: pointer;
+        }
+        h3:hover {
+          color: $main-color;
+          border-bottom: solid 4px $main-color;
+        }
+      }
+    }
+  }
+}
+
+// RESPONSIVE
+.subnav-responsive-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  display: none;
+  margin: 50px 0 20px 0;
+  @include laptop {
+    display: flex;
+  }
+  .subnav-dropdown {
+    min-width: 17em;
+    position: relative;
+    .select {
+      background-color: rgba(255, 255, 255, 0);
+      color: $main-color;
+      display: flex;
+      gap: 20px;
+      justify-content: space-around;
+      align-items: center;
+      padding: 1em;
+      cursor: pointer;
+      .selected {
+        font-size: 35px;
+        font-weight: 700;
+      }
+      .caret {
+        width: 0;
+        height: 0;
+        border-left: 7px solid transparent;
+        border-right: 7px solid transparent;
+        border-top: 8px solid $main-color;
+        transition: 0.3s;
+      }
+    }
+    .subnav-menu {
+      list-style: none;
+      margin-top: 16px;
+      background: rgb(255, 255, 255);
+      color: white;
+      position: absolute;
+      left: 50%;
+      width: 100%;
+      transform: translate(-50%);
+      transition: 0.3s;
+      z-index: 1;
+      .subnav-selected {
+        background-color: rgb(233, 233, 233);
+      }
+      li {
+        padding: 25px 15px;
+        cursor: pointer;
+        color: #929395;
+        font-size: 21px;
+        font-weight: 600;
+      }
+      li:hover {
+        background-color: rgb(233, 233, 233);
+      }
+    }
+  }
+}
+
+// EXTRA STYLE
+.hidden {
+  display: none;
+}
+.select-clicked {
+  background-color: rgb(255, 255, 255);
+  box-shadow: -5px 5px rgb(207, 207, 207);
+  transition: 0.3s;
+}
+.menu-open {
+  display: block;
+  opacity: 1;
+}
+.caret-rotate {
+  transform: rotate(180deg);
+}

@@ -1,0 +1,53 @@
+@import "styles";
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+.game-flex-container{
+  width: 100%;
+}
+.game-list-container{
+  display: grid;
+  grid-auto-flow: column;
+  // grid-auto-columns: calc((100%/2) - 12px);
+  gap: 12px;
+  width: 969px;
+  cursor: pointer;
+  @include tablet-l{
+    width: 600px;
+  }
+  @include mobile-xl{
+    width: 420px;
+  }
+  @include mobile-l{
+    grid-auto-columns: calc(100%/1);
+    width: 270px;
+  }
+  a {
+    height: 64px;
+    .game{
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      background-color: white;
+      color: $main-color;
+      width: 100%;
+      padding: 10px 20px;
+      border-radius: 5px;
+      box-shadow: 0px 2px 2px 0px rgba(131, 131, 131, 0.25);
+      p{
+        color: $text-color;
+        margin-bottom: 0;
+        @include mobile-xl{
+          font-size: 14px;
+        }
+        @include mobile-l{
+          font-size: 10px;
+        }
+      }
+    }
+  }
+}
