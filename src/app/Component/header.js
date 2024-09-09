@@ -217,10 +217,10 @@ export default function TopNav() {
             <Image src="/img/help.svg" width={40} height={40} />
           </a>
 
-          <div className="profile ">
+          <div className="profile">
             <button className="profile__btn hidden" onClick={() => toggleDropdown(".profile__dropdown")}>
               <Image
-                src="/img/avatar.png"
+                src=""
                 className="avatar"
                 width={25}
                 height={25}
@@ -230,7 +230,7 @@ export default function TopNav() {
               <a className="detail" href="/pro5">
                 <Image
                   className="detail__avatar"
-                  src="/img/avatar.png"
+                  src=""
                   width={25}
                   height={25}
                 />

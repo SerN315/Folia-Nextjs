@@ -86,10 +86,16 @@ const signupFormRef = useRef(null);
         document.querySelector(".wrapper").classList.remove("active-popup");
         document.querySelector(".logout").classList.remove("hidden");
         document.querySelector(".user-name").textContent = user.displayName;
-        document.querySelector(".avatar").src = user.photoURL;
-        document.querySelector(".detail__avatar").src = user.photoURL;
         document.querySelector(".user-email").textContent = user.email;
-        getStreak(user.uid);
+        getStreak(user.uid);        
+        if (user.photoURL) {
+          document.querySelector(".avatar").src = user.photoURL;
+          document.querySelector(".detail__avatar").src = user.photoURL;
+        } else {
+          // If no photoURL is available, you can set a default avatar if needed
+          document.querySelector(".avatar").src = "/img/avatar.png";
+          document.querySelector(".detail__avatar").src = "/img/avatar.png";
+        }
       } 
     };
 
