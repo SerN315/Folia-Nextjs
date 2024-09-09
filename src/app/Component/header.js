@@ -5,6 +5,9 @@ import Login from "../Component/loginUI";
 import { getDatabase2 } from "../js/api/databaseAPI";
 import { auth } from "../firebase/authenciation";
 import {
+  signOut,
+} from "firebase/auth";
+import {
   collection,
   doc,
   getFirestore,
@@ -21,6 +24,24 @@ export default function TopNav() {
   const resultContainerRef = useRef(null);
   const searchInputRef = useRef(null);
   const firestore = getFirestore();
+
+
+  const handleLogoutClick = () => {
+    signOut(auth)
+      .then(() => {
+        document.querySelector(".profile__dropdown").classList.remove("active");
+        document.querySelector(".profile__btn").classList.add("hidden");
+        document.querySelector(".streak").classList.add("hidden");
+        document.querySelector(".ranking").classList.add("hidden");
+        document.querySelector(".open-popup").classList.remove("hidden");
+        // document.querySelector(".fav_list").classList.add("hidden");
+        wrapperRef.current.classList.add("active-popup");
+        console.log("User signed out");
+      })
+      .catch((err) => {
+        console.error("Logout error:", err.message);
+      });
+  };
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
@@ -107,12 +128,12 @@ export default function TopNav() {
 
   const handleEnterKeyPress = (e) => {
     if (e.key === "Enter") {
-      window.location.href = `/vocabularies.html?text=${searchValue}`;
+      window.location.href = `/vocabularies?text=${searchValue}`;
     }
   };
 
   const handleSearchResultClick = (word) => {
-    window.location.href = `/vocabularies.html?topic=${word.topicID}&word=${word.name}`;
+    window.location.href = `/vocabularies?topic=${word.topicID}&word=${word.name}`;
   };
 
   const toggleDropdown = (dropdownClass) => {
@@ -189,15 +210,15 @@ export default function TopNav() {
                 </div>
               </div>
               <hr />
-              <a href="/streak.html" className="link">View More</a>
+              <a href="/streak" className="link">View More</a>
             </div>
           </div>
-          <a href="intro.html">
+          <a href="/intro">
             <Image src="/img/help.svg" width={40} height={40} />
           </a>
 
-          <div className="profile hidden">
-            <button className="profile__btn" onClick={() => toggleDropdown(".profile__dropdown")}>
+          <div className="profile ">
+            <button className="profile__btn hidden" onClick={() => toggleDropdown(".profile__dropdown")}>
               <Image
                 src="/img/avatar.png"
                 className="avatar"
@@ -206,7 +227,7 @@ export default function TopNav() {
               />
             </button>
             <div className="profile__dropdown">
-              <a className="detail" href="/pro5.html">
+              <a className="detail" href="/pro5">
                 <Image
                   className="detail__avatar"
                   src="/img/avatar.png"
@@ -219,10 +240,10 @@ export default function TopNav() {
                 </div>
               </a>
               <hr />
-              <a href="/favorite.html" className="link">Favorites</a>
+              <a href="/favorite" className="link">Favorites</a>
               <hr />
-              <a href="/setting.html" className="link">Settings</a>
-              <div className="logout link hidden">Log Out</div>
+              <a href="/setting" className="link">Settings</a>
+              <div className="logout link hidden" onClick={handleLogoutClick}>Log Out</div>
             </div>
           </div>
         </div>

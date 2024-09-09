@@ -82,8 +82,8 @@ export default function About() {
     </div>
   </main>
   <Footer/>
-  <Script type="module" src="js/main.js"></Script>
-  <Script type="module" src="js/intro.js"></Script>
+  {/* <Script type="module" src="js/main.js"></Script> */}
+  {/* <Script type="module" src="js/intro.js"></Script> */}
   <Script id="googleMeta"
           async
           src="https://www.googletagmanager.com/gtag/js?id=G-T9JC70THEE"

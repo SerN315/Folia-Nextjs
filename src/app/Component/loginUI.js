@@ -72,22 +72,7 @@ const signupFormRef = useRef(null);
   };
 
   // Handle logout
-  const handleLogoutClick = () => {
-    signOut(auth)
-      .then(() => {
-        document.querySelector(".profile").style.display = "none";
-        document.querySelector(".streak").classList.add("hidden");
-        document.querySelector(".ranking").classList.add("hidden");
-        document.querySelector(".fav_list").classList.add("hidden");
-        document.querySelector(".login-button").classList.remove("hidden");
-        wrapperRef.current.classList.add("active-popup");
-        document.querySelector(".logout").classList.add("hidden");
-        console.log("User signed out");
-      })
-      .catch((err) => {
-        console.error("Logout error:", err.message);
-      });
-  };
+
 
   // Handle authentication state changes
   useEffect(() => {
@@ -96,7 +81,7 @@ const signupFormRef = useRef(null);
         document.querySelector(".streak").classList.remove("hidden");
         document.querySelector(".ranking").classList.remove("hidden");
         // document.querySelector(".fav_list").classList.remove("hidden");
-        document.querySelector(".profile").style.display = "block";
+        document.querySelector(".profile__btn").classList.remove("hidden");
         document.querySelector(".login-button").classList.add("hidden");
         document.querySelector(".wrapper").classList.remove("active-popup");
         document.querySelector(".logout").classList.remove("hidden");
