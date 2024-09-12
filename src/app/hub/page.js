@@ -13,7 +13,7 @@ export default function Hub() {
   </Head>
   <main className="hub">
   <div className="header">
-    <a className="home-link" href="/index">
+    <a className="home-link" href="/">
       <h1 className="logo">FOLIA</h1>
     </a>
   </div>

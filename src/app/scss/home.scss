@@ -1,8 +1,6 @@
 //File chỉ dùng cho file home.html
 @import "styles";
-@import "topnav";
-@import "footer";
-@import "login";
+
 
 @keyframes hoverAnimationHorizontal {
   0% {
@@ -35,6 +33,7 @@
 }
 
 .home {
+  padding-top: 100px;
   background: #fdfdfd;
   // Hero Section
   &__hero-section {
@@ -68,51 +67,66 @@
         display: flex;
         justify-content: center;
         width: 55%;
+      
         @include tablet-l {
           justify-content: start;
           width: 100%;
         }
+      
         &__container {
           width: 497px;
           height: 365px;
           position: relative;
           background: #afe893;
+      
           @include mobile-l {
             width: 297px;
             height: 207px;
           }
+      
           &__img1 {
             position: absolute;
             top: -70px;
             left: 30px;
+            width: 48%;  // Percentage width for responsive images
+            height: 59.2%; // Matches the dimensions from the Next.js Image component
             object-fit: cover;
             animation: hoverAnimationHorizontal 6s infinite alternate;
             transition: 0.8s;
+      
             @include mobile-l {
               animation: none;
             }
           }
+      
           &__img2 {
             position: absolute;
             right: -50px;
+            width: 67%;
+            height: 94.6%;  // Ensures size matches the original
             object-fit: cover;
             animation: hoverAnimationVertical 5s infinite alternate;
+      
             @include mobile-l {
               animation: none;
             }
           }
+      
           &__img3 {
             position: absolute;
             bottom: -50px;
             left: 120px;
+            width: 35.1%;
+            height: 29.1%;
             object-fit: cover;
             animation: hoverAnimationHorizontal 5s infinite alternate;
+      
             @include mobile-l {
               bottom: -40px;
               left: 100px;
               animation: none;
             }
-          }
+          }      
           &__box1 {
             position: absolute;
             right: 160px;

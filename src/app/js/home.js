@@ -1,19 +1,5 @@
 import { getDatabase } from "./api/databaseAPI";
 
-//Tải các Components và đưa vào trang index
-$(function () {
-  fetch("_topNav.html")
-    .then((response) => response.text())
-    .then((html) => {
-      $("#topNav").html(html);
-    });
-});
-
-fetch("_footer.html")
-  .then((response) => response.text())
-  .then((html) => {
-    $("#footer").html(html);
-  });
 
 //Tải các dữ liệu về topic phổ biến
 const mostLearnedTopic = document.querySelector(".home__most-learned__list");

@@ -4,6 +4,7 @@ import './scss/styles.scss';
 import "./scss/index.scss";
 import "./scss/intro.scss";
 import "./scss/hub.scss";
+import "./scss/home.scss";
 
 const inter = Inter({ subsets: ["latin"] });
 

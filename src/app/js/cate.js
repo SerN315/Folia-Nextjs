@@ -17,52 +17,6 @@ fetch("_footer.html")
   });
 const urlParams = new URLSearchParams(window.location.search);
 const id = urlParams.get("topic");
-// getDatabase("f52cea04f3cd43239e0c8a409f67c8e8", {
-//   filter: {
-//     property: "Recommend",
-//     select: {
-//       equals: "Yes",
-//     },
-//   },
-// }).then((response) => {
-//   console.log(response);
-//   const firstHalf = response.slice(0, 3);
-//   const secondHalf = response.slice(3, 6);
-
-//   firstHalf.forEach((item, index) => {
-//     const cateID = item.id;
-//     const name = item.properties.Name.title[0].plain_text;
-//     let SVG = "";
-//     SVG = item.properties.Img.rich_text[0]?.plain_text;
-//     let recommend;
-
-//     if (index === 0) {
-//       recommend = `<a href ="#${name}" <div class="recommend vertical" style="background-image:url(${SVG})"><div class="name">${name}</div></div></a>`;
-//       $(".first-half").append(recommend);
-//     } else {
-//       recommend = `<a href ="#${name}" <div class="recommend horizontal" style="background-image:url(${SVG})"><div class="name">${name}</div></div></a>`;
-//       $(".first-half .right").append(recommend);
-//     }
-//     $(".skeleton").hide();
-//   });
-
-//   secondHalf.forEach((item, index) => {
-//     const cateID = item.id;
-//     const name = item.properties.Name.title[0].plain_text;
-//     let SVG = "";
-//     SVG = item.properties.Img.rich_text[0]?.plain_text;
-//     let recommend;
-
-//     if (index === 0) {
-//       recommend = `<a href ="#${name}" <div class="recommend vertical" style="background-image:url(${SVG})"><div class="name">${name}</div></div></a>`;
-//       $(".second-half").append(recommend);
-//     } else {
-//       recommend = `<a href ="#${name}" <div class="recommend horizontal" style="background-image:url(${SVG})"><div class="name">${name}</div></div></a>`;
-//       $(".second-half .right").append(recommend);
-//     }
-//     $(".skeleton").hide();
-//   });
-// });
 if (id == "folia-language") {
   const maxRetries = 10; // Maximum number of retries
   const initialDelay = 100; // Initial delay in milliseconds
