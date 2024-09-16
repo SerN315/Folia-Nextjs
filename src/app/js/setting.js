@@ -46,12 +46,18 @@ onAuthStateChanged(auth, (user) => {
 
     const avatarimg = getElement(".user-img");
     const hoverOverlay = getElement(".hover_overlay");
-    
+
     // Only add event listeners if elements exist
     if (hoverOverlay && avatarimg) {
       hoverOverlay.style.display = "none";
-      avatarimg.addEventListener("mouseenter", () => hoverOverlay.style.display = "block");
-      hoverOverlay.addEventListener("mouseleave", () => hoverOverlay.style.display = "none");
+      avatarimg.addEventListener(
+        "mouseenter",
+        () => (hoverOverlay.style.display = "block")
+      );
+      hoverOverlay.addEventListener(
+        "mouseleave",
+        () => (hoverOverlay.style.display = "none")
+      );
     }
 
     if (avatarimg) {
@@ -64,7 +70,7 @@ onAuthStateChanged(auth, (user) => {
 
     if (usernameText) usernameText.textContent = user.displayName;
     if (userIdText) userIdText.textContent = user.email;
-    if (createdText) createdText.textContent = `started from ${month} ${year}`;
+    if (createdText) createdText.textContent = `Started from ${month} ${year}`;
 
     // Handle avatar list display
     const avatarList = getElement("#avatar-list");

@@ -227,7 +227,7 @@ export default function TopNav() {
               />
             </button>
             <div className="profile__dropdown">
-              <a className="detail" href="/pro5">
+              <a className="detail" href="/profile">
                 <Image
                   className="detail__avatar"
                   src=""

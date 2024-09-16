@@ -85,17 +85,15 @@ onAuthStateChanged(auth, (user) => {
       );
     });
   });
-  const creationTime = new Date(user.metadata.creationTime);
-  const year = creationTime.getFullYear();
-  const month = creationTime.toLocaleString("default", { month: "long" });
-  const avatarimg = $(".user-img");
-  const avatarURL = user.photoURL;
-  if (user != null) {
-    $(".icons").show();
-    $(".username_text").text(user.displayName);
-    $(".userId_text").text(user.email);
-    $(".created_text").text(`started from ${month} ${year}`);
-    $(".created_text").text(`started from ${month} ${year}`);
-    avatarimg.attr("src", avatarURL);
-  }
+  // const creationTime = new Date(user.metadata.creationTime);
+  // const year = creationTime.getFullYear();
+  // const month = creationTime.toLocaleString("default", { month: "long" });
+
+  // if (user != null) {
+  //   $(".icons").show();
+  //   $(".username_text").text(user.displayName);
+  //   $(".userId_text").text(user.email);
+  //   $(".created_text").text(`Started from ${month} ${year}`);
+
+  // }
 });

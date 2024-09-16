@@ -1,7 +1,4 @@
 @import "styles";
-@import "topnav";
-@import "footer";
-@import "login";
 
 * {
   margin: 0;
@@ -17,6 +14,8 @@
 // MAIN
 .setting {
   position: relative;
+  padding-top: 100px;
+  padding-bottom: 100px;
   &__main {
     z-index: 2;
     position: relative;
@@ -61,36 +60,54 @@
         }
         .userinfos {
           display: flex;
-        }
-        .user-img {
-          width: 150px;
-          height: 150px;
-          border-radius: 100px;
-          object-fit: cover;
-          margin-right: 20px;
-        }
-        .user-text {
-          p {
-            font-size: 18px;
-            color: #878787;
-            font-weight: 500;
-            margin-bottom: 10px;
-            @include tablet-l {
-              font-size: 14px;
-            }
-            @include mobile-l {
-              font-size: 10px;
+          align-items: center;
+          @include tablet {
+            flex-direction: column;
+          }
+          .user-img {
+            width: 150px;
+            height: 150px;
+            border-radius: 100px;
+            object-fit: cover;
+            margin-right: 20px;
+            @include tablet {
+              margin: 0;
             }
           }
-          h2 {
-            font-size: 45px;
-            color: #000;
-            font-weight: 500;
-            @include tablet-l {
-              font-size: 30px;
+          .user-text {
+            p {
+              font-size: 18px;
+              color: #878787;
+              font-weight: 500;
+              margin-bottom: 10px;
+              @include tablet-l {
+                font-size: 14px;
+              }
+              @include mobile-l {
+                font-size: 10px;
+              }
             }
-            @include mobile-l {
-              font-size: 25px;
+            h2 {
+              font-size: 40px;
+              color: #000;
+              font-weight: 500;
+              @include tablet-l {
+                font-size: 30px;
+              }
+              @include mobile-l {
+                font-size: 25px;
+              }
+            }
+            h4 {
+              font-size: 20px;
+              font-weight: 500;
+
+              @include tablet-l {
+                font-size: 15px;
+              }
+              @include mobile-l {
+                font-size: 10px;
+              }
             }
           }
         }
@@ -252,15 +269,6 @@
     }
   }
 }
-@media (max-width: 493px) {
-  .userinfos {
-    flex-direction: column;
-    align-items: center;
-    .user-img {
-      margin: 0;
-    }
-  }
-}
 
 #avatar-list {
   background-color: #fff;
@@ -310,4 +318,13 @@
   top: 0;
   left: 0;
   background: rgba(0, 0, 0, 0.7);
+}
+@media (max-width: 493px) {
+  .userinfos {
+    flex-direction: column;
+    align-items: center;
+    .user-img {
+      margin: 0;
+    }
+  }
 }

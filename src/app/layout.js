@@ -1,10 +1,13 @@
 import { Inter } from "next/font/google";
+import "@fortawesome/fontawesome-free/css/all.min.css";
 import "./globals.css";
-import './scss/styles.scss';
+import "./scss/styles.scss";
 import "./scss/index.scss";
 import "./scss/intro.scss";
 import "./scss/hub.scss";
 import "./scss/home.scss";
+import "./scss/pro5.scss";
+import "./scss/setting.scss";
 
 const inter = Inter({ subsets: ["latin"] });
 
