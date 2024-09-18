@@ -16,7 +16,7 @@ export default function Setting() {
       <main className="setting">
         <div className="setting__main">
           <h2 className="title">
-            <a href="home.html">Home</a> &gt; Settings
+            <a href="/home">Home</a> &gt; Settings
           </h2>
           <div id="avatar-list">
             <div id="closebtn">x</div>
@@ -29,14 +29,14 @@ export default function Setting() {
             <div className="content__user-info">
               <div className="userinfos">
                 <div className="hover_overlay">Click to change your avatar</div>
-                <img src="./img/folia-asvab.png" className="user-img" />
+                <img src="./img/folia-asvab.png" className="user-img"/>
                 <div className="user-text">
                   <h2 className="username_text">USERNAME</h2>
                   <h5 className="userId_text">USERID</h5>
                   <h4 className="created_text">Started from 2024</h4>
                 </div>
               </div>
-              <a href="pro5.html" style={{ fontSize: 35 }}>
+              <a href="/profile" style={{ fontSize: 35 }}>
                 <i className="fa-solid fa-user" />
               </a>
             </div>

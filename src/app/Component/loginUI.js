@@ -200,7 +200,6 @@ const signupFormRef = useRef(null);
       <div className="wrapper-background" ref={backgroundRef} />
       <div className="wrapper" ref={wrapperRef}>
         <div className="closebtn">
-          X
           <i className="fa-solid fa-xmark fa-2xl" />
         </div>
         <div className="form-box rpassword">

@@ -74,6 +74,9 @@
           align-items: center;
           text-align: center;
           color: white;
+          @include tablet {
+            margin: 0;
+          }
         }
         .user-img {
           width: 150px;

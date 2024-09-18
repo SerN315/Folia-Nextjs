@@ -91,7 +91,7 @@ export default function Profile() {
           <div className="content">
             <div className="content__user-info">
               <div className="userinfos">
-                <Image
+                <img
                   src="/img/folia-asvab.png"
                   className="user-img"
                   width={100}

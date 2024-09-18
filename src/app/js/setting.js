@@ -52,7 +52,7 @@ onAuthStateChanged(auth, (user) => {
       hoverOverlay.style.display = "none";
       avatarimg.addEventListener(
         "mouseenter",
-        () => (hoverOverlay.style.display = "block")
+        () => (hoverOverlay.style.display = "flex")
       );
       hoverOverlay.addEventListener(
         "mouseleave",
@@ -87,8 +87,8 @@ onAuthStateChanged(auth, (user) => {
         const hoverOverlayClick = getElement(".hover_overlay");
         if (hoverOverlayClick) {
           hoverOverlayClick.addEventListener("click", () => {
-            avatarList.style.display = "block";
-            wordBoxOverlay.style.display = "block";
+            avatarList.style.display = "flex";
+            wordBoxOverlay.style.display = "flex";
           });
         }
 
