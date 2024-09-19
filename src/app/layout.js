@@ -9,6 +9,10 @@ import "./scss/home.scss";
 import "./scss/pro5.scss";
 import "./scss/setting.scss";
 
+
+
+
+
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
