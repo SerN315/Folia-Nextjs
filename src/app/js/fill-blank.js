@@ -4,16 +4,6 @@ import { navigationPanel } from "./_navigation";
 navigationPanel();
 
 //COMPONENTS
-fetch("_topNav.html")
-  .then((response) => response.text())
-  .then((html) => {
-    $("#topNav").html(html);
-  });
-fetch("_footer.html")
-  .then((response) => response.text())
-  .then((html) => {
-    $("#footer").html(html);
-  });
 
 //NAVIGATION PANEL
 const dropdownBtn = document.querySelector(".nav-panel__dropdown");
@@ -24,10 +14,10 @@ dropdownBtn.addEventListener("click", () => {
 });
 const urlParams = new URLSearchParams(window.location.search);
 const id = urlParams.get("topic");
-document.querySelector("[cate]").href = "/cate.html?topic=folia-language";
-document.querySelector("[vocab]").href = `/vocabularies.html?topic=${id}`;
-document.querySelector("[flashcard]").href = `/flashcard.html?topic=${id}`;
-document.querySelector("[d-and-d]").href = `/d_and_d.html?topic=${id}`;
+document.querySelector("[cate]").href = "/cate?topic=folia-language";
+document.querySelector("[vocab]").href = `/vocabularies?topic=${id}`;
+document.querySelector("[flashcard]").href = `/flashcard?topic=${id}`;
+document.querySelector("[d-and-d]").href = `/d_and_d?topic=${id}`;
 
 //FORMAT SENTENCE
 const textDecoder = (sentence) => {

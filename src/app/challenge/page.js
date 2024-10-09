@@ -19,7 +19,7 @@ export default function challenge() {
     <div className="challenge__container">
       <div className="titles">
         <h1>Challenge</h1>
-        <a className="leaderboard" href="./leaderboard.html">
+        <a className="leaderboard" href="./leaderboard">
           Leaderboard
         </a>
       </div>

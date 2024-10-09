@@ -22,16 +22,16 @@ import { onAuthStateChanged } from "firebase/auth";
 import { update } from "firebase/database";
 
 $(function () {
-  fetch("_topNav.html")
+  fetch("_topNav")
     .then((response) => response.text())
     .then((html) => {
-      $("#topNav").html(html);
+      $("#topNav")(html);
     });
 
-  fetch("_footer.html")
+  fetch("_footer")
     .then((response) => response.text())
     .then((html) => {
-      $("#footer").html(html);
+      $("#footer")(html);
     });
 });
 
@@ -159,7 +159,7 @@ const tag = urlParams.get("tag");
 const catesID = urlParams.get("cateID");
 const categoryID = catesID?.split(",");
 $("#challenge__continue").on("click", function () {
-  window.location.href = `d_and_d.html?topic=${id}&id=${idd}`;
+  window.location.href = `d_and_d?topic=${id}&id=${idd}`;
 });
 let originalQuestions = [];
 let codelabid = [

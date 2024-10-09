@@ -15,7 +15,7 @@ export default function FillBlank() {
   <main className="fill-blank">
     <div className="nav-panel">
       <p className="nav-panel__navigation">
-        <a href="cate.html" cate="">
+        <a href="/cate" cate="">
           Categories
         </a>{" "}
         &gt; Category: Animals &gt; Topic: Marine life
@@ -27,7 +27,7 @@ export default function FillBlank() {
       </div>
       <div className="nav-panel__game-list">
         <a
-          href="vocabularies.html"
+          href="vocabularies"
           className="nav-panel__game-list__game-item"
           vocab=""
         >
@@ -35,7 +35,7 @@ export default function FillBlank() {
           <p>Vocabulary</p>
         </a>
         <a
-          href="flashcard.html"
+          href="flashcard"
           className="nav-panel__game-list__game-item"
           flashcard=""
         >

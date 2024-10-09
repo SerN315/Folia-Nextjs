@@ -29,17 +29,17 @@ import {
 
 // COMPONENTS
 $(function () {
-  fetch("_topNav.html")
+  fetch("_topNav")
     .then((response) => response.text())
     .then((html) => {
-      $("#topNav").html(html);
+      $("#topNav")(html);
     });
 });
 
-fetch("_footer.html")
+fetch("_footer")
   .then((response) => response.text())
   .then((html) => {
-    $("#footer").html(html);
+    $("#footer")(html);
   });
 
 // CLOSE & OPEN POPUP
@@ -107,13 +107,13 @@ const content = (streak) => {
   const viewport = window.innerWidth;
   if (viewport < 685) {
     if (streak == 0) {
-      $(".days").html(
+      $(".days")(
         `You haven't got any streak. Play a game today to get your first streak`
       );
     } else if (streak == 1) {
-      $(".days").html(`You hit your first streak today. Keep going!`);
+      $(".days")(`You hit your first streak today. Keep going!`);
     } else {
-      $(".days").html(
+      $(".days")(
         `You hit a <span>${streak}</span> days streak. Keep going!`
       );
     }

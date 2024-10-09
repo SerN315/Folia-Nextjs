@@ -12,11 +12,11 @@ let currentIndex = 0;
 let autoCycleInterval;
 
 // Navigation panel
-document.querySelector(".cate-link").href = "/cate.html?topic=folia-language";
+document.querySelector(".cate-link").href = "/cate?topic=folia-language";
 document.querySelector(
   ".vocabulary-link"
-).href = `vocabularies.html?topic=${id}`;
-document.querySelector(".d-and-d-link").href = `d_and_d.html?topic=${id}`;
+).href = `vocabularies?topic=${id}`;
+document.querySelector(".d-and-d-link").href = `d_and_d?topic=${id}`;
 
 // Define favoritesList function
 const favoritesList = function () {
@@ -73,16 +73,16 @@ const favoritesList = function () {
   });
 };
 
-fetch("_topNav.html")
+fetch("_topNav")
   .then((response) => response.text())
   .then((html) => {
-    $("#topNav").html(html);
+    $("#topNav")(html);
   });
 
-fetch("_footer.html")
+fetch("_footer")
   .then((response) => response.text())
   .then((html) => {
-    $("#footer").html(html);
+    $("#footer")(html);
   });
 let ht2 = [
   "8e3fdb05-5ef5-4e77-b400-0d8767fb539e",

@@ -51,33 +51,33 @@ vocabs.forEach((vocab) => {
 });
 
 // INITIALIZE DISPLAY CATE & TOPIC
-$(".category").html("Animals");
-$(".topic").html("Marine Life");
+$(".category")("Animals");
+$(".topic")("Marine Life");
 
 // LINK TỚI CÁC CHỨC NĂNG KHÁC
 document.querySelector(
   ".vocabulary-link"
-).href = `vocabularies.html?topic=${topicID}`;
+).href = `vocabularies?topic=${topicID}`;
 document.querySelector(
   ".flashcard-link"
-).href = `flashcard.html?topic=${topicID}`;
-document.querySelector(".d-and-d-link").href = `d_and_d.html?topic=${topicID}`;
+).href = `flashcard?topic=${topicID}`;
+document.querySelector(".d-and-d-link").href = `d_and_d?topic=${topicID}`;
 
 $(function () {
-  fetch("_topNav.html")
+  fetch("_topNav")
     .then((response) => response.text())
     .then((html) => {
-      $("#topNav").html(html);
+      $("#topNav")(html);
     });
-  fetch("_subNav.html")
+  fetch("_subNav")
     .then((response) => response.text())
     .then((html) => {
-      $("#subNav").html(html);
+      $("#subNav")(html);
     });
-  fetch("_footer.html")
+  fetch("_footer")
     .then((response) => response.text())
     .then((html) => {
-      $("#footer").html(html);
+      $("#footer")(html);
     });
 
   let materialArray = [];

@@ -1,73 +1,255 @@
-import Image from "next/image";
-import Head from "next/head";
-import Script from "next/script";
+'use client';
+import { useEffect, useState } from "react";
+import { auth } from "../firebase/authenciation";
+import { getFirestore, collection, onSnapshot } from "firebase/firestore";
 import Footer from "../Component/footer";
 import TopNav from "../Component/header";
-import "../scss/vocabularies.scss";
+import "../scss/history.scss";
 import "../scss/subnav.scss";
+
 export default function History() {
+  const [challengeData, setChallengeData] = useState([]);
+  const [practicesData, setPracticesData] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedData, setSelectedData] = useState(null);
+  const [scrollProgress, setScrollProgress] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const firestore = getFirestore();
+
+  useEffect(() => {
+    // Listen for authentication state changes
+    const unsubscribeAuth = auth.onAuthStateChanged(async (user) => {
+      if (user) {
+        console.log("User is signed in:", user);
+        const userId = user.uid;
+        console.log("User ID:", userId);
+
+        // Define the paths to the 'challenge' and 'practices' collections
+        const challengeCollection = collection(firestore, 'user_history', userId, 'challenge');
+        const practicesCollection = collection(firestore, 'user_history', userId, 'practices');
+        console.log("Challenge Collection Path:", challengeCollection.path);
+        console.log("Practices Collection Path:", practicesCollection.path);
+
+        try {
+          // Set up snapshot listener for 'challenge' collection
+          const unsubscribeChallenge = onSnapshot(challengeCollection, (snapshot) => {
+            if (snapshot.empty) {
+              console.log("No challenge history found for this user.");
+              setChallengeData([]);
+            } else {
+              const fetchedChallenges = snapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data(),
+              }));
+              console.log("Fetched challenge history from Firestore:", fetchedChallenges);
+              setChallengeData(fetchedChallenges);
+            }
+          }, (error) => {
+            console.error("Error fetching challenge history:", error);
+            setError("Error fetching challenge history.");
+          });
+
+          // Set up snapshot listener for 'practices' collection
+          const unsubscribePractices = onSnapshot(practicesCollection, (snapshot) => {
+            if (snapshot.empty) {
+              console.log("No practices history found for this user.");
+              setPracticesData([]);
+            } else {
+              const fetchedPractices = snapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data(),
+              }));
+              console.log("Fetched practices history from Firestore:", fetchedPractices);
+              setPracticesData(fetchedPractices);
+            }
+          }, (error) => {
+            console.error("Error fetching practices history:", error);
+            setError("Error fetching practices history.");
+          });
+
+          // Stop loading after setting up listeners
+          setIsLoading(false);
+
+          // Cleanup snapshot listeners on unmount or auth change
+          return () => {
+            unsubscribeChallenge();
+            unsubscribePractices();
+          };
+        } catch (err) {
+          console.error("Error setting up snapshot listeners:", err);
+          setError("Error setting up data listeners.");
+          setIsLoading(false);
+        }
+      } else {
+        console.log("No user is signed in.");
+        setChallengeData([]);
+        setPracticesData([]);
+        setIsLoading(false);
+      }
+    });
+
+    // Scroll progress bar handler
+    const handleScroll = () => {
+      const scrollTop = document.documentElement.scrollTop;
+      const calcHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const progress = Math.round((scrollTop * 100) / calcHeight);
+      setScrollProgress(progress);
+      console.log("Scroll Progress:", progress);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    // Initial calculation
+    handleScroll();
+
+    // Cleanup scroll event listener on unmount
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      unsubscribeAuth(); // Cleanup auth listener
+    };
+  }, [firestore]);
+
+  // Function to combine and standardize question data
+  const combineQuestions = (data) => {
+    const combinedQuestions = [];
+
+    // Combine originalQuestions and questions arrays
+    if (data.originalQuestions && Array.isArray(data.originalQuestions)) {
+      data.originalQuestions.forEach(q => {
+        combinedQuestions.push({
+          question: q.question || "No question provided.",
+          correctAnswer: q.correctAnswer || "No answer provided.",
+          source: q.source || "Unknown Source",
+        });
+      });
+    }
+
+    if (data.questions && Array.isArray(data.questions)) {
+      data.questions.forEach(q => {
+        combinedQuestions.push({
+          question: q.question || q.Q || "No question provided.",
+          correctAnswer: q.correctAnswer || q.answer || "No answer provided.",
+          source: q.source || "Unknown Source",
+        });
+      });
+    }
+
+    return combinedQuestions;
+  };
+
+  const handleModalToggle = (data) => {
+    console.log("Modal toggle clicked with data:", data);
+    const combinedQuestions = combineQuestions(data);
+    setSelectedData({ ...data, combinedQuestions });
+    setIsModalOpen(!isModalOpen);
+  };
+
+  const handleScrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    console.log("Scrolled to top");
+  };
+
   return (
     <>
-    <Head>  <link rel="icon" type="image/x-icon" href="../favicon.ico" />
-  <meta charSet="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="robots" content="noindex" />
-  {/* Add API to call for topic's name*/}
-  <title>History</title>
-  {/* Google tag (gtag.js) */}
-  {/* GG analytics */}</Head>
-  <div id="progress">
-    <span id="progress-value">
-      <i className="fa-solid fa-arrow-up" />
-    </span>
-  </div>
-  <TopNav/>
-  {/* NAVIGATION PANEL */}
-  <div className="nav-panel">
-    <h3 className="nav-panel__main-title">History</h3>
-    <div className="nav-panel__dropdown">
-      <p>Practices</p>
-      <i className="fa-solid fa-chevron-down fa-s" />
-    </div>
-    <div className="nav-panel__game-list">
-      <a
-        href="#"
-        className="nav-panel__game-list__game-item flashcard-link"
-        flashcard=""
+      <TopNav />
+      <div
+        id="progress"
+        style={{ display: scrollProgress > 10 ? "grid" : "none" }} // Adjust threshold as needed
       >
-        <i className="fa-regular fa-images" />
-        <p>Flashcard</p>
-      </a>
-      <a
-        href="#"
-        className="nav-panel__game-list__game-item d-and-d-link"
-        flashcard=""
-      >
-        <i className="fa-regular fa-hand" />
-        <p>Drag&amp;Drop</p>
-      </a>
-    </div>
-  </div>
-  {/* SEARCH RESULT CONTENT */}
-  <div className="search-result">
-    <h1>SEARCH RESULT</h1>
-    <h2>
-      THERE ARE <span className="count">0</span> RESULTS THAT CONTAIN THE PHRASE
-      <span className="input-text">...</span>
-    </h2>
-  </div>
-  {/* VOCABULARY MAIN CONTENT */}
-  <main className="article">
-    <h1 style={{ fontSize: 30, textAlign: "center", margin: 0 }}>
-      You haven't any practice, practice more to get your history
-    </h1>
-  </main>
-  <div className="word-box-overlay overlay hidden">
-    <div className="modal20">
-      <button className="close-modal">×</button>
-    </div>
-  </div>
-  <Footer/>
-</>
+        <span id="progress-value" onClick={handleScrollToTop}>
+          <i className="fa-solid fa-arrow-up" />
+        </span>
+      </div>
 
-  )}
+      <main className="article">
+        {isLoading ? (
+          <p>Loading your history...</p>
+        ) : error ? (
+          <p style={{ color: 'red' }}>{error}</p>
+        ) : (
+          <>
+            {/* Challenge History Section */}
+            <section>
+              <h2 class="title">Challenge History</h2>
+              {challengeData.length === 0 ? (
+                <p>You haven't completed any challenges yet.</p>
+              ) : (
+                challengeData.map((data) => (
+                  <div
+                    key={data.id}
+                    className="vocabulary show-modal"
+                    onClick={() => handleModalToggle(data)}
+                  >
+                    <div className="vocabulary-word20">
+                      <div className="word">
+                        <i className="fa-solid fa-star"></i> Score Achieved: {data.score}
+                      </div>
+                      <div className="word-set">
+                        <i className="fa-solid fa-fire"></i> Highest Streak: {data.highestStreak}
+                      </div>
+                    </div>
+                  </div>
+                ))
+              )}
+            </section>
+
+            {/* Practices History Section */}
+            <section>
+              <h2 class="title">Practices History</h2>
+              {practicesData.length === 0 ? (
+                <p>You haven't completed any practices yet.</p>
+              ) : (
+                practicesData.map((data) => (
+                  <div
+                    key={data.id}
+                    className="vocabulary show-modal"
+                    onClick={() => handleModalToggle(data)}
+                  >
+                    <div className="vocabulary-word20">
+                      <div className="word">
+                        <i className="fa-solid fa-star"></i> Score Achieved: {data.score}
+                      </div>
+                      <div className="word-set">
+                        <i className="fa-solid fa-fire"></i> Highest Streak: {data.highestStreak}
+                      </div>
+                    </div>
+                  </div>
+                ))
+              )}
+            </section>
+          </>
+        )}
+      </main>
+
+      {/* Modal for displaying questions */}
+      {isModalOpen && selectedData && (
+        <div className="word-box-overlay overlay">
+          <div className="modal20">
+            <button className="close-modal" onClick={() => setIsModalOpen(false)} aria-label="Close Modal">
+              ×
+            </button>
+            {selectedData.combinedQuestions && selectedData.combinedQuestions.length > 0 ? (
+              selectedData.combinedQuestions.map((question, idx) => (
+                <div key={idx} className="question_box">
+                  <h1>Question</h1>
+                  <div
+                    className="question"
+                    dangerouslySetInnerHTML={{ __html: question.question }}
+                  ></div>
+                  <h2>Correct Answer</h2>
+                  <div className="dapan">{question.correctAnswer}</div>
+                  <p><strong>Source:</strong> {question.source}</p>
+                </div>
+              ))
+            ) : (
+              <p>No questions available.</p>
+            )}
+          </div>
+        </div>
+      )}
+
+      <Footer />
+    </>
+  );
+}

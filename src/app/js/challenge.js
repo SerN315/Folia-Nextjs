@@ -1,19 +1,7 @@
 import { getDatabase } from "./api/databaseAPI";
 import { db } from "../../src/app/firebase/authenciation.js";
 
-$(function () {
-  fetch("_topNav.html")
-    .then((response) => response.text())
-    .then((html) => {
-      $("#topNav").html(html);
-    });
 
-  fetch("_footer.html")
-    .then((response) => response.text())
-    .then((html) => {
-      $("#footer").html(html);
-    });
-});
 let categories = [];
 getDatabase("791918f3d802459291dcc45c7d8f9254", {
   // filter: {
@@ -72,7 +60,7 @@ ${categories.map((category) => `<h4>${category}</h4>`).join("")}
                             <i class="fa-solid fa-check"></i>
                         </div>
    <div id="startchallenge">
-                        <a href="multipleChoice.html?topic=${name}&id=${challengeId}&cateID=${categories}">Start</a>
+                        <a href="multipleChoice?topic=${name}&id=${challengeId}&cateID=${categories}">Start</a>
                     </div>
                     </div>
                 </div>`;

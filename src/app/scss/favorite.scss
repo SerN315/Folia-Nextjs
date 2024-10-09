@@ -26,6 +26,12 @@ $favorite-normal-text-color: #514c4c;
     font-size: 32px;
     font-weight: 600;
   }
+  .no-favorites-text{
+    font-size: 25px;
+    font-weight: 500;
+    color:$main-color;
+    text-align: center;
+  }
   .favorite__list {
     &__item {
       width: 100%;

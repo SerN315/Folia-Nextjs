@@ -12,7 +12,7 @@ function navigationPanel() {
   functions.forEach((functionName) => {
     const el = document.querySelector(`[${functionName}]`);
     if (el) {
-      el.href = `/${functionName}.html?topic=${id}`;
+      el.href = `/${functionName}?topic=${id}`;
     }
   });
 }

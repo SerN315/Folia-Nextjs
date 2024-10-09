@@ -19,19 +19,6 @@ import {
   updateDoc,
 } from "firebase/firestore";
 
-$(function () {
-  fetch("_topNav.html")
-    .then((response) => response.text())
-    .then((html) => {
-      $("#topNav").html(html);
-    });
-
-  fetch("_footer.html")
-    .then((response) => response.text())
-    .then((html) => {
-      $("#footer").html(html);
-    });
-});
 
 // FUNCTION TO CHECK STREAK AFTER PLAY A GAME
 function checkStreak(userId) {
@@ -74,7 +61,7 @@ const idd = urlParams.get("id");
 $(".result_shower").hide();
 $(".interact").hide();
 $("#challenge__continue").on("click", function () {
-  window.location.href = `challenge.html`;
+  window.location.href = `challenge`;
 });
 let correct = 0;
 // Khai báo biến streak và khởi tạo giá trị ban đầu

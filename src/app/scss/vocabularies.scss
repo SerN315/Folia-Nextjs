@@ -1,19 +1,9 @@
 @import "styles";
-@import "topnav";
 @import "subnav";
 @import "funcList";
 @import "level";
-@import "footer";
-@import "login";
 @import "navigation";
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap");
-
-// TOPNAV STYLING
-#topNav {
-  height: 100px;
-  z-index: 999;
-  position: relative;
-}
 
 // GLOBAL PADDING
 @mixin itemAlign {
@@ -52,9 +42,9 @@ body {
 .nav-panel {
   background-color: #f4f4f4;
   @include itemAlign();
-  padding-top: 50px;
+  padding-top: 150px;
   @include laptop {
-    padding-top: 50px;
+    padding-top: 150px;
     padding-bottom: 5px;
   }
 }
@@ -136,7 +126,7 @@ body {
   height: 100%;
   @include itemAlign();
   padding-top: 35px;
-  padding-bottom: 500px;
+  padding-bottom: 100px;
   background-color: #f4f4f4;
 }
 .vocabulary {
@@ -189,6 +179,7 @@ body {
   color: var(--main-text-color);
   display: inline;
   &-set {
+    margin-left: 10px;
     font-style: italic;
     font-size: 18px;
     font-weight: 500;
@@ -209,10 +200,17 @@ body {
   gap: 20px;
   justify-content: center;
   align-items: center;
-  .favorites,
   .report {
     font-size: 30px;
     color: #000000;
+  }
+  .favorite-toggle{
+    width: 30px;
+    height: 30px;
+    .fa-heart{
+      font-size: 30px;
+      color: #000000;
+    }
   }
 }
 
@@ -276,6 +274,8 @@ body {
   overflow: auto;
 
   & .anh {
+    pointer-events: none;
+    user-select: none;
     width: 100%;
     height: 60%;
     display: flex;
@@ -295,26 +295,43 @@ body {
     font-size: 55px;
     font-weight: 600;
     margin-bottom: 0;
+    @include tablet {
+      font-size: 30px;
+    }
   }
   & .pronun {
     color: #858585;
+
   }
   & .word-box {
+    .flex-box{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    }
     height: 20%;
-    margin: 10px 0 10px 0;
+    margin: 10px 0 0 0;
+    
   }
   & .meaning-box {
-    height: 20%;
-    margin: 0px;
+    margin-top: 0;
 
     & p {
-      margin-bottom: 20px;
       font-weight: 600;
       font-size: 20px;
       color: #858585;
     }
     & .definition-viet {
-      margin-bottom: 0;
+      margin-bottom: 10px;
+      @include tablet {
+        font-size: 15px;
+      }
+    }
+    & .definition-example {
+      margin-bottom: 10px;
+      @include tablet {
+        font-size: 15px;
+      }
     }
   }
 }
@@ -376,47 +393,61 @@ p {
       color: #858585;
     }
     & .word-box {
-      margin: 10px 0 10px 0;
+      margin: 10px 0 0 0;
     }
     & .meaning-box {
+      margin-top: 0;
       & p {
-        margin-bottom: 20px;
         font-weight: 600;
         font-size: 20px;
         color: #858585;
       }
       & .definition-viet {
-        margin-bottom: 0;
+        margin-bottom: 10px;
       }
     }
   }
 }
 @include mobile-xl {
+  .icon-container{
+    .report{
+    font-size: 25px;
+    }
+    .favorite-toggle{
+      width: 25px;
+      height: 25px;
+      .fa-heart{
+        font-size: 25px;
+        color: #000000;
+      }
+    }
+  }
   .modal1 {
     width: 90%;
   }
   .vocabulary {
-    width: 420px;
+    // width: 420px;
     gap: 5px;
     .vocabulary-image {
       img {
-        width: 111px;
+        width: 100%;
       }
     }
   }
   .modal1 {
     & img {
       width: 100%;
+      height: 100%;
     }
 
     & .pronun {
       color: #858585;
     }
     & .word-box {
-      margin: 10px 0 10px 0;
+      margin: 10px 0 0 0;
     }
     & .meaning-box {
-      margin: 10px 10px;
+      margin: 0;
       & p {
         margin-bottom: 20px;
         font-weight: 600;
@@ -424,15 +455,33 @@ p {
         color: #858585;
       }
       & .definition-viet {
-        margin-bottom: 0;
+        margin-bottom: 10px;
       }
     }
   }
 }
 @include mobile-l {
   .vocabulary {
-    width: 330px;
+    display: flex;
+    flex-direction: column;
+    .icon-container{
+      width: 100%;
+      position: relative;
+      flex-direction: row;
+      right:0;
+      .report{
+        font-size: 20px;
+        }
+        .favorite-toggle{
+          width: 20px;
+          height: 20px;
+          .fa-heart{
+            font-size: 20px;
+            color: #000000;
+          }
+    }
   }
+}
 }
 @include mobile-m {
   .vocabulary {
@@ -468,19 +517,17 @@ p {
     color: #858585;
   }
   & .word-box {
-    margin: 10px 0 10px 0;
+    margin: 10px 0 0 0;
   }
   & .meaning-box {
-    margin: 0px;
-
+    margin-top: 0;
     & p {
-      margin-bottom: 20px;
       font-weight: 600;
       font-size: 20px;
       color: #858585;
     }
     & .definition-viet {
-      margin-bottom: 0;
+      margin-bottom: 10px;
     }
   }
 }

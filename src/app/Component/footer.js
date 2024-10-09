@@ -38,7 +38,7 @@ export default function Footer() {
       </div>
       <div className="right__ourservices">
         <h1>Our services</h1>
-        <a href="intro.html">About us</a>
+        <a href="/about">About us</a>
       </div>
       <div className="right__partner">
         <h1>Partner</h1>

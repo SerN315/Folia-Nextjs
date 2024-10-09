@@ -20,15 +20,15 @@ import {
   Timestamp,
 } from "firebase/firestore";
 
-fetch("_topNav.html")
+fetch("_topNav")
   .then((response) => response.text())
   .then((html) => {
-    $("#topNav").html(html);
+    $("#topNav")(html);
   });
-fetch("_footer.html")
+fetch("_footer")
   .then((response) => response.text())
   .then((html) => {
-    $("#footer").html(html);
+    $("#footer")(html);
   });
 console.log(auth);
 $(".icons").hide();
