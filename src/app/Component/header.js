@@ -213,7 +213,7 @@ export default function TopNav() {
               <a href="/streak" className="link">View More</a>
             </div>
           </div>
-          <a href="/intro">
+          <a href="/about">
             <Image src="/img/help.svg" width={40} height={40} />
           </a>
 

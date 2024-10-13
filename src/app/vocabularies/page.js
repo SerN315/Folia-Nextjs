@@ -19,6 +19,7 @@ import {
 import { useSearchParams } from 'next/navigation';
 import { auth } from "../firebase/authenciation"; 
 import { getDatabase } from "../js/api/databaseAPI";
+import { fetchTopic } from "../js/api/specificPageApi";
 
 export default function Vocabularies() {
   const searchParams = useSearchParams(); // Access query params
@@ -103,12 +104,31 @@ export default function Vocabularies() {
         console.log("Updated Data:", updatedData); // Log the updated data
         return updatedData;
       });
-      
 
 
-      // // Update the topic and category in the DOM
-      // document.querySelector(".topic").innerHTML = response.topics || "No topic available"; // Ensure response has these fields
-      // document.querySelector(".category").innerHTML = response.category || "No category available";
+      fetchTopic(topicID)
+      .then((topic) => {
+        console.log("Topic:", topic);
+    
+        // Select the element with the class 'topic'
+        const topicElement = document.querySelector(".topic");
+        const cateElement = document.querySelector(".category");
+        // Check if topic exists and has a name
+        if (topic && topic.topicName) {
+          topicElement.innerHTML = topic.topicName; // Set the topic name
+        } else {
+          topicElement.innerHTML = "No topic available"; // Fallback message
+        }
+        if (topic && topic.topicName) {
+          cateElement.innerHTML = topic.categories[0].categoryName; // Set the topic name
+        } else {
+          cateElement.innerHTML = "No topic available"; // Fallback message
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        document.querySelector(".topic").innerHTML = "Error fetching topic"; // Error handling message
+      });
       setLoading(false); // Stop loading
     })
     .catch((error) => {
@@ -286,7 +306,7 @@ export default function Vocabularies() {
             <i className="fa-solid fa-chevron-down fa-s" />
           </div>
           <div className="nav-panel__game-list">
-            <a href="#" className="nav-panel__game-list__game-item flashcard-link">
+            <a href={`/flashcard?topic=${topicID}`} className="nav-panel__game-list__game-item flashcard-link">
               <i className="fa-regular fa-images" />
               <p>Flashcard</p>
             </a>
@@ -299,9 +319,92 @@ export default function Vocabularies() {
 
       {/* VOCABULARY MAIN CONTENT */}
       <main className="article">
-  {loading ? ( // Show loading state
-    <p>Loading...</p>
-  ) : (
+      {loading ? ( // Show loading state
+    // Skeleton loader for vocabulary item
+    <>
+
+<div className="vocabulary-load">
+  <i className="fa-solid fa-heart favorites" />
+  <div className="vocabulary-load-image" />
+  <div className="vocabulary-load-word">
+    <div className="word-load">
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    </div>
+    <div className="word-load-set">
+      &nbsp;&nbsp;&nbsp;&nbsp;
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    </div>
+    <div className="word-load-pronunciation">
+      <i className="fa-solid fa-volume-high" />
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    </div>
+    <div className="word-load-audio" />
+  </div>
+</div>
+<div className="vocabulary-load">
+  <i className="fa-solid fa-heart favorites" />
+  <div className="vocabulary-load-image" />
+  <div className="vocabulary-load-word">
+    <div className="word-load">
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    </div>
+    <div className="word-load-set">
+      &nbsp;&nbsp;&nbsp;&nbsp;
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    </div>
+    <div className="word-load-pronunciation">
+      <i className="fa-solid fa-volume-high" />
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    </div>
+    <div className="word-load-audio" />
+  </div>
+</div>
+<div className="vocabulary-load">
+  <i className="fa-solid fa-heart favorites" />
+  <div className="vocabulary-load-image" />
+  <div className="vocabulary-load-word">
+    <div className="word-load">
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    </div>
+    <div className="word-load-set">
+      &nbsp;&nbsp;&nbsp;&nbsp;
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    </div>
+    <div className="word-load-pronunciation">
+      <i className="fa-solid fa-volume-high" />
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    </div>
+    <div className="word-load-audio" />
+  </div>
+</div>
+<div className="vocabulary-load">
+  <i className="fa-solid fa-heart favorites" />
+  <div className="vocabulary-load-image" />
+  <div className="vocabulary-load-word">
+    <div className="word-load">
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    </div>
+    <div className="word-load-set">
+      &nbsp;&nbsp;&nbsp;&nbsp;
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    </div>
+    <div className="word-load-pronunciation">
+      <i className="fa-solid fa-volume-high" />
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    </div>
+    <div className="word-load-audio" />
+  </div>
+</div>
+    </>
+  )  : (
     data.length > 0 ? ( // Check if there's data to render
       data.map((word, index) => (
         <div className="vocabulary show-modal" key={index} >
@@ -318,17 +421,19 @@ export default function Vocabularies() {
           </div>
           <div className="icon-container">
             <i className="fa-solid fa-flag report" onClick={() => handleReport(word.Word)}></i>
-            <div className="favorite-toggle">
-                  <button
-                    className={`favorite-btn ${favoriteList.some(item => item.id === word.Id) ? 'favorited' : ''}`}
-                    onClick={(e) => {
-                      e.stopPropagation(); // Prevent modal opening
-                      handleFavoriteToggle(word); // Pass word object directly
-                    }}
-                  >
-                    <i className="fa fa-heart" style={{ color: favoriteList.some(item => item.id === word.Id) ? 'red' : 'inherit' }}></i>
-                  </button>
-                </div>
+            {user && ( // Only show the favorite button if the user is logged in
+          <div className="favorite-toggle">
+            <button
+              className={`favorite-btn ${favoriteList.some(item => item.id === word.Id) ? 'favorited' : ''}`}
+              onClick={(e) => {
+                e.stopPropagation(); // Prevent modal opening
+                handleFavoriteToggle(word); // Pass word object directly
+              }}
+            >
+              <i className="fa fa-heart" style={{ color: favoriteList.some(item => item.id === word.Id) ? 'red' : 'inherit' }}></i>
+            </button>
+          </div>
+        )}
           </div>
         </div>
       ))
@@ -345,124 +450,3 @@ export default function Vocabularies() {
 }
 
 
-
-// <div className="vocabulary-load">
-//   <i className="fa-solid fa-heart favorites" />
-//   <div className="vocabulary-load-image" />
-//   <div className="vocabulary-load-word">
-//     <div className="word-load">
-//       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-//       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-//       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-//     </div>
-//     <div className="word-load-set">
-//       &nbsp;&nbsp;&nbsp;&nbsp;
-//       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-//     </div>
-//     <div className="word-load-pronunciation">
-//       <i className="fa-solid fa-volume-high" />
-//       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-//     </div>
-//     <div className="word-load-audio" />
-//   </div>
-// </div>
-// <div className="vocabulary-load">
-//   <i className="fa-solid fa-heart favorites" />
-//   <div className="vocabulary-load-image" />
-//   <div className="vocabulary-load-word">
-//     <div className="word-load">
-//       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-//       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-//       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-//     </div>
-//     <div className="word-load-set">
-//       &nbsp;&nbsp;&nbsp;&nbsp;
-//       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-//     </div>
-//     <div className="word-load-pronunciation">
-//       <i className="fa-solid fa-volume-high" />
-//       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-//     </div>
-//     <div className="word-load-audio" />
-//   </div>
-// </div>
-// <div className="vocabulary-load">
-//   <i className="fa-solid fa-heart favorites" />
-//   <div className="vocabulary-load-image" />
-//   <div className="vocabulary-load-word">
-//     <div className="word-load">
-//       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-//       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-//       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-//     </div>
-//     <div className="word-load-set">
-//       &nbsp;&nbsp;&nbsp;&nbsp;
-//       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-//     </div>
-//     <div className="word-load-pronunciation">
-//       <i className="fa-solid fa-volume-high" />
-//       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-//     </div>
-//     <div className="word-load-audio" />
-//   </div>
-// </div>
-// <div className="vocabulary-load">
-//   <i className="fa-solid fa-heart favorites" />
-//   <div className="vocabulary-load-image" />
-//   <div className="vocabulary-load-word">
-//     <div className="word-load">
-//       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-//       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-//       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-//     </div>
-//     <div className="word-load-set">
-//       &nbsp;&nbsp;&nbsp;&nbsp;
-//       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-//     </div>
-//     <div className="word-load-pronunciation">
-//       <i className="fa-solid fa-volume-high" />
-//       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-//     </div>
-//     <div className="word-load-audio" />
-//   </div>
-// </div>
-// <div className="vocabulary-load">
-//   <i className="fa-solid fa-heart favorites" />
-//   <div className="vocabulary-load-image" />
-//   <div className="vocabulary-load-word">
-//     <div className="word-load">
-//       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-//       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-//       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-//     </div>
-//     <div className="word-load-set">
-//       &nbsp;&nbsp;&nbsp;&nbsp;
-//       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-//     </div>
-//     <div className="word-load-pronunciation">
-//       <i className="fa-solid fa-volume-high" />
-//       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-//     </div>
-//     <div className="word-load-audio" />
-//   </div>
-// </div>
-// <div className="vocabulary-load">
-//   <i className="fa-solid fa-heart favorites" />
-//   <div className="vocabulary-load-image" />
-//   <div className="vocabulary-load-word">
-//     <div className="word-load">
-//       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-//       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-//       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-//     </div>
-//     <div className="word-load-set">
-//       &nbsp;&nbsp;&nbsp;&nbsp;
-//       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-//     </div>
-//     <div className="word-load-pronunciation">
-//       <i className="fa-solid fa-volume-high" />
-//       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-//     </div>
-//     <div className="word-load-audio" />
-//   </div>
-// </div>

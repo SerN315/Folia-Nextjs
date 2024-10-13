@@ -112,7 +112,7 @@ export default function Profile() {
                 </div>
               </div>
               <div className="icons">
-                <a href="/lichsu" style={{ fontSize: 35, marginRight: 30 }}>
+                <a href="/history" style={{ fontSize: 35, marginRight: 30 }}>
                   <i className="fa-solid fa-clock-rotate-left" />
                 </a>
                 <a href="/setting" style={{ fontSize: 35 }}>

@@ -36,6 +36,7 @@ main {
   position: relative;
   top: 100px;
   min-height: 80vh;
+  padding-bottom: 50px;
 }
 @mixin buttona {
   position: relative;
@@ -76,6 +77,22 @@ main {
   justify-content: center;
   height: 600px;
   margin-bottom: 101px;
+}
+.login-popup{
+  @include flexP;
+  text-align: center;
+  border-radius: 20px;
+  background-color: aliceblue;
+  width: 500px;
+  height: 200px;
+  position: absolute;
+  .closealert{
+    position: absolute;
+    top:15px;
+    right:5%;
+    color: $main-color;
+    font-size: 25px;
+  }
 }
 .flashcard-content {
   @include flexR;
@@ -193,6 +210,12 @@ main {
     .con-content h2 {
       margin: 10px;
     }
+    .favorite
+    
+    {.favorited {
+      color: $main-color; /* Color when favorited */
+    }
+  }
   }
 }
 

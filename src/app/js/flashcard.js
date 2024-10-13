@@ -18,72 +18,6 @@ document.querySelector(
 ).href = `vocabularies?topic=${id}`;
 document.querySelector(".d-and-d-link").href = `d_and_d?topic=${id}`;
 
-// Define favoritesList function
-const favoritesList = function () {
-  $(".favorites").on("click", (e) => {
-    e.stopPropagation();
-    if (!jwt) {
-      alert("You need to log in");
-      return;
-    }
-
-    // Get the currently displayed flashcard item based on currentIndex
-    const currentFlashcard = $(".content-d").eq(currentIndex);
-    const id = currentFlashcard.attr("fid"); // Get the id attribute value
-
-    // Toggle favorite status (add/remove from favorites)
-    if ($(e.currentTarget).css("color") === "rgb(255, 0, 0)") {
-      // Check if already in favorites
-      $(e.currentTarget).css("color", ""); // Remove red color
-      // Make API call to remove from favorites
-      axios
-        .post(
-          `${config.apiUrl}/users/removefavorites`,
-          JSON.stringify({ id: id }),
-          {
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: "Bearer " + getCookie("jwt"),
-            },
-          }
-        )
-        .then((response) => {
-          console.log("Removed from favorites");
-        })
-        .catch((error) => {
-          console.log("Error removing from favorites");
-        });
-    } else {
-      $(e.currentTarget).css("color", "red"); // Add red color to indicate favorite
-      // Make API call to add to favorites
-      axios
-        .patch(`${config.apiUrl}/users/favorites`, JSON.stringify({ id: id }), {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: "Bearer " + getCookie("jwt"),
-          },
-        })
-        .then((response) => {
-          console.log("Added to favorites");
-        })
-        .catch((error) => {
-          console.log("Error adding to favorites");
-        });
-    }
-  });
-};
-
-fetch("_topNav")
-  .then((response) => response.text())
-  .then((html) => {
-    $("#topNav")(html);
-  });
-
-fetch("_footer")
-  .then((response) => response.text())
-  .then((html) => {
-    $("#footer")(html);
-  });
 let ht2 = [
   "8e3fdb05-5ef5-4e77-b400-0d8767fb539e",
   "730846b3-4f7b-4367-b004-f3842d630b7e",
@@ -103,14 +37,8 @@ let codelabid = [
   "aac0459b84bf48019510a8f2c73f7eab",
   "3dc16a1a73064fdf8b4c1b199077383e",
 ];
-//shuffle data
-function shuffleArray(array) {
-  for (let i = array.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [array[i], array[j]] = [array[j], array[i]];
-  }
-  return array;
-}
+
+
 if (!ht2.includes(id) & !codelabid.includes(id)) {
   // Define a variable to store the retrieved data
   let allData = [];
@@ -171,7 +99,6 @@ if (!ht2.includes(id) & !codelabid.includes(id)) {
       $(".content").append(flashcards);
       $(".loading").hide();
       $(".spinner-border").hide();
-      favoritesList();
     });
 
     // Function to shuffle an array (Fisher-Yates shuffle)
@@ -544,26 +471,4 @@ $(function () {
     $card.toggleClass("active");
   });
 
-  // $flashcard.on("click", function () {
-  //   $headline1.addClass("active");
-  //   // $answers.addClass("active");
-  //   $timeattack.removeClass("active");
-  //   $headline2.removeClass("active");
-  //   $tcontent.removeClass("active");
-  //   $headline1.removeClass("un-active");
-  //   $flashcard.removeClass("un-active");
-  //   $fcontent.removeClass("un-active");
-  // });
-
-  // $timeattack.on("click", function () {
-  // $fcontent.addClass("un-active");
-  // $timeattack.addClass("active");
-  // $headline2.addClass("active");
-  // $tcontent.addClass("active");
-  // $headline1.addClass("un-active");
-  // $flashcard.addClass("un-active");
-  // $headline1.removeClass("active");
-  // $answers.removeClass("active");
-  // $fcontent.removeClass("active");
-  // });
 });

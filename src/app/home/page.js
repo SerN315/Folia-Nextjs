@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import Head from "next/head";
 import Footer from "../Component/footer";
@@ -8,17 +8,13 @@ import ScrollableList from "../Component/scrollableComponent";
 import { getDatabase } from "../js/api/databaseAPI";
 
 export default function Home1() {
-  const mostLearnedRef = useRef();
-  
-  // Removed suggestedCategoriesRef since each list will have its own ScrollableList component
-  
   const [mostLearnedTopics, setMostLearnedTopics] = useState([]);
   const [suggestedCategories, setSuggestedCategories] = useState([]);
 
   useEffect(() => {
     // Fetch most learned topics
-    getDatabase("509c3cca958545f0949070dec832e093").then((response) => {
-      console.log(response);
+    const fetchMostLearnedTopics = async () => {
+      const response = await getDatabase("509c3cca958545f0949070dec832e093");
       const topics = response.map((item) => ({
         topicId: item.properties.TopicName.relation[0].id,
         topicName: item.properties.TopicNameDev.formula.string,
@@ -27,35 +23,39 @@ export default function Home1() {
         wordCount: item.properties.WordsCountDev.formula.number,
       }));
       setMostLearnedTopics(topics);
-    });
+    };
 
-    // Fetch suggested categories and topics for each category
-    getDatabase("529b7e6a8ba74d799e05c8a7bca72252").then((response) => {
-      const categories = response.map((item) => ({
+    // Fetch suggested categories and topics
+    const fetchSuggestedCategories = async () => {
+      const categoryResponse = await getDatabase("529b7e6a8ba74d799e05c8a7bca72252");
+      const categories = categoryResponse.map((item) => ({
         cateId: item.properties.CategoryName.relation[0].id,
         cateName: item.properties.CategoryNameDev.formula.string,
       }));
-      setSuggestedCategories(categories);
 
-      categories.forEach((category) => {
-        // Fetch topics for each category
-        getDatabase("10087f66f2404f85ac4eee90c2203dc3", {
+      // Fetch topics for each category concurrently
+      const topicsPromises = categories.map(async (category) => {
+        const topicResponse = await getDatabase("10087f66f2404f85ac4eee90c2203dc3", {
           filter: { property: "Category", relation: { contains: category.cateId } },
-        }).then((topicResponse) => {
-          category.topics = topicResponse.map((topic) => ({
+        });
+        return {
+          ...category,
+          topics: topicResponse.map((topic) => ({
             topicId: topic.id,
             topicName: topic.properties.Name.title[0].plain_text,
             topicImage: topic.properties.SVG.rich_text[0].plain_text,
             wordCount: topic.properties.WordCountDev.formula.number,
-          }));
-          setSuggestedCategories((prevCategories) =>
-            prevCategories.map((cat) =>
-              cat.cateId === category.cateId ? category : cat
-            )
-          );
-        });
+          })),
+        };
       });
-    });
+
+      // Wait for all topics to be fetched
+      const categoriesWithTopics = await Promise.all(topicsPromises);
+      setSuggestedCategories(categoriesWithTopics);
+    };
+
+    fetchMostLearnedTopics();
+    fetchSuggestedCategories();
   }, []);
 
   return (
