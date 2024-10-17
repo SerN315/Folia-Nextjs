@@ -29,7 +29,7 @@ export default function Setting() {
             <div className="content__user-info">
               <div className="userinfos">
                 <div className="hover_overlay">Click to change your avatar</div>
-                <img src="./img/folia-asvab.png" className="user-img"/>
+                <img src="./img/folia-asvab.png" className="user-img" />
                 <div className="user-text">
                   <h2 className="username_text">USERNAME</h2>
                   <h5 className="userId_text">USERID</h5>
@@ -63,7 +63,7 @@ export default function Setting() {
             <hr />
             <div className="content__options more">
               <h5>More</h5>
-              <a href="intro.html" className="languages cta">
+              <a href="/about" className="languages cta">
                 <h6>About Us</h6>
               </a>
               <a href="#" className="pw cta">

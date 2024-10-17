@@ -4,9 +4,7 @@ import Image from "next/image";
 import Login from "../Component/loginUI";
 import { getDatabase2 } from "../js/api/databaseAPI";
 import { auth } from "../firebase/authenciation";
-import {
-  signOut,
-} from "firebase/auth";
+import { signOut } from "firebase/auth";
 import {
   collection,
   doc,
@@ -24,7 +22,6 @@ export default function TopNav() {
   const resultContainerRef = useRef(null);
   const searchInputRef = useRef(null);
   const firestore = getFirestore();
-
 
   const handleLogoutClick = () => {
     signOut(auth)
@@ -53,51 +50,63 @@ export default function TopNav() {
         const userInfoQuery = query(
           collection(firestore, `user_history`, idnguoidung, `userInfo`)
         );
-        const unsubscribeUserInfo = onSnapshot(userInfoQuery, (userInfoSnapshot) => {
-          userInfoSnapshot.forEach((userInfoDoc) => {
-            const userInfoData = userInfoDoc.data();
+        const unsubscribeUserInfo = onSnapshot(
+          userInfoQuery,
+          (userInfoSnapshot) => {
+            userInfoSnapshot.forEach((userInfoDoc) => {
+              const userInfoData = userInfoDoc.data();
 
-            const challengeQuery = query(
-              collection(firestore, `user_history`, idnguoidung, `challenge`)
-            );
-            const unsubscribeChallenges = onSnapshot(challengeQuery, (challengeSnapshot) => {
-              let challengePoints = {};
-              challengeSnapshot.forEach((challengeDoc) => {
-                const challengeData = challengeDoc.data();
-                const challengeId = challengeDoc.id;
+              const challengeQuery = query(
+                collection(firestore, `user_history`, idnguoidung, `challenge`)
+              );
+              const unsubscribeChallenges = onSnapshot(
+                challengeQuery,
+                (challengeSnapshot) => {
+                  let challengePoints = {};
+                  challengeSnapshot.forEach((challengeDoc) => {
+                    const challengeData = challengeDoc.data();
+                    const challengeId = challengeDoc.id;
 
-                if (!challengePoints[challengeId] || challengePoints[challengeId] < challengeData.score) {
-                  challengePoints[challengeId] = challengeData.score;
+                    if (
+                      !challengePoints[challengeId] ||
+                      challengePoints[challengeId] < challengeData.score
+                    ) {
+                      challengePoints[challengeId] = challengeData.score;
+                    }
+                  });
+
+                  let totalPoints = Object.values(challengePoints).reduce(
+                    (sum, score) => sum + score,
+                    0
+                  );
+
+                  const rankingData = {
+                    userId: userInfoData.userId,
+                    avatar: userInfoData.photoURL,
+                    username: userInfoData.displayname,
+                    email: userInfoData.email,
+                    totalPoints,
+                  };
+
+                  setDoc(doc(firestore, "ranking", idnguoidung), rankingData)
+                    .then(() => {
+                      console.log(
+                        "Data saved to ranking collection:",
+                        rankingData
+                      );
+                    })
+                    .catch((error) => {
+                      console.error("Error saving ranking data:", error);
+                    });
                 }
-              });
-
-              let totalPoints = Object.values(challengePoints).reduce(
-                (sum, score) => sum + score,
-                0
               );
 
-              const rankingData = {
-                userId: userInfoData.userId,
-                avatar: userInfoData.photoURL,
-                username: userInfoData.displayname,
-                email: userInfoData.email,
-                totalPoints,
+              return () => {
+                unsubscribeChallenges();
               };
-
-              setDoc(doc(firestore, "ranking", idnguoidung), rankingData)
-                .then(() => {
-                  console.log("Data saved to ranking collection:", rankingData);
-                })
-                .catch((error) => {
-                  console.error("Error saving ranking data:", error);
-                });
             });
-
-            return () => {
-              unsubscribeChallenges();
-            };
-          });
-        });
+          }
+        );
 
         return () => {
           unsubscribeUserInfo();
@@ -122,7 +131,12 @@ export default function TopNav() {
       setSearchResultsVisible(true);
       const response = await getDatabase2(`vocabularies?search=${value}`);
       const sliceResponse = response.slice(0, 5);
-      setVocab(sliceResponse.map((word) => ({ name: word.Word, topicID: word.TopicId })));
+      setVocab(
+        sliceResponse.map((word) => ({
+          name: word.Word,
+          topicID: word.TopicId,
+        }))
+      );
     }
   };
 
@@ -144,7 +158,9 @@ export default function TopNav() {
     <>
       <div className="flex-container">
         <div className="info-box">
-          <a href="hub" className="info-box__title">FOLIA</a>
+          <a href="hub" className="info-box__title">
+            FOLIA
+          </a>
         </div>
 
         <div className="search-bar" tabIndex={0}>
@@ -185,7 +201,10 @@ export default function TopNav() {
             />
           </a>
           <div className="streak hidden">
-            <button className="streak__btn" onClick={() => toggleDropdown(".streak__dropdown")}>
+            <button
+              className="streak__btn"
+              onClick={() => toggleDropdown(".streak__dropdown")}
+            >
               <Image
                 src="/img/features-icon/streak-ico.svg"
                 alt="Streak Icon"
@@ -210,21 +229,21 @@ export default function TopNav() {
                 </div>
               </div>
               <hr />
-              <a href="/streak" className="link">View More</a>
+              <a href="/streak" className="link">
+                View More
+              </a>
             </div>
           </div>
-          <a href="/intro">
+          <a href="/about">
             <Image src="/img/help.svg" width={40} height={40} />
           </a>
 
           <div className="profile">
-            <button className="profile__btn hidden" onClick={() => toggleDropdown(".profile__dropdown")}>
-              <Image
-                src=""
-                className="avatar"
-                width={25}
-                height={25}
-              />
+            <button
+              className="profile__btn hidden"
+              onClick={() => toggleDropdown(".profile__dropdown")}
+            >
+              <Image src="" className="avatar" width={25} height={25} />
             </button>
             <div className="profile__dropdown">
               <a className="detail" href="/profile">
@@ -240,10 +259,16 @@ export default function TopNav() {
                 </div>
               </a>
               <hr />
-              <a href="/favorite" className="link">Favorites</a>
+              <a href="/favorite" className="link">
+                Favorites
+              </a>
               <hr />
-              <a href="/setting" className="link">Settings</a>
-              <div className="logout link hidden" onClick={handleLogoutClick}>Log Out</div>
+              <a href="/setting" className="link">
+                Settings
+              </a>
+              <div className="logout link hidden" onClick={handleLogoutClick}>
+                Log Out
+              </div>
             </div>
           </div>
         </div>
