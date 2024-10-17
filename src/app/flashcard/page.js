@@ -367,7 +367,7 @@ export default function FlashCard() {
               <p>Vocabulary</p>
             </a>
             <a
-              href={`d_and_d?topic=${topicID}`}
+              href={`dragdrop?topic=${topicID}`}
               className="nav-panel__game-list__game-item d-and-d-link"
             >
               <i className="fa-regular fa-hand" />

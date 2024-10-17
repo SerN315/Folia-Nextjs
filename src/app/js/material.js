@@ -61,7 +61,7 @@ document.querySelector(
 document.querySelector(
   ".flashcard-link"
 ).href = `flashcard?topic=${topicID}`;
-document.querySelector(".d-and-d-link").href = `d_and_d?topic=${topicID}`;
+document.querySelector(".d-and-d-link").href = `dragdrop?topic=${topicID}`;
 
 $(function () {
   fetch("_topNav")

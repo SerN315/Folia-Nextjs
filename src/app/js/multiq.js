@@ -159,7 +159,7 @@ const tag = urlParams.get("tag");
 const catesID = urlParams.get("cateID");
 const categoryID = catesID?.split(",");
 $("#challenge__continue").on("click", function () {
-  window.location.href = `d_and_d?topic=${id}&id=${idd}`;
+  window.location.href = `dragdrop?topic=${id}&id=${idd}`;
 });
 let originalQuestions = [];
 let codelabid = [

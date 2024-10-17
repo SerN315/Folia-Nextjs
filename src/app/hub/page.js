@@ -130,8 +130,6 @@ export default function Hub() {
   </div>
   <Footer/>
 </main>
-<Script type="module" src="/js/main.js"></Script>
-<Script type="module" src="/js/hub.js" strategy="afterInteractive" ></Script>
 </>
     )
 }

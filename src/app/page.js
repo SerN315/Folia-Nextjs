@@ -243,8 +243,6 @@ export default function Home() {
   </section>
 <Footer />
 </main>
-<Script type="module" src="/js/main.js"></Script>
-<Script type="module" src="/js/index.js"></Script>
 </>
   );
 }

@@ -310,7 +310,7 @@ export default function Vocabularies() {
               <i className="fa-regular fa-images" />
               <p>Flashcard</p>
             </a>
-            <a href="#" className="nav-panel__game-list__game-item d-and-d-link">
+            <a href={`/dragdrop?topic=${topicID}`} className="nav-panel__game-list__game-item d-and-d-link">
               <i className="fa-regular fa-hand" />
               <p>Drag&amp;Drop</p>
             </a>

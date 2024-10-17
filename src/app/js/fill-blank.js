@@ -17,7 +17,7 @@ const id = urlParams.get("topic");
 document.querySelector("[cate]").href = "/cate?topic=folia-language";
 document.querySelector("[vocab]").href = `/vocabularies?topic=${id}`;
 document.querySelector("[flashcard]").href = `/flashcard?topic=${id}`;
-document.querySelector("[d-and-d]").href = `/d_and_d?topic=${id}`;
+document.querySelector("[d-and-d]").href = `/dragdrop?topic=${id}`;
 
 //FORMAT SENTENCE
 const textDecoder = (sentence) => {
