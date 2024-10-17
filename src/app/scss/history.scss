@@ -1,0 +1,258 @@
+@import "styles";
+// @import "topnav";
+// @import "subnav";
+// @import "funcList";
+// @import "level";
+// @import "footer";
+// @import "login";
+// @import "navigation";
+// @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap");
+
+// TOPNAV STYLING
+#topNav {
+  height: 100px;
+  z-index: 999;
+  position: relative;
+}
+
+// GLOBAL PADDING
+@mixin itemAlign {
+  padding-left: 20vw;
+  padding-right: 20vw;
+  @include laptop {
+    padding-left: 10vw;
+    padding-right: 10vw;
+  }
+}
+
+:root {
+  --main-color: #1e5900;
+  --second-main-color: #40bf00;
+  --main-text-color: #18264c;
+  --main-font: "Poppins", sans-serif;
+  --pronun-text-color: #7e7e7e;
+}
+html {
+  scroll-behavior: smooth;
+}
+body {
+  background: #f4f4f4;
+}
+.topic_1 {
+  padding: 20px 20vw;
+  & span {
+    font-size: large;
+    font-size: 36px;
+    font-weight: 500;
+    color: var(--pronun-text-color);
+  }
+}
+
+/* main */
+.article {
+  width: 100%;
+  height: 100%;
+  @include itemAlign();
+  padding-top: 150px;
+  padding-bottom: 200px;
+  background-color: #f4f4f4;
+  .title{
+    font-size: 25px;
+    font-weight: 500;
+    padding-top:20px ;
+    padding-bottom: 15px;
+    color:$main-color;
+  }
+}
+.vocabulary {
+  position: relative;
+  border-radius: 20px;
+  margin-bottom: 15px;
+  width: 100%;
+  padding: 20px;
+  background-color: #ffffff;
+  display: flex;
+  gap: 25px;
+  .vocabulary-word20 {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 100%;
+    height: 90px;
+  }
+  &:hover {
+    .vocabulary-image {
+      & img {
+        transform: scale(1.2);
+      }
+    }
+  }
+  cursor: pointer;
+  &-image {
+    flex: 30%;
+    overflow: hidden;
+    border-radius: 10px;
+    & img {
+      height: 100px;
+      width: 100%;
+      border-radius: 10px;
+      object-fit: cover;
+      transition: 0.2s ease;
+      @include mobile-xl {
+        width: 185px;
+      }
+    }
+  }
+  &-word {
+    margin: 10px 10px;
+    flex: 70%;
+  }
+}
+.word {
+  font-size: 25px;
+  font-weight: 700;
+  color: var(--main-text-color);
+  display: inline;
+  &-set {
+    font-style: italic;
+    font-size: 18px;
+    font-weight: 500;
+    display: inline;
+    color: var(--main-text-color);
+  }
+  &-pronunciation {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+}
+.icon-container {
+  position: absolute;
+  right: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  justify-content: center;
+  align-items: center;
+  .favorites,
+  .report {
+    font-size: 30px;
+    color: #000000;
+  }
+}
+
+
+.content {
+  margin: 20px;
+}
+
+
+
+.hidden {
+  display: none;
+}
+.display {
+  display: block;
+}
+
+.word-box-overlay {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  z-index: 999;
+  top: 0;
+  left: 0;
+  background: rgba(0, 0, 0, 0.7);
+}
+.hidden {
+  display: none;
+}
+.display {
+  display: flex;
+}
+
+.close-modal {
+  position: absolute;
+  top: -1rem;
+  right: 1rem;
+  font-size: 4rem;
+  color: #0a0a0a;
+  cursor: pointer;
+  border: none;
+  background: none;
+  z-index: 100;
+  &:hover {
+    color: var(--second-main-color);
+    transition: 0.2s;
+  }
+}
+
+@include laptop-l {
+  .word {
+    font-size: 20px;
+  }
+  .modal2 {
+    height: 50%;
+
+    & img {
+      width: 60%;
+    }
+  }
+}
+
+
+
+.modal20 {
+  z-index: 2;
+  padding: 20px 20px;
+  display: flex;
+  flex-direction: column;
+  width: 80%;
+  height: 80%;
+  align-items: center;
+  background-color: white;
+  border-radius: 16px;
+  overflow: auto;
+
+  .question_box {
+    width: 80%;
+    border: 0.5px solid rgba(0, 0, 0, 0.308);
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    margin-bottom: 50px;
+    h1 {
+      font-size: 20px;
+      font-weight: bold;
+    }
+    h2 {
+      font-size: 20px;
+      font-weight: bold;
+      color: green;
+    }
+    .dapan {
+      display: flex;
+      width: 40%;
+      background: #00a900;
+      color: white;
+      height: 40px;
+      padding: 30px;
+      border-radius: 20px;
+      text-align: center;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .question {
+      height: 150px;
+      font-size: 20px;
+      display: flex;
+      align-items: center;
+      padding: 40px;
+    }
+  }
+}

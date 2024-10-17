@@ -23,10 +23,10 @@ export default function Home() {
           property="og:description"
           content="Discover a comprehensive multi-subject learning platform, offering diverse courses to expand your knowledge. From language skills to certification programs, access interactive content for effective learning. Start your educational journey today!"
         />
-        <meta property="og:url" content="https://foliastudy.com" />
+        <meta property="og:url" content="https://folia-study.com" />
         <meta
           property="og:image"
-          content="https://foliastudy.com/apple-touch-icon.bb4effea.png"
+          content="https://folia-study.com/apple-touch-icon.bb4effea.png"
         />
         <meta property="og:type" content="website" />
         <meta property="og:site_name" content="Foliastudy" />
@@ -275,6 +275,7 @@ export default function Home() {
         </section>
         <Footer />
       </main>
+      <Script type="module" src="/js/main.js"></Script>
       <Script type="module" src="/js/index.js"></Script>
     </>
   );

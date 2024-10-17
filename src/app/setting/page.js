@@ -63,7 +63,7 @@ export default function Setting() {
             <hr />
             <div className="content__options more">
               <h5>More</h5>
-              <a href="/about" className="languages cta">
+              <a href="intro" className="languages cta">
                 <h6>About Us</h6>
               </a>
               <a href="#" className="pw cta">

@@ -15,7 +15,7 @@ export default function About() {
     <TopNav/>
   <main className="hub">
     <div className="header">
-      <a className="home-link" href="./index.html">
+      <a className="home-link" href="/">
         <h1 className="logo">FOLIA</h1>
       </a>
     </div>
@@ -69,7 +69,7 @@ export default function About() {
         </div>
       </div>
       {/* <div className="cta">
-        <a href="./hub.html">
+        <a href="./hub">
           <div className="flex-container">
             <p>Learn more about Folia’s Subjects</p>
             <div className="arrow">
@@ -82,8 +82,6 @@ export default function About() {
     </div>
   </main>
   <Footer/>
-  {/* <Script type="module" src="js/main.js"></Script> */}
-  {/* <Script type="module" src="js/intro.js"></Script> */}
   <Script id="googleMeta"
           async
           src="https://www.googletagmanager.com/gtag/js?id=G-T9JC70THEE"

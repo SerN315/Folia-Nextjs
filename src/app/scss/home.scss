@@ -1,4 +1,4 @@
-//File chỉ dùng cho file home.html
+//File chỉ dùng cho file home
 @import "styles";
 
 
@@ -35,13 +35,14 @@
 .home {
   padding-top: 100px;
   background: #fdfdfd;
+  padding-bottom: 50px;
   // Hero Section
   &__hero-section {
     @include mobile-xl {
       overflow: hidden;
     }
     background-color: #226500;
-    padding: 120px 12.5vw;
+    padding: 120px 10vw;
     margin-bottom: 80px;
     @include laptop-m {
       padding: 120px 7vw;
@@ -224,7 +225,7 @@
   &__most-learned {
     margin-bottom: 40px;
     &__title {
-      padding: 0 12.5vw;
+      padding: 0 10vw;
       margin-bottom: 25px;
       @include laptop-m {
         padding: 0 7vw;
@@ -244,10 +245,10 @@
     }
     &__list {
       height: 280px;
-      padding-left: 12.5vw;
+      padding-left: 10vw;
       padding-right: 20px;
       display: grid;
-      column-gap: 15px;
+      column-gap: 25px;
       grid-auto-flow: column;
       grid-auto-columns: calc(28% - 10px);
       overflow: auto;
@@ -269,22 +270,30 @@
         grid-auto-columns: 90%;
       }
       .card {
+        user-select: none;
         height: 250px;
         border: none;
         overflow: hidden;
+        border-radius: 10px;
         &:hover {
           .card-img {
             transform: scale(1.1);
+            filter: opacity(0.45) brightness(50%);
           }
         }
         .card-img {
-          filter: opacity(0.45);
+          user-select: none;
+          width: 100%;
+          filter: brightness(50%);
           height: 100%;
           object-fit: cover;
           transition: 0.5s ease;
         }
         .card-img-overlay {
+          user-select: none;
           padding: 25px;
+          position: relative;
+          top:-130px;
           h6 {
             color: #ccc;
             font-size: 20px;
@@ -306,7 +315,7 @@
   }
   &__suggest {
     &__title {
-      padding: 0 12.5vw;
+      padding: 0 10vw;
       margin-bottom: 15px;
       @include laptop-m {
         padding: 0 7vw;
@@ -320,7 +329,7 @@
     }
     &__cate {
       &__title {
-        padding: 0 12.5vw;
+        padding: 0 10vw;
         margin-bottom: 20px;
         @include laptop-m {
           padding: 0 7vw;
@@ -338,8 +347,8 @@
         display: grid;
         grid-auto-flow: column;
         grid-auto-columns: calc(27% - 10px);
-        gap: 15px;
-        padding-left: 12.5vw;
+        gap: 25px;
+        padding-left: 10vw;
         padding-right: 20px;
         overflow: auto;
         &::-webkit-scrollbar {
@@ -360,6 +369,7 @@
           grid-auto-columns: 85%;
         }
         &__item {
+          user-select: none;
           display: flex;
           gap: 30px;
           width: 100%;
@@ -375,6 +385,7 @@
               border: none;
               padding-bottom: 30px;
               .card-img-top {
+                width: 100%;
                 border-radius: 10px 10px 0 0;
                 height: 65%;
                 object-fit: cover;
@@ -408,7 +419,7 @@
   &__cate-list {
     margin-bottom: 50px;
     &__title {
-      padding: 0 12.5vw;
+      padding: 0 10vw;
       @include laptop-m {
         padding: 0 7vw;
       }
@@ -421,7 +432,7 @@
       }
     }
     &__container {
-      padding: 0 12.5vw;
+      padding: 0 10vw;
       width: 100%;
       display: flex;
       flex-wrap: wrap;
@@ -465,7 +476,7 @@
       }
     }
     &__cta {
-      padding: 0 12.5vw;
+      padding: 0 10vw;
       display: flex;
       align-items: center;
       color: #8c8c8c;

@@ -12,10 +12,17 @@ body {
   position: relative;
   top: 100px;
   width: 100%;
+  padding-bottom: 100px;
   @include flexP;
   &__container {
     width: 90%;
+    @include flexP;
+    flex-direction: column;
     .titles {
+      h1{
+        font-size: calc(1rem + 0.7vw);
+      }
+      width: 80%;
       margin-top: 85px;
       color: black;
       font-weight: 600;
@@ -30,19 +37,19 @@ body {
       }
     }
     .challenges {
-      margin-top: 60px;
-      width: 100%;
-      height: 1000px;
+      margin-top: 20px;
+      width: 80%;
       background: #fff;
       box-shadow: 1px 3px 5px 3px #0000003d;
       padding: 20px;
-      border-radius: 30px;
+      border-radius: 10px;
       &__item {
         width: 100%;
-        height: 265px;
+        height: 200px;
         background-color: white;
         border-radius: 20px;
         border: 1px solid rgba(0, 0, 0, 0.389);
+        margin-bottom: 20px;
         @include flexP;
         justify-content: space-evenly;
         transition: 0.2s ease-in-out;
@@ -55,14 +62,14 @@ body {
           pointer-events: none;
           .title {
             h2 {
-              font-size: calc(1rem + 0.9vw);
+              font-size: calc(1rem + 0.3vw);
               font-weight: 600;
             }
           }
           .tquestion {
             display: flex;
             h3 {
-              font-size: calc(0.7rem + 0.6vw);
+              font-size: calc(0.7rem + 0.3vw);
               &:first-child {
                 margin-right: 20px;
               }
@@ -82,7 +89,7 @@ body {
           .title {
             pointer-events: none;
             h2 {
-              font-size: calc(1rem + 0.9vw);
+              font-size: calc(1rem + 0.3vw);
               font-weight: 600;
             }
           }
@@ -91,7 +98,7 @@ body {
             flex-direction: column;
             align-items: center;
             a {
-              font-size: calc(0.7rem + 0.6vw);
+              font-size: calc(0.7rem + 0.3vw);
               text-decoration: none;
             }
           }
@@ -108,6 +115,7 @@ body {
             }
           }
           #startchallenge {
+            position: absolute;
             width: 0px;
             height: 0px;
             background-color: $main-color;
@@ -138,10 +146,14 @@ body {
 @media (max-width: 580px) {
   .challenge {
     &__container {
+      .titles{
+        width: 100%;
+      }
       .challenges {
+        width: 100%;
         &__item {
           width: 100%;
-          height: 265px;
+          height: 250px;
           flex-direction: column;
           &__left {
             width: 90%;

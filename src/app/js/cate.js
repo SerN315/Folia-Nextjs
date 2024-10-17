@@ -1,20 +1,6 @@
 import { getDatabase } from "./api/databaseAPI";
 
-//Tải các Components và đưa vào trang index
 
-$(function () {
-  fetch("_topNav.html")
-    .then((response) => response.text())
-    .then((html) => {
-      $("#topNav").html(html);
-    });
-});
-
-fetch("_footer.html")
-  .then((response) => response.text())
-  .then((html) => {
-    $("#footer").html(html);
-  });
 const urlParams = new URLSearchParams(window.location.search);
 const id = urlParams.get("topic");
 if (id == "folia-language") {
@@ -130,7 +116,7 @@ if (id == "folia-language") {
               const count = words.length;
               let img = topic.properties.SVG.rich_text[0]?.plain_text;
               let topicHTML = `
-              <a href="vocabularies.html?topic=${topicId}" class="topic">
+              <a href="vocabularies?topic=${topicId}" class="topic">
                 <div class="topic__img">
                   <img src="${img}" />
                 </div>
@@ -173,7 +159,7 @@ if (id == "folia-asvab") {
       if (existingTopic.length === 0) {
         let cateindi = `
         <div class="card topic" data-topic-id="${topicID}">
-          <a href="multipleChoice.html?topic=${topicID}">
+          <a href="multipleChoice?topic=${topicID}">
             <div class="topic-img" style="background-image:url('${SVG}');">
             </div>
           <div class="topic-title">
@@ -221,7 +207,7 @@ if (id == "folia-SAT") {
       if (existingTopic.length === 0) {
         let cateindi = `
         <div class="card topic" data-topic-id="${fname}">
-        <a href="multipleChoice.html?topic=${db}&tag=${fname}">
+        <a href="multipleChoice?topic=${db}&tag=${fname}">
             <div class="topic-img" style="background-image:url('${SVG}');">
             </div>
           <div class="topic-title">
@@ -265,7 +251,7 @@ if (id == "folia-GED") {
       if (existingTopic.length === 0) {
         let cateindi = `
         <div class="card topic" data-topic-id="${fname}">
-        <a href="multipleChoice.html?topic=${db}&tag=${fname}">
+        <a href="multipleChoice?topic=${db}&tag=${fname}">
             <div class="topic-img" style="background-image:url('${SVG}');">
             </div>
           <div class="topic-title">
@@ -309,7 +295,7 @@ if (id == "folia-NCLEX") {
       if (existingTopic.length === 0) {
         let cateindi = `
         <div class="card topic" data-topic-id="${fname}">
-        <a href="multipleChoice.html?topic=${db}&tag=${fname}">
+        <a href="multipleChoice?topic=${db}&tag=${fname}">
             <div class="topic-img" style="background-image:url('${SVG}');">
             </div>
           <div class="topic-title">
@@ -353,7 +339,7 @@ if (id == "folia-ACT") {
       if (existingTopic.length === 0) {
         let cateindi = `
         <div class="card topic" data-topic-id="${fname}">
-        <a href="multipleChoice.html?topic=${db}&tag=${fname}">
+        <a href="multipleChoice?topic=${db}&tag=${fname}">
             <div class="topic-img" style="background-image:url('${SVG}');">
             </div>
           <div class="topic-title">
@@ -398,7 +384,7 @@ if (id == "folia-GRE") {
       if (existingTopic.length === 0) {
         let cateindi = `
         <div class="card topic" data-topic-id="${fname}">
-        <a href="multipleChoice.html?topic=${db}&tag=${fname}">
+        <a href="multipleChoice?topic=${db}&tag=${fname}">
             <div class="topic-img" style="background-image:url('${SVG}');">
             </div>
           <div class="topic-title">
