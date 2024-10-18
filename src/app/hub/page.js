@@ -56,7 +56,7 @@ export default function Hub() {
             </div>
           </div>
         </a>
-        <a href="#" className="link link--asvab">
+        <a href="/subhome?topic=folia-asvab" className="link link--asvab">
           <div className="item">
             <Image src="/img/features-icon/asvab-ico.svg" width={100}
               height={100} />
@@ -70,7 +70,7 @@ export default function Hub() {
             </div>
           </div>
         </a>
-        <a href="#" className="link link--sat">
+        <a href="/subhome?topic=folia-SAT" className="link link--sat">
           <div className="item">
             <Image src="/img/features-icon/sat-ico.svg"  width={100}
               height={100}/>
@@ -85,7 +85,7 @@ export default function Hub() {
             </div>
           </div>
         </a>
-        <a href="#" className="link link--nclex">
+        <a href="/subhome?topic=folia-NCLEX" className="link link--nclex">
           <div className="item">
             <Image src="/img/features-icon/nclex-ico.svg" width={100}
               height={100}/>
@@ -102,7 +102,7 @@ export default function Hub() {
             </div>
           </div>
         </a>
-        <a href="#" className="link link--act">
+        <a href="/subhome?topic=folia-ACT" className="link link--act">
           <div className="item">
             <Image src="/img/features-icon/act-ico.svg"  width={100}
               height={100}/>

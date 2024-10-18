@@ -30,6 +30,7 @@ export default function DragDrop() {
   // State variables
   const [responseData, setResponseData] = useState([]);
   const [questions, setQuestions] = useState([]);
+  const [draggedAnswer, setDraggedAnswer] = useState([]);
   const [score, setScore] = useState(0);
   const [streak, setStreak] = useState(0);
   const [highestStreak, setHighestStreak] = useState(0);
@@ -224,53 +225,75 @@ export default function DragDrop() {
     setLoading(false);
   };
 
+ const handleTouchStart = (e, answer) => {
+  e.preventDefault(); // Prevent default touch behavior
+  setDraggedAnswer(answer); // Store the dragged answer in state
+};
+
+// Handle Touch End
+const handleTouchEnd = (e, expectedAnswer, questionIndex) => {
+  e.preventDefault();
+  if (draggedAnswer) {
+    processDrop(draggedAnswer, expectedAnswer, questionIndex);
+    setDraggedAnswer(null); // Clear the dragged answer
+  }
+};
+
   // Function: Handle Drag Start
   const handleDragStart = (e, answer) => {
     e.dataTransfer.setData("text/plain", answer);
   };
 
-  // Function: Handle Drop
-  const handleDrop = (e, expectedAnswer, questionIndex) => {
-    e.preventDefault();
-    const draggedAnswer = e.dataTransfer.getData("text/plain");
-    const isCorrect = draggedAnswer === expectedAnswer;
-  
-    setTotal((prev) => prev + 1);
-  
-    if (isCorrect) {
-      setScore((prev) => prev + 100);
-      setCorrectCount((prev) => prev + 1);
-      setStreak((prev) => prev + 1);
-  
-      // Remove the answer from uniqueAnswers to hide the draggable
-      setUniqueAnswers((prev) => prev.filter((ans) => ans !== draggedAnswer));
-  
-      // Update the corresponding question's 'dropped' property to true
-      setQuestions((prevQuestions) => {
-        const updatedQuestions = [...prevQuestions];
-        updatedQuestions[questionIndex] = { ...updatedQuestions[questionIndex], dropped: true };
-        return updatedQuestions;
-      });
-  
-      // Add the question to the droppedQuestions state to apply the class
-      setDroppedQuestions((prev) => [...prev, questionIndex]);
-  
-    } else {
-      setScore((prev) => Math.max(prev - 25, 0));
-      setStreak(0);
-    }
-  
-    // Update highest streak if necessary
-    setHighestStreak((prev) => (streak + (isCorrect ? 1 : 0) > prev ? streak + (isCorrect ? 1 : 0) : prev));
-  
-    checkGameCompletion();
-  };
+  // Handle Drop (Mouse)
+const handleDrop = (e, expectedAnswer, questionIndex) => {
+  e.preventDefault();
+  const draggedAnswer = e.dataTransfer.getData("text/plain");
+  processDrop(draggedAnswer, expectedAnswer, questionIndex);
+};
+
+
+// Function to process the drop logic
+const processDrop = (draggedAnswer, expectedAnswer, questionIndex) => {
+  const isCorrect = draggedAnswer === expectedAnswer;
+
+  setTotal((prev) => prev + 1);
+
+  if (isCorrect) {
+    setScore((prev) => prev + 100);
+    setCorrectCount((prev) => prev + 1);
+    setStreak((prev) => prev + 1);
+
+    // Remove the answer from uniqueAnswers to hide the draggable
+    setUniqueAnswers((prev) => prev.filter((ans) => ans !== draggedAnswer));
+
+    // Update the corresponding question's 'dropped' property to true
+    setQuestions((prevQuestions) => {
+      const updatedQuestions = [...prevQuestions];
+      updatedQuestions[questionIndex] = { ...updatedQuestions[questionIndex], dropped: true };
+      return updatedQuestions;
+    });
+
+    // Add the question to the droppedQuestions state to apply the class
+    setDroppedQuestions((prev) => [...prev, questionIndex]);
+  } else {
+    setScore((prev) => Math.max(prev - 25, 0));
+    setStreak(0);
+  }
+
+  // Update highest streak if necessary
+  setHighestStreak((prev) => (streak + (isCorrect ? 1 : 0) > prev ? streak + (isCorrect ? 1 : 0) : prev));
+
+  checkGameCompletion();
+};
+
   
 
   // Function: Allow Drop
   const allowDrop = (e) => {
     e.preventDefault();
   };
+
+
 
   // Function: Handle Play Again
 const handlePlayAgain = () => {
@@ -398,6 +421,7 @@ const handlePlayAgain = () => {
         className="draggable"
         draggable
         onDragStart={(e) => handleDragStart(e, answer)}
+        onTouchStart={(e) => handleTouchStart(e, answer)} // Add touch handler
       >
         {answer}
       </div>
@@ -423,6 +447,7 @@ const handlePlayAgain = () => {
           data-answer={question.answer}
           onDragOver={allowDrop}
           onDrop={(e) => handleDrop(e, question.answer, index)} // pass index to handleDrop
+          onTouchEnd={(e) => handleTouchEnd(e, question.answer, index)} // Add touch end handler
         >
           {/* If already dropped, show the answer */}
           {question.dropped && (
@@ -522,13 +547,13 @@ const handlePlayAgain = () => {
         </div>
         <button id="play-again-btn">Play Again</button>
       </section>
-      <div class="spinner-border" role="status">
-        <span class="visually-hidden">Loading...</span>
-      </div>
       <div class="content_interact">
         <section class="draggable-items">
         </section>
         <section class="matching-pairs">
+        <div class="spinner-border" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
         </section>
         </div>
         </div>
