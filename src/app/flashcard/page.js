@@ -25,7 +25,6 @@ export default function FlashCard() {
   const [isFlipped, setIsFlipped] = useState(false);
   const [showLoginPrompt, setShowLoginPrompt] = useState(false);
 
-
   const ht2 = [
     "8e3fdb05-5ef5-4e77-b400-0d8767fb539e",
     "730846b3-4f7b-4367-b004-f3842d630b7e",
@@ -148,36 +147,34 @@ export default function FlashCard() {
         setLoading(false); // Stop loading
 
         fetchTopic(topicID)
-        .then((topic) => {
-          console.log("Topic:", topic);
-      
-          // Select the element with the class 'topic'
-          const topicElement = document.querySelector(".topic");
-          const cateElement = document.querySelector(".category");
-          // Check if topic exists and has a name
-          if (topic && topic.topicName) {
-            topicElement.innerHTML = topic.topicName; // Set the topic name
-          } else {
-            topicElement.innerHTML = "No topic available"; // Fallback message
-          }
-          if (topic && topic.topicName) {
-            cateElement.innerHTML = topic.categories[0].categoryName; // Set the topic name
-          } else {
-            cateElement.innerHTML = "No topic available"; // Fallback message
-          }
-        })
-        .catch((error) => {
-          console.error("Error:", error);
-          document.querySelector(".topic").innerHTML = "Error fetching topic"; // Error handling message
-        });
+          .then((topic) => {
+            console.log("Topic:", topic);
+
+            // Select the element with the class 'topic'
+            const topicElement = document.querySelector(".topic");
+            const cateElement = document.querySelector(".category");
+            // Check if topic exists and has a name
+            if (topic && topic.topicName) {
+              topicElement.innerHTML = topic.topicName; // Set the topic name
+            } else {
+              topicElement.innerHTML = "No topic available"; // Fallback message
+            }
+            if (topic && topic.topicName) {
+              cateElement.innerHTML = topic.categories[0].categoryName; // Set the topic name
+            } else {
+              cateElement.innerHTML = "No topic available"; // Fallback message
+            }
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+            document.querySelector(".topic").innerHTML = "Error fetching topic"; // Error handling message
+          });
       })
       .catch((error) => {
         console.error("Error fetching vocabularies:", error);
         setData([]);
         setLoading(false); // Stop loading even on error
       });
-
-      
   };
 
   const shuffleArray = (array) => {
@@ -383,10 +380,10 @@ export default function FlashCard() {
         >
           <div className="flashcard-content">
             {loading ? (
-          <div class="card">
-          <div class="content">
-            <div class="loading"></div>
-          </div>
+              <div class="card">
+                <div class="content">
+                  <div class="loading"></div>
+                </div>
               </div>
             ) : (
               data.length > 0 && (
@@ -515,16 +512,18 @@ export default function FlashCard() {
               )}
             </div>
           </div>
-            {/* Login Prompt Popup */}
-        {showLoginPrompt && (
-          <div className="login-popup">
-            <div className="login-popup-content">
-              <h2>Please Log In</h2>
-              <p>You must be logged in to use the favorites feature.</p>
-              <button class="closealert" onClick={closeLoginPrompt}>x</button>
+          {/* Login Prompt Popup */}
+          {showLoginPrompt && (
+            <div className="login-popup">
+              <div className="login-popup-content">
+                <h2>Please Log In</h2>
+                <p>You must be logged in to use the favorites feature.</p>
+                <button class="closealert" onClick={closeLoginPrompt}>
+                  x
+                </button>
+              </div>
             </div>
-          </div>
-        )}
+          )}
         </div>
       </main>
       <Footer />

@@ -1,7 +1,6 @@
 // import { getDatabase } from "./api/databaseAPI";
 // import { db } from "../../src/app/firebase/authenciation.js";
 
-
 // let categories = [];
 // getDatabase("791918f3d802459291dcc45c7d8f9254", {
 //   // filter: {
@@ -60,7 +59,7 @@
 //                             <i class="fa-solid fa-check"></i>
 //                         </div>
 //    <div id="startchallenge">
-//                         <a href="multipleChoice?topic=${name}&id=${challengeId}&cateID=${categories}">Start</a>
+//                         <a href="multichoices?topic=${name}&id=${challengeId}&cateID=${categories}">Start</a>
 //                     </div>
 //                     </div>
 //                 </div>`;
