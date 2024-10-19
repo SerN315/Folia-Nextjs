@@ -7,7 +7,7 @@ import TopNav from "../Component/header";
 import "../scss/multi.scss";
 import { getDatabase } from "../js/api/databaseAPI";
 import { db,auth } from "../firebase/authenciation";
-
+import { useSearchParams } from "next/navigation";
 
 import {
   getFirestore,
@@ -31,6 +31,8 @@ import { update } from "firebase/database";
 import { useEffect, useState } from "react";
 
 export default function MultiQ() {
+  const searchPram = useSearchParams();
+  const id = searchPram.get("topic")
   const [originalQuestions, setOriginalQuestions] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [score, setScore] = useState(0);
@@ -44,9 +46,15 @@ export default function MultiQ() {
   const [progressWidth, setProgressWidth] = useState(0); // For the progress bar
 
   // Simulating the values that might be passed or fetched
-  const id = "challenge_1"; // Assume you get this from somewhere in your app
-  const codelabid = []; // Placeholder, assume it's coming from somewhere
-  const tag = "exampleTag"; // Simulating a tag to filter questions
+  // const id = "challenge_1"; // Assume you get this from somewhere in your app
+  let codelabid = [
+    "602c19aa0a48437aa38b322e5863d7b6",
+    "9b15c0bb39e4484a95cb054040485d0c",
+    "8b5d55aff1be4580b23e4e34142c7d09",
+    "aac0459b84bf48019510a8f2c73f7eab",
+    "3dc16a1a73064fdf8b4c1b199077383e",
+  ];
+  // const tag = "exampleTag"; // Simulating a tag to filter questions
 
   // Fetch data based on the ID
   function fetchData() {
