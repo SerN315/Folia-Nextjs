@@ -38,7 +38,7 @@ body {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding-bottom: 500px;
+  padding-bottom: 100px;
   padding-top: 100px;
 }
 
@@ -108,7 +108,7 @@ body {
   align-items: center;
 
   .draggable-items {
-    background-color: rgba(128, 128, 128, 0.805);
+    background-color: $main-color;
     justify-content: center;
     width: 90vw;
     margin: 0;
@@ -293,10 +293,30 @@ body {
     border: 0.2px solid rgba(128, 128, 128, 0.563);
   }
 }
+@media (max-width: 786px) {
 
+  .content_interact {
+    .matching-pairs {
+      padding: 0px;
+    }
+    .draggable-items {
+      bottom: 0px;
+      .draggable {
+        min-width: 100px;
+      }
+    }
+  }
+}
 @media (max-width: 600px) {
   html {
     font-size: 14px;
+  }
+  .score {
+    .score_right {
+      h1 {
+        font-size: 20px;
+      }
+    }
   }
 
   #play-again-btn {
@@ -309,11 +329,20 @@ body {
 }
 
 @media (max-width: 426px) {
+  .score {
+    .score_right {
+      h1 {
+        font-size: 15px;
+      }
+    }
+  }
+
   .content_interact {
     .draggable-items {
       width: 100vw;
       margin: 0;
       flex-wrap: wrap;
+
 
       .draggable {
         min-width: 50px;

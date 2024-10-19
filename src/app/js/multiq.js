@@ -21,19 +21,7 @@ import {
 import { onAuthStateChanged } from "firebase/auth";
 import { update } from "firebase/database";
 
-$(function () {
-  fetch("_topNav")
-    .then((response) => response.text())
-    .then((html) => {
-      $("#topNav")(html);
-    });
 
-  fetch("_footer")
-    .then((response) => response.text())
-    .then((html) => {
-      $("#footer")(html);
-    });
-});
 
 // FUNCTION TO CHECK STREAK AFTER PLAY A GAME
 function checkStreak(userId) {
