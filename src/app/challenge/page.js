@@ -1,8 +1,8 @@
-'use client';
+"use client";
 import { useEffect, useState } from "react";
 import { getDatabase } from "../js/api/databaseAPI.js";
-import {auth, firestore} from "../firebase/authenciation.js";
-import { collection, onSnapshot,getFirestore } from "firebase/firestore";
+import { auth, firestore } from "../firebase/authenciation.js";
+import { collection, onSnapshot, getFirestore } from "firebase/firestore";
 import Image from "next/image";
 import Head from "next/head";
 import Footer from "../Component/footer";
@@ -28,27 +28,39 @@ export default function Challenge() {
 
         try {
           // Define the path to the 'challenge' collection
-          const challengeCollection = collection(firestore, 'user_history', userId, 'challenge');
+          const challengeCollection = collection(
+            firestore,
+            "user_history",
+            userId,
+            "challenge"
+          );
           console.log("Challenge Collection Path:", challengeCollection.path);
 
           // Set up snapshot listener for the 'challenge' collection
-          const unsubscribeChallenge = onSnapshot(challengeCollection, (snapshot) => {
-            if (snapshot.empty) {
-              console.log("No challenges found for this user.");
-              setCompletedChallenges([]); // No challenges completed
-            } else {
-              // Fetch each challenge document
-              const fetchedCompletedChallenges = snapshot.docs.map(doc => {
-                const challengeData = doc.data();
-                return challengeData.id; // Return the 'id' field
-              });
+          const unsubscribeChallenge = onSnapshot(
+            challengeCollection,
+            (snapshot) => {
+              if (snapshot.empty) {
+                console.log("No challenges found for this user.");
+                setCompletedChallenges([]); // No challenges completed
+              } else {
+                // Fetch each challenge document
+                const fetchedCompletedChallenges = snapshot.docs.map((doc) => {
+                  const challengeData = doc.data();
+                  return challengeData.id; // Return the 'id' field
+                });
 
-              console.log("Fetched completed challenges:", fetchedCompletedChallenges);
-              setCompletedChallenges(fetchedCompletedChallenges);
+                console.log(
+                  "Fetched completed challenges:",
+                  fetchedCompletedChallenges
+                );
+                setCompletedChallenges(fetchedCompletedChallenges);
+              }
+            },
+            (error) => {
+              console.error("Error fetching challenge history:", error);
             }
-          }, (error) => {
-            console.error("Error fetching challenge history:", error);
-          });
+          );
 
           // Cleanup on unmount
           return () => unsubscribeChallenge();
@@ -133,7 +145,11 @@ export default function Challenge() {
               </div>
             ) : null}
             <div id="startchallenge">
-              <a href={`multipleChoice?topic=${name}&id=${challengeName}&cateID=${categories.join(",")}`}>
+              <a
+                href={`multichoices?topic=${name}&id=${challengeName}&cateID=${categories.join(
+                  ","
+                )}`}
+              >
                 Start
               </a>
             </div>

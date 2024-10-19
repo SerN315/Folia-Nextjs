@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import Image from "next/image";
 import Head from "next/head";
 import Script from "next/script";
@@ -6,8 +6,7 @@ import Footer from "../Component/footer";
 import TopNav from "../Component/header";
 import "../scss/multi.scss";
 import { getDatabase } from "../js/api/databaseAPI";
-import { db,auth } from "../firebase/authenciation";
-
+import { db, auth } from "../firebase/authenciation";
 
 import {
   getFirestore,
@@ -29,8 +28,16 @@ import { onAuthStateChanged } from "firebase/auth";
 import { update } from "firebase/database";
 
 import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 
 export default function MultiQ() {
+  const serachParams = useSearchParams();
+  const id = serachParams.get("topic");
+  const idd = serachParams.get("id");
+  const tag = serachParams.get("tag");
+  const catesID = serachParams.get("cateID");
+  const categoryID = catesID?.split(",");
+  const [loading, setLoading] = useState(true);
   const [originalQuestions, setOriginalQuestions] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [score, setScore] = useState(0);
@@ -41,12 +48,25 @@ export default function MultiQ() {
   const [userAnswers, setUserAnswers] = useState([]);
   const [selectedAnswer, setSelectedAnswer] = useState(null); // For selected answer
   const [timer, setTimer] = useState(null); // Initialize timer
+  const [isShowing, setShowing] = useState(false);
+  const [isFinish, setFinish] = useState(false);
   const [progressWidth, setProgressWidth] = useState(0); // For the progress bar
 
-  // Simulating the values that might be passed or fetched
-  const id = "challenge_1"; // Assume you get this from somewhere in your app
-  const codelabid = []; // Placeholder, assume it's coming from somewhere
-  const tag = "exampleTag"; // Simulating a tag to filter questions
+  let codelabid = [
+    "602c19aa0a48437aa38b322e5863d7b6",
+    "9b15c0bb39e4484a95cb054040485d0c",
+    "8b5d55aff1be4580b23e4e34142c7d09",
+    "aac0459b84bf48019510a8f2c73f7eab",
+    "3dc16a1a73064fdf8b4c1b199077383e",
+  ];
+
+  function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+  }
 
   // Fetch data based on the ID
   function fetchData() {
@@ -55,13 +75,13 @@ export default function MultiQ() {
         filter: {
           property: "challenge",
           relation: {
-            contains: id,
+            contains: idd,
           },
         },
       }).then((response) => {
         const questions = [...response].slice(0, 10);
         setOriginalQuestions(questions);
-        showQuestion(0, Math.min(10, questions.length));
+        // showQuestion(0, Math.min(10, questions.length));
         localStorage.setItem("originalQuestions", JSON.stringify(questions));
       });
     } else if (!codelabid.includes(id) && !id.includes("challenge")) {
@@ -75,7 +95,7 @@ export default function MultiQ() {
       }).then((response) => {
         const shuffledQuestions = shuffleArray([...response]);
         setOriginalQuestions(shuffledQuestions);
-        showQuestion(0, Math.min(10, shuffledQuestions.length));
+        // showQuestion(0, Math.min(10, shuffledQuestions.length));
       });
     } else if (codelabid.includes(id)) {
       getDatabase(id, {
@@ -88,7 +108,7 @@ export default function MultiQ() {
       }).then((response) => {
         const shuffledQuestions = shuffleArray([...response]);
         setOriginalQuestions(shuffledQuestions);
-        showQuestion(0, Math.min(10, shuffledQuestions.length));
+        // showQuestion(0, Math.min(10, shuffledQuestions.length));
       });
     }
   }
@@ -100,133 +120,254 @@ export default function MultiQ() {
     setPoints(0);
     const lastQuestions = questions.slice(-10); // Get last 10 questions
     showQuestion(0, lastQuestions.length, lastQuestions);
+    setFinish(false);
   }
 
+  //Hien Cac cau hoi
   function showQuestion(index, maxquestion) {
     if (index >= maxquestion) {
       if (id.includes("challenge")) {
-        document.getElementById("challenge__continue").style.display = "block";
-        document.querySelector(".result_shower").style.display = "none";
+        // $("#challenge__continue").show();
+        // $(".result_shower").hide();
+        // // $(".main_content").css("height", "200px");
         localStorage.setItem("points", JSON.stringify(points));
         localStorage.setItem("streak", JSON.stringify(streak));
-      } else {
-        // Handle the non-challenge case
-        document.querySelectorAll(".multiChoice").forEach(el => el.style.display = "none");
-        document.getElementById("redoButton").style.display = "block";
-        document.getElementById("restartButton").style.display = "block";
-        document.querySelector(".result_shower").style.display = "block";
-  
-        const storedScore = localStorage.getItem("points");
-  
-        if (storedScore && points > parseInt(storedScore)) {
-          // Optionally append "New Record"
-        }
-  
-        if (!storedScore || points > parseInt(storedScore)) {
-          localStorage.setItem("points", points);
-        }
+      } else if (!id.includes("challenge")) {
+        // $(".multiChoice").hide();
+        // $("#redoButton").show();
+        // $("#restartButton").show();
+        // $(".result_shower").show();
+        // Retrieve the stored score from local storage
+        // const storedScore = localStorage.getItem("points");
+        // // Check if the stored score exists and compare it with the new score
+        // if (storedScore && points > parseInt(storedScore)) {
+        //   // $(".result_shower").append("New Record");
+        // }
+        // // Update the stored score if the new score is greater
+        // if (!storedScore || points > parseInt(storedScore)) {
+        //   localStorage.setItem("points", points);
+        // }
       }
-  
       let progressStartValue = -1;
       const speed = 10;
       let percentage = (score / maxquestion) * 100;
-  
       if (!isNaN(percentage)) {
         let progress = setInterval(() => {
           progressStartValue++;
-          document.querySelector(".circular-value").textContent = `${progressStartValue}%`;
-          document.querySelector(".circular-progress").style.background =
-            `conic-gradient(#3fbd00 ${progressStartValue * 3.6}deg, #ededed 0deg)`;
-  
-          if (progressStartValue === percentage) {
+          $(".circular-value").text(`${progressStartValue}%`);
+          $(".circular-progress").css(
+            "background",
+            `conic-gradient(#3fbd00 ${
+              progressStartValue * 3.6
+            }deg, #ededed 0deg)`
+          );
+          if (progressStartValue == percentage) {
             clearInterval(progress);
           }
         }, speed);
-  
         const userId = auth.currentUser.uid;
         saveQuizData(points, highestStreak, originalQuestions, userId);
       }
-  
-      document.querySelector(".indicator").style.width = "100%";
-      document.querySelector(".score-points").textContent = `Your Score: ${points}`;
-      document.querySelector(".max-streak").textContent = `Best Streak this run: ${highestStreak}`;
-      document.querySelector(".timer").style.display = "none";
-      document.querySelector(".streak").style.display = "none";
-      document.querySelector(".point").style.display = "none";
-  
+      $(".indicator").animate({ width: "100%", borderRadius: "none" }, 1);
+      $(".score-points").text(`Your Score: ${points}`);
+      $(".max-streak").text(`Best Streak this run: ${highestStreak}`);
+      $(".timer").hide();
+      $(".streak").hide();
+      $(".point").hide();
       console.log(userAnswers);
       console.log("quiz finish", score);
       console.log(percentage);
       console.log(streak);
       return;
     }
-  
-    // Fetch question data
-    const item = originalQuestions[index];
-    const img = item.properties.Img?.files[0]?.file.url || null;
-    const Q = item.properties.Name.title[0]?.text.content || '';
-    const A = item.properties.A.rich_text[0]?.text.content || '';
-    const B = item.properties.B.rich_text[0]?.text.content || '';
-    const C = item.properties.C.rich_text[0]?.text.content || '';
-    const D = item.properties.D.rich_text[0]?.text.content || '';
-    const answer = item.properties.Answer.rich_text[0]?.text.content || '';
-  
-    // Construct the question HTML
-    let multiQ = `
-      <div class="multiChoice" style="opacity: 0; width: 0;">
-        <div class="questionno">
-          <h2>Q<span class="qid">${index + 1}</span>:</h2>
-        </div>
-        <div class="Q-content">
-          <h3>${img ? `<img src="${img}" alt="image"><br>${Q}` : Q}</h3>
-        </div>
-        <div class="choices">
-          <ul>
-            <li class="choice">
-              <label><input type="radio" name="question${index + 1}" value="A" />
-                <span>${A}</span></label>
-            </li>
-            <li class="choice">
-              <label><input type="radio" name="question${index + 1}" value="B" />
-                <span>${B}</span></label>
-            </li>
-            <li class="choice">
-              <label><input type="radio" name="question${index + 1}" value="C" />
-                <span>${C}</span></label>
-            </li>
-            <li class="choice">
-              <label><input type="radio" name="question${index + 1}" value="D" />
-                <span>${D}</span></label>
-            </li>
-          </ul>
-        </div>
-        <button id="nextB" class="nextButton" disabled>Next</button>
-      </div>`;
-  
-    document.querySelector(".timeAttack").innerHTML = multiQ;
-  
-    // Animate showing the question
-    const multiChoiceEl = document.querySelector(".multiChoice");
-    multiChoiceEl.style.opacity = 1;
-    multiChoiceEl.style.width = "100%";
-  
-    // Set up answer handling
-    document.querySelectorAll(`.choice input[name="question${index + 1}"]`).forEach(input => {
-      input.addEventListener("change", () => {
-        handleAnswer(index, answer);
-      });
-    });
-  
-    // Next button event
-    document.getElementById("nextB").addEventListener("click", () => {
-      handleNextButton(index, maxquestion);
-    });
-  
-    startTimer();
-    document.querySelector(".point").style.display = "none";
+    if (!codelabid.includes(id) || id.includes("challenge")) {
+      const item = originalQuestions[index];
+      const img = item.properties.Img?.files[0]?.file.url;
+      console.log(img);
+      const Q = item.properties.Name.title[0]?.text.content;
+      const A = item.properties.A.rich_text[0]?.text.content;
+      const B = item.properties.B.rich_text[0]?.text.content;
+      const C = item.properties.C.rich_text[0]?.text.content;
+      const D = item.properties.D.rich_text[0]?.text.content;
+      const answer = item.properties.Answer.rich_text[0].text.content;
+      //     if (img != null) {
+      //       let multiQ = `<div class="multiChoice" style="opacity: 0; width: 0;">
+      //   <div class="questionno">
+      //     <h2>Q<span class="qid">${index + 1}</span>:</h2>
+      //   </div>
+      //   <div class="Q-content">
+      //     <h3><img src="${img}" alt="anh">
+      //     <br>
+      //     ${Q}</h3>
+      //   </div>
+      //   <div class="choices">
+      //     <ul>
+      //       <li class="choice">
+      //         <label><input type="radio" name="question${index + 1}" value="A" />
+      //           <span>${A}</span></label>
+      //       </li>
+      //       <li class="choice">
+      //         <label><input type="radio" name="question${index + 1}" value="B" />
+      //           <span>${B}</span></label>
+      //       </li>
+      //       <li class="choice">
+      //         <label><input type="radio" name="question${index + 1}" value="C" />
+      //           <span>${C}</span></label>
+      //       </li>
+      //       <li class="choice">
+      //         <label><input type="radio" name="question${index + 1}" value="D" />
+      //           <span>${D}</span></label>
+      //       </li>
+      //     </ul>
+      //   </div>
+      //   <button id="nextB" class="nextButton" disabled>Next</button>
+      // </div>`;
+      //       $(".timeAttack").empty().append(multiQ);
+      //     } else {
+      //       let multiQ = `<div class="multiChoice" style="opacity: 0; width: 0;">
+      //     <div class="questionno">
+      //       <h2>Q<span class="qid">${index + 1}</span>:</h2>
+      //     </div>
+      //     <div class="Q-content">
+      //       <h3>
+      //       ${Q}</h3>
+      //     </div>
+      //     <div class="choices">
+      //       <ul>
+      //         <li class="choice">
+      //           <label><input type="radio" name="question${index + 1}" value="A" />
+      //             <span>${A}</span></label>
+      //         </li>
+      //         <li class="choice">
+      //           <label><input type="radio" name="question${index + 1}" value="B" />
+      //             <span>${B}</span></label>
+      //         </li>
+      //         <li class="choice">
+      //           <label><input type="radio" name="question${index + 1}" value="C" />
+      //             <span>${C}</span></label>
+      //         </li>
+      //         <li class="choice">
+      //           <label><input type="radio" name="question${index + 1}" value="D" />
+      //             <span>${D}</span></label>
+      //         </li>
+      //       </ul>
+      //     </div>
+      //     <button id="nextB" class="nextButton" disabled>Next</button>
+      //   </div>`;
+      //       $(".timeAttack").empty().append(multiQ);
+      //     }
+      //     $(".multiChoice").animate({ opacity: 1, width: "100%" }, 500, function () {
+      //       $(`.choice input[name="question${index + 1}"]`).on("change", function () {
+      //         handleAnswer(index, answer);
+      //       });
+
+      //       $("#nextB").on("click", function () {
+      //         handleNextButton(index, maxquestion);
+      //       });
+      //     });
+      //     startTimer();
+      //     $(".point").hide();
+    }
+    if (codelabid.includes(id)) {
+      const item = originalQuestions[index];
+      const img = item.properties.img?.rich_text[0];
+      console.log(img);
+      const Q = item.properties.question.rich_text[0]?.text.content;
+      const A = item.properties.A.rich_text[0]?.text.content;
+      const B = item.properties.B.rich_text[0]?.text.content;
+      const C = item.properties.C.rich_text[0]?.text.content;
+      const D = item.properties.D.rich_text[0]?.text.content;
+      const E = item.properties.E?.rich_text[0]?.text.content;
+      const answer = item.properties.correct.rich_text[0].text.content;
+      //     if (img != null) {
+      //       let multiQ = `<div class="multiChoice" style="opacity: 0; width: 0;">
+      //   <div class="questionno">
+      //     <h2>Q<span class="qid">${index + 1}</span>:</h2>
+      //   </div>
+      //   <div class="Q-content">
+      //     <h3><img src="${img}" alt="anh">
+      //     <br>
+      //     ${Q}</h3>
+      //   </div>
+      //   <div class="choices">
+      //     <ul>
+      //       <li class="choice">
+      //         <label><input type="radio" name="question${index + 1}" value="A" />
+      //           <span>${A}</span></label>
+      //       </li>
+      //       <li class="choice">
+      //         <label><input type="radio" name="question${index + 1}" value="B" />
+      //           <span>${B}</span></label>
+      //       </li>
+      //       <li class="choice">
+      //         <label><input type="radio" name="question${index + 1}" value="C" />
+      //           <span>${C}</span></label>
+      //       </li>
+      //       <li class="choice">
+      //         <label><input type="radio" name="question${index + 1}" value="D" />
+      //           <span>${D}</span></label>
+      //       </li>
+      //       <li class="choice  ${E ? "" : "hidden"}">
+      //       <label><input type="radio" name="question${index + 1}" value="E" />
+      //       <span>${E}</span></label>
+      //     </li>
+      //     </ul>
+      //   </div>
+      //   <button id="nextB" class="nextButton" disabled>Next</button>
+      // </div>`;
+      //       $(".timeAttack").empty().append(multiQ);
+      //     } else {
+      //       let multiQ = `<div class="multiChoice" style="opacity: 0; width: 0;">
+      //     <div class="questionno">
+      //       <h2>Q<span class="qid">${index + 1}</span>:</h2>
+      //     </div>
+      //     <div class="Q-content">
+      //       <h3>
+      //       ${Q}</h3>
+      //     </div>
+      //     <div class="choices">
+      //       <ul>
+      //         <li class="choice">
+      //           <label><input type="radio" name="question${index + 1}" value="A" />
+      //             <span>${A}</span></label>
+      //         </li>
+      //         <li class="choice">
+      //           <label><input type="radio" name="question${index + 1}" value="B" />
+      //             <span>${B}</span></label>
+      //         </li>
+      //         <li class="choice">
+      //           <label><input type="radio" name="question${index + 1}" value="C" />
+      //             <span>${C}</span></label>
+      //         </li>
+      //         <li class="choice">
+      //           <label><input type="radio" name="question${index + 1}" value="D" />
+      //             <span>${D}</span></label>
+      //         </li>
+      //         <li class="choice  ${E ? "" : "hidden"}">
+      //         <label><input type="radio" name="question${index + 1}" value="E" />
+      //           <span>${E}</span></label>
+      //       </li>
+      //       </ul>
+      //     </div>
+      //     <button id="nextB" class="nextButton" disabled>Next</button>
+      //   </div>`;
+      //       $(".timeAttack").empty().append(multiQ);
+      //     }
+      //     $(".multiChoice").animate({ opacity: 1, width: "100%" }, 500, function () {
+      //       $(`.choice input[name="question${index + 1}"]`).on("change", function () {
+      //         handleAnswer(index, answer);
+      //       });
+
+      //       $("#nextB").on("click", function () {
+      //         handleNextButton(index, maxquestion);
+      //       });
+      //     });
+      //     startTimer();
+
+      //     $(".point").hide();
+    }
   }
 
-  
   function handleAnswer(correctAnswer) {
     clearInterval(timer); // Stop the timer
     let timeBonus = Math.floor((timeLeft / 2) * 10);
@@ -244,10 +385,12 @@ export default function MultiQ() {
 
     setUserAnswers((prevAnswers) => [
       ...prevAnswers,
-      originalQuestions[currentIndex].properties.Answer.rich_text[0].text.content,
+      originalQuestions[currentIndex].properties.Answer.rich_text[0].text
+        .content,
     ]);
     // Enable next button
-    document.getElementById("nextB").disabled = false;
+    // document.getElementById("nextB").disabled = false;
+    setShowing(true);
   }
 
   function startTimer() {
@@ -267,13 +410,16 @@ export default function MultiQ() {
   }
 
   function handleTimeUp() {
-    const correctAnswer = originalQuestions[currentIndex]?.properties?.Answer?.rich_text[0]?.text?.content;
+    const correctAnswer =
+      originalQuestions[currentIndex]?.properties?.Answer?.rich_text[0]?.text
+        ?.content;
     if (!selectedAnswer) {
       setStreak(0);
     }
 
     // Enable next button
-    document.getElementById("nextB").disabled = false;
+    // document.getElementById("nextB").disabled = false;
+    setShowing(true);
   }
 
   function handleNextButton(maxQuestions) {
@@ -285,184 +431,185 @@ export default function MultiQ() {
       showQuestion(currentIndex + 1, maxQuestions);
     }, 500);
 
-    document.getElementById("nextB").disabled = true;
+    // document.getElementById("nextB").disabled = true;
+    setShowing(false);
   }
 
-  function showQuestion(index, maxQuestions) {
-    if (index >= maxQuestions) return;
-
-    // Reset selected answer
-    setSelectedAnswer(null);
-    startTimer();
+  function restartQuiz() {
+    setScore(0);
+    setStreak(0);
+    setPoints(0);
+    setLoading(true);
+    setupQuiz();
+    setProgressWidth(0);
   }
 
   useEffect(() => {
     fetchData();
   }, []);
 
-
-
   return (
     <>
-    <Head>  
-    <meta charSet="UTF-8" />
-  <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  {/* Add API to call for topic's name */}
-  <title>English - Multiple Choice</title>
-  <link rel="icon" type="image/x-icon" href="../favicon.ico" />
-  {/* GG analytics */}
-  </Head>
-  <TopNav/>
-  <div className="main_content">
-    <div className="background" />
-    <div className="progress_bar">
-      <div className="indicator" />
-    </div>
-    <div className="limiters">
-      <div className="timer">
-        <i className="fa-solid fa-clock" />
-        <div id="timerText" />
-      </div>
-      <div className="point">
-        <div className="correct-point">
-          <i className="fa-solid fa-check" />
-          <div id="points" />
+      <Head>
+        <meta charSet="UTF-8" />
+        <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        {/* Add API to call for topic's name */}
+        <title>English - Multiple Choice</title>
+        <link rel="icon" type="image/x-icon" href="../favicon.ico" />
+        {/* GG analytics */}
+      </Head>
+      <TopNav />
+      <div className="main_content">
+        <div className="background" />
+        <div className="progress_bar">
+          <div className="indicator" />
         </div>
-        <hr />
-        <div className="bonus-point">
-          <i className="fa-solid fa-fire" />
-          <div id="bonus" />
-        </div>
-      </div>
-      <div className="streak">
-        <i className="fa-solid fa-fire" />
-        <div id="streak" />
-      </div>
-    </div>
-    <div className="timeAttack">
-      <div className="multiChoice">
-        <div className="questionno-skeleton">
-          <h2>
-            <span className="qid" />:
-          </h2>
-        </div>
-        <div className="Q-content-skeleton">
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        </div>
-        <div className="choices">
-          <ul>
-            <li id="choice-skeleton">
-              <label>
-                <input
-                  type="radio"
-                  name="question${
-            1
-          }"
-                  defaultValue="A"
-                />
-                <span>
-                  {" "}
-                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                </span>
-              </label>
-            </li>
-            <li id="choice-skeleton">
-              <label>
-                <input
-                  type="radio"
-                  name="question${
-            1
-          }"
-                  defaultValue="B"
-                />
-                <span>
-                  {" "}
-                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                </span>
-              </label>
-            </li>
-            <li id="choice-skeleton">
-              <label>
-                <input
-                  type="radio"
-                  name="question${
-            1
-          }"
-                  defaultValue="C"
-                />
-                <span>
-                  {" "}
-                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                </span>
-              </label>
-            </li>
-            <li id="choice-skeleton">
-              <label>
-                <input
-                  type="radio"
-                  name="question${
-            1
-          }"
-                  defaultValue="D"
-                />
-                <span>
-                  {" "}
-                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                </span>
-              </label>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </div>
-    <div className="result_shower">
-      <h1>You Archived</h1>
-      <div className="result_content">
-        <div className="percentage-result">
-          <div className="circular-progress">
-            <span className="circular-value">0%</span>
+        <div className="limiters">
+          <div className="timer">
+            <i className="fa-solid fa-clock" />
+            <div id="timerText" />
+          </div>
+          <div className="point">
+            <div className="correct-point">
+              <i className="fa-solid fa-check" />
+              <div id="points" />
+            </div>
+            <hr />
+            <div className="bonus-point">
+              <i className="fa-solid fa-fire" />
+              <div id="bonus" />
+            </div>
+          </div>
+          <div className="streak">
+            <i className="fa-solid fa-fire" />
+            <div id="streak" />
           </div>
         </div>
-        <div className="point-result">
-          <div className="score-points" />
-          <div className="max-streak" />
+        <div className="timeAttack">
+          <div className="multiChoice">
+            <div className="questionno-skeleton">
+              <h2>
+                <span className="qid" />:
+              </h2>
+            </div>
+            <div className="Q-content-skeleton">
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            </div>
+            <div className="choices">
+              <ul>
+                <li id="choice-skeleton">
+                  <label>
+                    <input
+                      type="radio"
+                      name="question${
+            1
+          }"
+                      defaultValue="A"
+                    />
+                    <span>
+                      {" "}
+                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    </span>
+                  </label>
+                </li>
+                <li id="choice-skeleton">
+                  <label>
+                    <input
+                      type="radio"
+                      name="question${
+            1
+          }"
+                      defaultValue="B"
+                    />
+                    <span>
+                      {" "}
+                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    </span>
+                  </label>
+                </li>
+                <li id="choice-skeleton">
+                  <label>
+                    <input
+                      type="radio"
+                      name="question${
+            1
+          }"
+                      defaultValue="C"
+                    />
+                    <span>
+                      {" "}
+                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    </span>
+                  </label>
+                </li>
+                <li id="choice-skeleton">
+                  <label>
+                    <input
+                      type="radio"
+                      name="question${
+            1
+          }"
+                      defaultValue="D"
+                    />
+                    <span>
+                      {" "}
+                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    </span>
+                  </label>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div className="result_shower">
+          <h1>You Archived</h1>
+          <div className="result_content">
+            <div className="percentage-result">
+              <div className="circular-progress">
+                <span className="circular-value">0%</span>
+              </div>
+            </div>
+            <div className="point-result">
+              <div className="score-points" />
+              <div className="max-streak" />
+            </div>
+          </div>
         </div>
       </div>
-    </div>
-  </div>
-  <div className="interact">
-    <button id="restartButton">New Questions</button>
-    <button id="redoButton">Try Again</button>
-    <button id="challenge__continue">Continue</button>
-    {/* <button id="nextB" class="nextButton" disabled>Next</button> */}
-  </div>
-  {/* <div id="Timer">adafa</div> */}
-  <Footer/>
+      <div className="interact">
+        <button id="restartButton">New Questions</button>
+        <button id="redoButton">Try Again</button>
+        <button id="challenge__continue">Continue</button>
+        {/* <button id="nextB" class="nextButton" disabled>Next</button> */}
+      </div>
+      {/* <div id="Timer">adafa</div> */}
+      <Footer />
     </>
-  )}
+  );
+}

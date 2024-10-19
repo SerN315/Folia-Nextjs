@@ -1,5 +1,5 @@
-'use client';
-import '../scss/cate.scss';
+"use client";
+import "../scss/cate.scss";
 import ScrollableList from "../Component/scrollableComponent";
 import { useEffect, useState } from "react";
 import { getDatabase } from "../js/api/databaseAPI";
@@ -12,75 +12,73 @@ import "../scss/cate_2.scss";
 export default function Category2() {
   const searchParams = useSearchParams();
   const id = searchParams.get("topic");
-  
+
   const [topics, setTopics] = useState([]);
   const [loading, setLoading] = useState(true);
 
-    // Define images for each topic type
-    const heroImages = {
-        "folia-asvab": {
-          img1: "./img/Rectangle1670.png",
-          img2: "./img/Rectangle1671.png",
-          img3: "./img/Rectangle1672.png",
-        },
-        "folia-SAT": {
-          img1: "./img/sat-hero-1.png",
-          img2: "./img/sat-hero-2.png",
-          img3: "./img/sat-hero-3.png",
-        },
-        "folia-GED": {
-          img1: "./img/ged-hero-1.png",
-          img2: "./img/ged-hero-2.png",
-          img3: "./img/ged-hero-3.png",
-        },
-        "folia-NCLEX":{},
-        "folia-ACT":{},
-        "folia-GRE":{},
-        // Add more images as needed for other topics
-      };
-    
-      // Get the appropriate images based on the topic
-      const images = heroImages[id] || {
-        img1: "./img/Rectangle1670.png", // default image 1
-        img2: "./img/Rectangle1671.png", // default image 2
-        img3: "./img/Rectangle1672.png", // default image 3
-      };
+  // Define images for each topic type
+  const heroImages = {
+    "folia-asvab": {
+      img1: "./img/Rectangle1670.png",
+      img2: "./img/Rectangle1671.png",
+      img3: "./img/Rectangle1672.png",
+    },
+    "folia-SAT": {
+      img1: "./img/sat-hero-1.png",
+      img2: "./img/sat-hero-2.png",
+      img3: "./img/sat-hero-3.png",
+    },
+    "folia-GED": {
+      img1: "./img/ged-hero-1.png",
+      img2: "./img/ged-hero-2.png",
+      img3: "./img/ged-hero-3.png",
+    },
+    "folia-NCLEX": {},
+    "folia-ACT": {},
+    "folia-GRE": {},
+    // Add more images as needed for other topics
+  };
 
-         // Define images for each topic type
-    const texts = {
-      "folia-asvab": {
-        text1: "Wecolome to Folia-ASVAB",
-        text2: "Start Practicing For Your ASVAB Certificate ",
-      },
-      "folia-SAT": {
-        text1: "Wecolome to Folia-SAT",
-        text2: "Start Practicing For Your SAT Certificate ",
-      },
-      "folia-GED": {
-        text1: "Wecolome to Folia-GED",
-        text2: "Start Practicing For Your GED Certificate ",
-      },
-      "folia-NCLEX":{
-        text1: "Wecolome to Folia-NCLEX",
-        text2: "Start Practicing For Your NCLEX Certificate ",
-      },
-      "folia-ACT":{
-        text1: "Wecolome to Folia-ACT",
-        text2: "Start Practicing For Your ACT Certificate ",
-      },
-      "folia-GRE":{
-        text1: "Wecolome to Folia-GRE",
-        text2: "Start Practicing For Your GRE Certificate ",
-      },
-    };
-  
-    // Get the appropriate images based on the topic
-    const text = texts[id] || {
-      text1: "Wecolome to Folia",
-      text2: "Start Practicing For Your Certificate ",
-    };
+  // Get the appropriate images based on the topic
+  const images = heroImages[id] || {
+    img1: "./img/Rectangle1670.png", // default image 1
+    img2: "./img/Rectangle1671.png", // default image 2
+    img3: "./img/Rectangle1672.png", // default image 3
+  };
 
+  // Define images for each topic type
+  const texts = {
+    "folia-asvab": {
+      text1: "Wecolome to Folia-ASVAB",
+      text2: "Start Practicing For Your ASVAB Certificate ",
+    },
+    "folia-SAT": {
+      text1: "Wecolome to Folia-SAT",
+      text2: "Start Practicing For Your SAT Certificate ",
+    },
+    "folia-GED": {
+      text1: "Wecolome to Folia-GED",
+      text2: "Start Practicing For Your GED Certificate ",
+    },
+    "folia-NCLEX": {
+      text1: "Wecolome to Folia-NCLEX",
+      text2: "Start Practicing For Your NCLEX Certificate ",
+    },
+    "folia-ACT": {
+      text1: "Wecolome to Folia-ACT",
+      text2: "Start Practicing For Your ACT Certificate ",
+    },
+    "folia-GRE": {
+      text1: "Wecolome to Folia-GRE",
+      text2: "Start Practicing For Your GRE Certificate ",
+    },
+  };
 
+  // Get the appropriate images based on the topic
+  const text = texts[id] || {
+    text1: "Wecolome to Folia",
+    text2: "Start Practicing For Your Certificate ",
+  };
 
   useEffect(() => {
     // Define database IDs for each topic type
@@ -90,7 +88,7 @@ export default function Category2() {
       "folia-GED": "e7d0c4eb138342cfa988c5f39ea55ed6",
       "folia-NCLEX": "5aef13734f3345269127919131ce875d",
       "folia-ACT": "818ef610f58041d4a760af1349e23791",
-      "folia-GRE" : "e40b9cb547044e8d92bc1f4385bdaa52",
+      "folia-GRE": "e40b9cb547044e8d92bc1f4385bdaa52",
     };
 
     // Function to load topics
@@ -102,11 +100,14 @@ export default function Category2() {
       const newTopics = reversedResponse.map((item) => {
         const topicID = item.id;
         const name = item.properties.Name.title[0]?.plain_text;
-        const SVG = item.properties?.SVG?.rich_text?.[0]?.plain_text ?? item.properties?.img?.rich_text?.[0]?.plain_text;
+        const SVG =
+          item.properties?.SVG?.rich_text?.[0]?.plain_text ??
+          item.properties?.img?.rich_text?.[0]?.plain_text;
         const des = item.properties.Des.rich_text[0]?.plain_text;
-        const fname = item.properties.fname?.rich_text[0]?.plain_text ?? item.properties.Fullname.rich_text[0]?.plain_text;
+        const fname =
+          item.properties.fname?.rich_text[0]?.plain_text ??
+          item.properties.Fullname.rich_text[0]?.plain_text;
         const db = item.properties.db?.rich_text[0]?.plain_text ?? topicID; // Default to topicID if no db field
-      
 
         // Check if the topic is already in local storage
         if (!storedTopics.includes(topicID)) {
@@ -134,7 +135,6 @@ export default function Category2() {
     } else {
       setLoading(false); // If no matching ID, just stop loading
     }
-
   }, [id]);
 
   return (
@@ -146,16 +146,28 @@ export default function Category2() {
         <title>Folia</title>
       </Head>
 
-      <TopNav/>
+      <TopNav />
       <div className="home__hero-section">
         <div className="home__hero-section__container">
           {/* Hero image and text content */}
           <div className="home-hero-img">
             <div className="home-hero-img__container">
               {/* Hero images */}
-              <img src={images.img1} className="home-hero-img__container__img1" loading="lazy" />
-              <img src={images.img2} className="home-hero-img__container__img2" loading="lazy" />
-              <img src={images.img3} className="home-hero-img__container__img3" loading="lazy" />
+              <img
+                src={images.img1}
+                className="home-hero-img__container__img1"
+                loading="lazy"
+              />
+              <img
+                src={images.img2}
+                className="home-hero-img__container__img2"
+                loading="lazy"
+              />
+              <img
+                src={images.img3}
+                className="home-hero-img__container__img3"
+                loading="lazy"
+              />
             </div>
           </div>
           <div className="col-lg-6 home-hero-text">
@@ -173,52 +185,62 @@ export default function Category2() {
 
       <div className="main-container container-fluid">
         <div className="shower">
-          <h1 className='shower__title'>Choose your prefrences topic</h1>
-          <div id="topic-list" className={`topic-list ${loading ? 'loading' : ''}`}>
+          <h1 className="shower__title">Choose your prefrences topic</h1>
+          <div
+            id="topic-list"
+            className={`topic-list ${loading ? "loading" : ""}`}
+          >
             {loading ? (
-        <div id="topic-list" class="topic-list loading">
-        <div class="card topic">
-          <div class="topic-img">
-            <div class="spinner-border" role="status">
-              <span class="visually-hidden">Loading...</span>
-            </div>
-          </div>
-          <div class="topic-title">
-            <h2></h2>
-            <h3></h3>
-            <h2></h2>
-          </div>
-        </div>
-        <div class="card topic">
-          <div class="topic-img">
-            <div class="spinner-border" role="status">
-              <span class="visually-hidden">Loading...</span>
-            </div>
-          </div>
-          <div class="topic-title">
-            <h2></h2>
-            <h3></h3>
-            <h2></h2>
-          </div>
-        </div>
-        <div class="card topic">
-          <div class="topic-img">
-            <div class="spinner-border" role="status">
-              <span class="visually-hidden">Loading...</span>
-            </div>
-          </div>
-          <div class="topic-title">
-            <h2></h2>
-            <h3></h3>
-            <h2></h2>
-          </div>
-        </div>
-      </div>
+              <div id="topic-list" class="topic-list loading">
+                <div class="card topic">
+                  <div class="topic-img">
+                    <div class="spinner-border" role="status">
+                      <span class="visually-hidden">Loading...</span>
+                    </div>
+                  </div>
+                  <div class="topic-title">
+                    <h2></h2>
+                    <h3></h3>
+                    <h2></h2>
+                  </div>
+                </div>
+                <div class="card topic">
+                  <div class="topic-img">
+                    <div class="spinner-border" role="status">
+                      <span class="visually-hidden">Loading...</span>
+                    </div>
+                  </div>
+                  <div class="topic-title">
+                    <h2></h2>
+                    <h3></h3>
+                    <h2></h2>
+                  </div>
+                </div>
+                <div class="card topic">
+                  <div class="topic-img">
+                    <div class="spinner-border" role="status">
+                      <span class="visually-hidden">Loading...</span>
+                    </div>
+                  </div>
+                  <div class="topic-title">
+                    <h2></h2>
+                    <h3></h3>
+                    <h2></h2>
+                  </div>
+                </div>
+              </div>
             ) : (
               topics.map((topic) => (
-                <div className="card topic" data-topic-id={topic.topicID} key={topic.topicID}>
-                  <a href={`multipleChoice?topic=${topic.db}&tag=${topic.fname}`}>
-                    <div className="topic-img" style={{ backgroundImage: `url(${topic.SVG})` }}></div>
+                <div
+                  className="card topic"
+                  data-topic-id={topic.topicID}
+                  key={topic.topicID}
+                >
+                  <a href={`multichoices?topic=${topic.db}&tag=${topic.fname}`}>
+                    <div
+                      className="topic-img"
+                      style={{ backgroundImage: `url(${topic.SVG})` }}
+                    ></div>
                     <div className="topic-title">
                       <h2>{topic.name}</h2>
                       <h3>{topic.des}</h3>
@@ -231,7 +253,7 @@ export default function Category2() {
           </div>
         </div>
       </div>
-      
+
       <Footer />
     </>
   );
