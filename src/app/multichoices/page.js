@@ -50,7 +50,8 @@ export default function MultiQ() {
   const [timer, setTimer] = useState(null); // Initialize timer
   const [isShowing, setShowing] = useState(false);
   const [isFinish, setFinish] = useState(false);
-  const [progressWidth, setProgressWidth] = useState(0); // For the progress bar
+  const [progress, setProgress] = useState(0);
+  const [progressWidth, setProgressWidth] = useState(0);
 
   let codelabid = [
     "602c19aa0a48437aa38b322e5863d7b6",
@@ -123,9 +124,70 @@ export default function MultiQ() {
     setFinish(false);
   }
 
+  useEffect(() => {
+    if (isFinish) {
+      const speed = 10; // Adjust speed of animation
+      let targetPercentage = 0;
+      if (!codelabid.includes(id) && id.includes("challenge")) {
+        targetPercentage = (score / questions) * 100;
+      }
+      if (!codelabid.includes(id) && id.includes("challenge")) {
+        targetPercentage = (score / shuffledQuestions) * 100;
+      }
+      if (!codelabid.includes(id) && id.includes("challenge")) {
+        targetPercentage = (score / shuffledQuestions) * 100;
+      }
+
+      let progressStartValue = 0;
+
+      const progressInterval = setInterval(() => {
+        if (progressStartValue < targetPercentage) {
+          progressStartValue++;
+          setProgress(progressStartValue);
+        } else {
+          clearInterval(progressInterval);
+        }
+      }, speed);
+
+      return () => clearInterval(progressInterval);
+    }
+  }, [isFinish, score, total]);
+
+  // Rendering Result Section
+  const renderResult = () => {
+    // const percentage = ((correctCount / totalMatchingPairs) * 100).toFixed(0);
+
+    return (
+      <div className="result_shower">
+        <h1>You Achieved</h1>
+        <div className="result_content">
+          <div className="percentage-result">
+            <div
+              className="circular-progress"
+              style={{
+                background: `conic-gradient(#3fbd00 ${
+                  progress * 3.6
+                }deg, #ededed 0deg)`,
+              }}
+            >
+              <span className="circular-value">{progress}%</span>
+            </div>
+          </div>
+          <div className="point-result">
+            <div className="score-points">Your Score: {score}</div>
+            <div className="max-streak">
+              Best Streak this run: {highestStreak}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   //Hien Cac cau hoi
   function showQuestion(index, maxquestion) {
     if (index >= maxquestion) {
+      setFinish(true);
       if (id.includes("challenge")) {
         // $("#challenge__continue").show();
         // $(".result_shower").hide();
@@ -148,32 +210,14 @@ export default function MultiQ() {
         //   localStorage.setItem("points", points);
         // }
       }
-      let progressStartValue = -1;
-      const speed = 10;
-      let percentage = (score / maxquestion) * 100;
-      if (!isNaN(percentage)) {
-        let progress = setInterval(() => {
-          progressStartValue++;
-          $(".circular-value").text(`${progressStartValue}%`);
-          $(".circular-progress").css(
-            "background",
-            `conic-gradient(#3fbd00 ${
-              progressStartValue * 3.6
-            }deg, #ededed 0deg)`
-          );
-          if (progressStartValue == percentage) {
-            clearInterval(progress);
-          }
-        }, speed);
-        const userId = auth.currentUser.uid;
-        saveQuizData(points, highestStreak, originalQuestions, userId);
-      }
+      renderResult();
+      // const userId = auth.currentUser.uid;
+      // saveQuizData(points, highestStreak, originalQuestions, userId);
       $(".indicator").animate({ width: "100%", borderRadius: "none" }, 1);
-      $(".score-points").text(`Your Score: ${points}`);
-      $(".max-streak").text(`Best Streak this run: ${highestStreak}`);
-      $(".timer").hide();
-      $(".streak").hide();
-      $(".point").hide();
+      // $(".max-streak").text(`Best Streak this run: ${highestStreak}`);
+      // $(".timer").hide();
+      // $(".streak").hide();
+      // $(".point").hide();
       console.log(userAnswers);
       console.log("quiz finish", score);
       console.log(percentage);
@@ -423,8 +467,8 @@ export default function MultiQ() {
   }
 
   function handleNextButton(maxQuestions) {
-    const newProgress = (progressWidth + 10) % 100;
-    setProgressWidth(newProgress);
+    // const newProgress = (progressWidth + 10) % 100;
+    // setProgressWidth(newProgress);
 
     setTimeout(() => {
       setCurrentIndex((prevIndex) => prevIndex + 1);
