@@ -234,19 +234,27 @@ body {
       font-weight: bold;
       color: green;
     }
-    .dapan {
-      display: flex;
-      width: 40%;
+    .Answers{
+      @include flexP;
+      flex-direction: row;
+    .defaultAnswer{
+      @include flexP;
+      flex-direction: column;
+      padding-bottom: 20px;
+      .dapan{
+      display: flex;;
       background: #00a900;
       color: white;
       height: 40px;
-      padding: 30px;
+      padding: 30px 50px 30px 50px;
+      margin: 0 10px 0 10px;
       border-radius: 20px;
       text-align: center;
       align-items: center;
       justify-content: center;
+      }
     }
-
+  }
     .question {
       height: 150px;
       font-size: 20px;

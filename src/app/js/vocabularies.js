@@ -429,41 +429,41 @@
 //   );
 // };
 
-// // KHỞI TẠO MỘT FIRESTORE INSTANCE
-// const firestore = getFirestore();
-// onAuthStateChanged(auth, (user) => {
-//   if (user != null) {
-//     const userid = auth.currentUser.uid;
-//     const favoriteRef = doc(firestore, "favorites", userid);
-//     getDoc(favoriteRef).then((docSnapshot) => {
-//       if (docSnapshot.exists()) {
-//         let favoriteList = docSnapshot.data().favoriteList;
-//         if (phrase) {
-//           getVocabBasedOnSearch(favoriteList, favoriteRef, firestore);
-//         } else {
-//           getVocabBasedOnTopic(favoriteList, favoriteRef, firestore);
-//         }
-//       } else {
-//         const initialData = {
-//           favoriteList: [],
-//         };
-//         setDoc(favoriteRef, initialData).then(() => {
-//           if (phrase) {
-//             getVocabBasedOnSearch([], favoriteRef);
-//           } else {
-//             getVocabBasedOnTopic([], favoriteRef);
-//           }
-//         });
-//       }
-//     });
-//   } else {
-//     if (phrase) {
-//       getVocabBasedOnSearch(null, null);
-//     } else {
-//       getVocabBasedOnTopic(null, null);
-//     }
-//   }
-// });
+// KHỞI TẠO MỘT FIRESTORE INSTANCE
+const firestore = getFirestore();
+onAuthStateChanged(auth, (user) => {
+  if (user != null) {
+    const userid = auth.currentUser.uid;
+    const favoriteRef = doc(firestore, "favorites", userid);
+    getDoc(favoriteRef).then((docSnapshot) => {
+      if (docSnapshot.exists()) {
+        let favoriteList = docSnapshot.data().favoriteList;
+        if (phrase) {
+          getVocabBasedOnSearch(favoriteList, favoriteRef, firestore);
+        } else {
+          getVocabBasedOnTopic(favoriteList, favoriteRef, firestore);
+        }
+      } else {
+        const initialData = {
+          favoriteList: [],
+        };
+        setDoc(favoriteRef, initialData).then(() => {
+          if (phrase) {
+            getVocabBasedOnSearch([], favoriteRef);
+          } else {
+            getVocabBasedOnTopic([], favoriteRef);
+          }
+        });
+      }
+    });
+  } else {
+    if (phrase) {
+      getVocabBasedOnSearch(null, null);
+    } else {
+      getVocabBasedOnTopic(null, null);
+    }
+  }
+});
 
 // // ĐÓNG VÀ MỞ MODAL
 // const model = function (localData = undefined) {

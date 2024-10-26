@@ -173,6 +173,7 @@ export default function DragDrop() {
               fetchedData = fetchedData.filter(
                 (item) => !originalQuestions.some((q) => q.id === item.id)
               );
+              fetchedData = fetchedData.slice(0, 5);
               setTotalMatchingPairs(fetchedData.length);
             }
 
@@ -212,6 +213,7 @@ export default function DragDrop() {
         item.properties.Name?.title[0]?.plain_text ||
         "N/A",
       dropped: false, // Add 'dropped' property
+      source: "Drag and Drop",
     }));
 
     console.log("Initializing game with questions:", selectedQuestions);
@@ -336,14 +338,16 @@ const handlePlayAgain = () => {
     const data = {
       score: currentScore,
       originalQuestions: originalQuestions.map((question) => ({
-        question: question.Q || "N/A",
-        correctAnswer: question.answer || "N/A",
-        source: "d_and_d",
+        userAnswer:question.UserAnswer || "N/A",
+        question: question.properties.Name.title[0].plain_text || "N/A",
+        correctAnswer: question.properties.Answer_Content.formula.string || "N/A",
+        source: "Multiple Choices",
       })),
       highestStreak: currentHighestStreak,
       questions: currentQuestions,
       userId: userId,
       id: id,
+      type: "Drag and Drop",
       tag: id.includes("challenge") ? "Challenge" : "Practices",
       timestamp: serverTimestamp(),
     };
@@ -481,7 +485,6 @@ const handlePlayAgain = () => {
 
   // Rendering Result Section
   const renderResult = () => {
-    // const percentage = ((correctCount / totalMatchingPairs) * 100).toFixed(0);
 
     return (
       <div className="result_shower">

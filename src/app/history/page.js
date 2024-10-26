@@ -45,6 +45,7 @@ export default function History() {
               }));
               console.log("Fetched challenge history from Firestore:", fetchedChallenges);
               setChallengeData(fetchedChallenges);
+              
             }
           }, (error) => {
             console.error("Error fetching challenge history:", error);
@@ -63,6 +64,7 @@ export default function History() {
               }));
               console.log("Fetched practices history from Firestore:", fetchedPractices);
               setPracticesData(fetchedPractices);
+              console.log(fetchedPractices);
             }
           }, (error) => {
             console.error("Error fetching practices history:", error);
@@ -120,7 +122,8 @@ export default function History() {
         combinedQuestions.push({
           question: q.question || "No question provided.",
           correctAnswer: q.correctAnswer || "No answer provided.",
-          source: q.source || "Unknown Source",
+          userAnswer:q.userAnswer || "Skipped",
+          source: q.source || q.sources  || "Unknown Source",
         });
       });
     }
@@ -130,7 +133,8 @@ export default function History() {
         combinedQuestions.push({
           question: q.question || q.Q || "No question provided.",
           correctAnswer: q.correctAnswer || q.answer || "No answer provided.",
-          source: q.source || "Unknown Source",
+          userAnswer:q.userAnswer || "Skipped",
+          source: q.source || q.sources  || "Unknown Source",
         });
       });
     }
@@ -182,6 +186,9 @@ export default function History() {
                     onClick={() => handleModalToggle(data)}
                   >
                     <div className="vocabulary-word20">
+                      <div className="title">
+                      {data.id.replace(/_/g, ' ').replace(/^./, str => str.toUpperCase())}
+                      </div>
                       <div className="word">
                         <i className="fa-solid fa-star"></i> Score Achieved: {data.score}
                       </div>
@@ -200,13 +207,16 @@ export default function History() {
               {practicesData.length === 0 ? (
                 <p>You haven't completed any practices yet.</p>
               ) : (
-                practicesData.map((data) => (
+                practicesData.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)).map((data,index) => (
                   <div
                     key={data.id}
                     className="vocabulary show-modal"
                     onClick={() => handleModalToggle(data)}
                   >
                     <div className="vocabulary-word20">
+                    <div className="title">
+                       {index + 1}. {data.type}
+                      </div>
                       <div className="word">
                         <i className="fa-solid fa-star"></i> Score Achieved: {data.score}
                       </div>
@@ -233,12 +243,31 @@ export default function History() {
               selectedData.combinedQuestions.map((question, idx) => (
                 <div key={idx} className="question_box">
                   <h1>Question</h1>
-                  <div
-                    className="question"
-                    dangerouslySetInnerHTML={{ __html: question.question }}
-                  ></div>
+                  <div className="question">
+        {question.question.startsWith('http') && (
+          question.question.endsWith('.jpg') || 
+          question.question.endsWith('.jpeg') || 
+          question.question.endsWith('.png') || 
+          question.question.endsWith('.gif') ? (
+            <img src={question.question} alt="Question related" style={{ maxWidth: '100%', height: 'auto' }} />
+          ) : (
+            <div dangerouslySetInnerHTML={{ __html: question.question }} />
+          )
+        )}
+        {!question.question.startsWith('http') && (
+          <div dangerouslySetInnerHTML={{ __html: question.question.replace(/<img[^>]*>/g, '') }} />
+        )}
+      </div>
+                  <div className="Answers">
+                  <div className="defaultAnswer" style={{display:question.source!="Drag and Drop" ? "":"none"}}>
+                  <h2>Your Answer</h2>
+                  <div className="dapan" style={{backgroundColor:question.userAnswer != question.correctAnswer ? "red" : "#00a900" }}>{question.userAnswer}</div>
+                  </div>
+                  <div className="defaultAnswer">
                   <h2>Correct Answer</h2>
                   <div className="dapan">{question.correctAnswer}</div>
+                  </div>
+                  </div>
                   <p><strong>Source:</strong> {question.source}</p>
                 </div>
               ))

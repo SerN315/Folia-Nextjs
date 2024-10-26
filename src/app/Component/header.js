@@ -2,7 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Login from "../Component/loginUI";
-import { getDatabase2 } from "../js/api/databaseAPI";
+import { getDatabase } from "../js/api/databaseAPI";
 import { auth } from "../firebase/authenciation";
 import { signOut } from "firebase/auth";
 import {
@@ -129,7 +129,7 @@ export default function TopNav() {
       setSearchResultsVisible(false);
     } else {
       setSearchResultsVisible(true);
-      const response = await getDatabase2(`vocabularies?search=${value}`);
+      const response = await getDatabase(`vocabularies?search=${value}`);
       const sliceResponse = response.slice(0, 5);
       setVocab(
         sliceResponse.map((word) => ({

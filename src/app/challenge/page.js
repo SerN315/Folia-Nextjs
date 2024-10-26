@@ -103,6 +103,7 @@ export default function Challenge() {
   // Render challenge elements
   const displayElements = (elements) => {
     return elements.map((item) => {
+      const challengeId = item.id;
       const challengeName = item.properties.Name.title[0]?.plain_text; // Get challenge name from the API
       const relationIds = item.properties.Categories.multi_select.map(
         (rel) => rel.name
@@ -146,7 +147,7 @@ export default function Challenge() {
             ) : null}
             <div id="startchallenge">
               <a
-                href={`multichoices?topic=${name}&id=${challengeName}&cateID=${categories.join(
+                href={`multichoices?topic=${name}&id=${challengeId}&cateID=${categories.join(
                   ","
                 )}`}
               >

@@ -25,6 +25,7 @@ body {
 }
 
 .limiters {
+  padding-top:100px;
   width: 80%;
   @include flexP;
   justify-content: space-between;
@@ -92,7 +93,6 @@ body {
   height: 0;
 }
 .main_content {
-  height: 100vh;
   position: relative;
   top: 100px;
   @include flexP;
@@ -150,6 +150,7 @@ body {
     margin-left: 20px;
     border-radius: 5px;
     .nextButton {
+      top:20px;
       @include interactB;
       margin-right: 10px;
       background-color: #40bf008e;
@@ -247,6 +248,9 @@ body {
       }
       .correct-answer {
         background-color: $main-color;
+      }
+      .incorrect-answer {
+        background-color: rgb(250, 41, 41);
       }
     }
   }
