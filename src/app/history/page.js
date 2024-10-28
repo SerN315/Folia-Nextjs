@@ -2,8 +2,8 @@
 import { useEffect, useState } from "react";
 import { auth } from "../firebase/authenciation";
 import { getFirestore, collection, onSnapshot } from "firebase/firestore";
-import Footer from "../Component/footer";
-import TopNav from "../Component/header";
+//import Footer from "../Component/footer";
+// import TopNav from "../Component/header";
 import "../scss/history.scss";
 import "../scss/subnav.scss";
 
@@ -156,7 +156,7 @@ export default function History() {
 
   return (
     <>
-      <TopNav />
+      {/* <TopNav/> */}
       <div
         id="progress"
         style={{ display: scrollProgress > 10 ? "grid" : "none" }} // Adjust threshold as needed
@@ -278,7 +278,7 @@ export default function History() {
         </div>
       )}
 
-      <Footer />
+      {/* <Footer /> */}
     </>
   );
 }

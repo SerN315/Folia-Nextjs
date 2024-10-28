@@ -115,7 +115,7 @@ if (id == "folia-language") {
               const count = words.length;
               let img = topic.properties.SVG.rich_text[0]?.plain_text;
               let topicHTML = `
-              <a href="vocabularies?topic=${topicId}" class="topic">
+              <Link href="vocabularies?topic=${topicId}" class="topic">
                 <div class="topic__img">
                   <img src="${img}" />
                 </div>
@@ -123,7 +123,7 @@ if (id == "folia-language") {
                   <h3>${topicName}</h3>
                   <p>Total words: ${count}</p>
                 </div>
-              </a>
+              </Link>
               `;
               $(`#${cateID}`).append(topicHTML);
             }
@@ -158,7 +158,7 @@ if (id == "folia-asvab") {
       if (existingTopic.length === 0) {
         let cateindi = `
         <div class="card topic" data-topic-id="${topicID}">
-          <a href="multichoices?topic=${topicID}">
+          <Link href="multichoices?topic=${topicID}">
             <div class="topic-img" style="background-image:url('${SVG}');">
             </div>
           <div class="topic-title">
@@ -166,7 +166,7 @@ if (id == "folia-asvab") {
           <h3>${des}</h3>
           <h2 style="color:#226500">Practice</h2>
           </div>
-          </a>
+          </Link>
         </div>`;
         $(".topic-list").append(cateindi);
 
@@ -206,7 +206,7 @@ if (id == "folia-SAT") {
       if (existingTopic.length === 0) {
         let cateindi = `
         <div class="card topic" data-topic-id="${fname}">
-        <a href="multichoices?topic=${db}&tag=${fname}">
+        <Link href="multichoices?topic=${db}&tag=${fname}">
             <div class="topic-img" style="background-image:url('${SVG}');">
             </div>
           <div class="topic-title">
@@ -214,7 +214,7 @@ if (id == "folia-SAT") {
           <h3>${des}</h3>
           <h2 style="color:#226500">Practice</h2>
           </div>
-          </a>
+          </Link>
         </div>`;
         $(".topic-list").append(cateindi);
 
@@ -250,7 +250,7 @@ if (id == "folia-GED") {
       if (existingTopic.length === 0) {
         let cateindi = `
         <div class="card topic" data-topic-id="${fname}">
-        <a href="multichoices?topic=${db}&tag=${fname}">
+        <Link href="multichoices?topic=${db}&tag=${fname}">
             <div class="topic-img" style="background-image:url('${SVG}');">
             </div>
           <div class="topic-title">
@@ -258,7 +258,7 @@ if (id == "folia-GED") {
           <h3>${des}</h3>
           <h2 style="color:#226500">Practice</h2>
           </div>
-          </a>
+          </Link>
         </div>`;
         $(".topic-list").append(cateindi);
 
@@ -294,7 +294,7 @@ if (id == "folia-NCLEX") {
       if (existingTopic.length === 0) {
         let cateindi = `
         <div class="card topic" data-topic-id="${fname}">
-        <a href="multichoices?topic=${db}&tag=${fname}">
+        <Link href="multichoices?topic=${db}&tag=${fname}">
             <div class="topic-img" style="background-image:url('${SVG}');">
             </div>
           <div class="topic-title">
@@ -302,7 +302,7 @@ if (id == "folia-NCLEX") {
           <h3>${des}</h3>
           <h2 style="color:#226500">Practice</h2>
           </div>
-          </a>
+          </Link>
         </div>`;
         $(".topic-list").append(cateindi);
 
@@ -338,7 +338,7 @@ if (id == "folia-ACT") {
       if (existingTopic.length === 0) {
         let cateindi = `
         <div class="card topic" data-topic-id="${fname}">
-        <a href="multichoices?topic=${db}&tag=${fname}">
+        <Link href="multichoices?topic=${db}&tag=${fname}">
             <div class="topic-img" style="background-image:url('${SVG}');">
             </div>
           <div class="topic-title">
@@ -346,7 +346,7 @@ if (id == "folia-ACT") {
           <h3>${des}</h3>
           <h2 style="color:#226500">Practice</h2>
           </div>
-          </a>
+          </Link>
         </div>`;
         $(".topic-list").append(cateindi);
 
@@ -383,7 +383,7 @@ if (id == "folia-GRE") {
       if (existingTopic.length === 0) {
         let cateindi = `
         <div class="card topic" data-topic-id="${fname}">
-        <a href="multichoices?topic=${db}&tag=${fname}">
+        <Link href="multichoices?topic=${db}&tag=${fname}">
             <div class="topic-img" style="background-image:url('${SVG}');">
             </div>
           <div class="topic-title">
@@ -391,7 +391,7 @@ if (id == "folia-GRE") {
           <h3>${des}</h3>
           <h2 style="color:#226500">Practice</h2>
           </div>
-          </a>
+          </Link>
         </div>`;
         $(".topic-list").append(cateindi);
 

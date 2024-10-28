@@ -14,7 +14,7 @@
 //       item.properties.ImageDev.rollup.array[0].rich_text[0].plain_text;
 //     const wordCount = item.properties.WordsCountDev.formula.number;
 //     addedData = `
-//     <a href="vocabularies?topic=${topicId}" class="home__most-learned__list__item">
+//     <Link href="vocabularies?topic=${topicId}" class="home__most-learned__list__item">
 //       <div class="card text-bg-dark">
 //         <img src=${image} class="card-img"/>
 //         <div class="card-img-overlay">
@@ -23,7 +23,7 @@
 //           <p>Total Words: ${wordCount}</p>
 //         </div>
 //       </div>
-//     </a>
+//     </Link>
 //     `;
 //     mostLearnedTopic.insertAdjacentHTML("beforeend", addedData);
 //   });
@@ -61,7 +61,7 @@
 //         let wordCount = topic.properties.WordCountDev.formula.number;
 //         addedData = `
 //         <div class="home__suggest__cate__list__item">
-//           <a href="vocabularies?topic=${topicId}" style="width: 100%">
+//           <Link href="vocabularies?topic=${topicId}" style="width: 100%">
 //             <div class="card">
 //               <img
 //                 src=${topicImage}
@@ -73,7 +73,7 @@
 //                 <p class="card-body__wrd-cnt">Total Words: ${wordCount}</p>
 //               </div>
 //             </div>
-//           </a>
+//           </Link>
 //         `;
 //         cate.insertAdjacentHTML("beforeend", addedData);
 //       });

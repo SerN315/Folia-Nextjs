@@ -1,8 +1,8 @@
 "use client";
 import Image from "next/image";
 import Head from "next/head";
-import Footer from "../Component/footer";
-import TopNav from "../Component/header";
+//import Footer from "../Component/footer";
+// import TopNav from "../Component/header";
 import { useState, useEffect, useRef } from "react";
 import "../scss/flash.scss";
 import { onAuthStateChanged } from "firebase/auth";
@@ -11,6 +11,7 @@ import { useSearchParams } from "next/navigation";
 import { auth } from "../firebase/authenciation";
 import { getDatabase } from "../js/api/databaseAPI";
 import { fetchTopic } from "../js/api/specificPageApi";
+import Link from "next/link";
 
 export default function FlashCard() {
   const searchParams = useSearchParams(); // Access query params
@@ -98,8 +99,14 @@ export default function FlashCard() {
                 const word = item.properties.Name.title[0]?.plain_text;
                 const meaning = item.properties.Answer_Content.formula.string;
                 const pronunciation =
-                  item.properties.explanation.rich_text[0]?.plain_text;
+                item.properties.explanation.rich_text[0]?.plain_text;
                 const img = item.properties.Img.files?.[0]?.url;
+                console.log({
+                  word,
+                  meaning,
+                  pronunciation,
+                  img,
+                });
                 return {
                   word,
                   meaning,
@@ -339,14 +346,14 @@ export default function FlashCard() {
         <title>English - Flashcard</title>
         {/* Add any analytics scripts here if needed */}
       </Head>
-      <TopNav />
-      <main>
+      {/* <TopNav/> */}
+      <main className="flasharticle">
         {/* NAVIGATION PANEL */}
         <div className="nav-panel">
           <p className="nav-panel__navigation">
-            <a href="/cate?topic=folia-language" className="cate-link">
+            <Link href="/cate?topic=folia-language" className="cate-link">
               Categories
-            </a>{" "}
+            </Link>{" "}
             &gt; Category: <span className="category">...</span> &gt; Topic:
             <span className="topic">...</span>
           </p>
@@ -356,20 +363,20 @@ export default function FlashCard() {
             <i className="fa-solid fa-chevron-down fa-s" />
           </div>
           <div className="nav-panel__game-list">
-            <a
+            <Link
               href={`vocabularies?topic=${topicID}`}
               className="nav-panel__game-list__game-item vocabulary-link"
             >
               <i className="fa-solid fa-a" />
               <p>Vocabulary</p>
-            </a>
-            <a
+            </Link>
+            <Link
               href={`dragdrop?topic=${topicID}`}
               className="nav-panel__game-list__game-item d-and-d-link"
             >
               <i className="fa-regular fa-hand" />
               <p>Drag&amp;Drop</p>
-            </a>
+            </Link>
           </div>
         </div>
         {/* FLASHCARD MAIN CONTENT */}
@@ -414,7 +421,7 @@ export default function FlashCard() {
                           {ht2.includes(topicID) ? (
                             <>
                               <h3>{item.pronunciation}</h3>
-                              <h3>{item.meaning}</h3>
+                              {/* <h3>{item.meaning}</h3> */}
                             </>
                           ) : (
                             <>
@@ -526,7 +533,7 @@ export default function FlashCard() {
           )}
         </div>
       </main>
-      <Footer />
+      {/* <Footer /> */}
     </>
   );
 }

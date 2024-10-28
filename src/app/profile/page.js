@@ -10,10 +10,11 @@ import {
 } from "firebase/firestore";
 import { auth } from "../firebase/authenciation";
 import { onAuthStateChanged } from "firebase/auth";
-import TopNav from "../Component/header";
-import Footer from "../Component/footer";
+// import TopNav from "../Component/header";
+//import Footer from "../Component/footer";
 import Image from "next/image";
 import Head from "next/head";
+import Link from "next/link";
 
 export default function Profile() {
   const [userStreak, setUserStreak] = useState(0);
@@ -82,11 +83,11 @@ export default function Profile() {
         <link rel="stylesheet" href="/scss/pro5.scss" />
         <link rel="icon" type="image/x-icon" href="/favicon.ico" />
       </Head>
-      <TopNav />
+      {/* <TopNav/> */}
       <main className="setting">
         <div className="setting__main">
           <h2 className="title">
-            <a href="/home">Home</a> &gt; Profile
+            <Link href="/home">Home</Link> &gt; Profile
           </h2>
           <div className="content">
             <div className="content__user-info">
@@ -112,12 +113,12 @@ export default function Profile() {
                 </div>
               </div>
               <div className="icons">
-                <a href="/history" style={{ fontSize: 35, marginRight: 30 }}>
+                <Link href="/history" style={{ fontSize: 35, marginRight: 30 }}>
                   <i className="fa-solid fa-clock-rotate-left" />
-                </a>
-                <a href="/setting" style={{ fontSize: 35 }}>
+                </Link>
+                <Link href="/setting" style={{ fontSize: 35 }}>
                   <i className="fa-solid fa-gear" />
-                </a>
+                </Link>
               </div>
             </div>
             <hr />
@@ -200,7 +201,7 @@ export default function Profile() {
         </div>
         <div className="setting__bkg" />
       </main>
-      <Footer />
+      {/* <Footer /> */}
     </>
   );
 }

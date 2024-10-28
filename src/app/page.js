@@ -1,7 +1,8 @@
 import Image from "next/image";
 import Head from "next/head";
 import Script from "next/script";
-import Footer from "./Component/footer";
+//import Footer from "./Component/footer";
+import Link from "next/link";
 export default function Home() {
   return (
     <>
@@ -43,12 +44,12 @@ export default function Home() {
           <div className="header">
             <h1>FOLIA</h1>
             <div className="header__nav">
-              <a className="nav-btn" href="/about">
+              <Link className="nav-btn" href="/about">
                 About Us
-              </a>
-              <a className="nav-btn" href="/hub">
+              </Link>
+              <Link className="nav-btn" href="/hub">
                 Features
-              </a>
+              </Link>
             </div>
           </div>
           <div className="content">
@@ -63,7 +64,7 @@ export default function Home() {
                 fostering deeper understanding, creativity, and personal growth
                 beyond knowledge.
               </p>
-              <a href="/hub">
+              <Link href="/hub">
                 <button>
                   Get start with us now
                   <svg
@@ -79,7 +80,7 @@ export default function Home() {
                     />
                   </svg>
                 </button>
-              </a>
+              </Link>
             </div>
           </div>
         </section>
@@ -92,13 +93,13 @@ export default function Home() {
               Join us today to explore exciting subjects and unlock your full
               potential!
             </p>
-            <a href="/about">
+            <Link href="/about">
               <p>Learn more about us</p>
               <div className="arrow">
                 <span className="arrow__body" />
                 <span className="arrow__head" />
               </div>
-            </a>
+            </Link>
           </div>
           <div className="info__img">
             <Image
@@ -195,7 +196,7 @@ export default function Home() {
                   </div>
                 </div>
               </div>
-              <a href="/hub">
+              <Link href="/hub">
                 <div className="link">
                   <p>View more of our features here</p>
                   <div className="arrow">
@@ -203,7 +204,7 @@ export default function Home() {
                     <span className="arrow__head" />
                   </div>
                 </div>
-              </a>
+              </Link>
             </div>
           </div>
         </section>
@@ -256,13 +257,13 @@ export default function Home() {
               paths. Your journey to knowledge and growth begins here, where
               every click brings you closer to unlocking your full potential.
             </p>
-            <a href="/hub">
+            <Link href="/hub">
               <p>Get start now</p>
               <div className="arrow">
                 <span className="arrow__body" />
                 <span className="arrow__head" />
               </div>
-            </a>
+            </Link>
           </div>
           <div className="info__img">
             <Image
@@ -273,7 +274,7 @@ export default function Home() {
             />
           </div>
         </section>
-        <Footer />
+        {/* <Footer /> */}
       </main>
       <Script type="module" src="/js/main.js"></Script>
       <Script type="module" src="/js/index.js"></Script>

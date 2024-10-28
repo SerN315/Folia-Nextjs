@@ -116,9 +116,9 @@ $(function () {
       if (i % 2 == 0) {
         material = `
         <div class="materials" onclick="handlePopup(${i})" >
-          <a src="#" style="border-radius: 20px"
+          <Link src="#" style="border-radius: 20px"
             ><img class="material-img" src="${materialData.image}"
-          /></a>
+          /></Link>
           <div class="text-container">
             <h2>
               ${materialData.title}
@@ -133,9 +133,9 @@ $(function () {
       } else {
         material = `
         <div class="materials reverse" onclick="handlePopup(${i})" >
-          <a src="#" style="border-radius: 20px"
+          <Link src="#" style="border-radius: 20px"
             ><img class="material-img" src="${materialData.image}"
-          /></a>
+          /></Link>
           <div class="text-container">
             <h2>
               ${materialData.title}

@@ -27,20 +27,7 @@ import {
   Timestamp,
 } from "firebase/firestore";
 
-// COMPONENTS
-$(function () {
-  fetch("_topNav")
-    .then((response) => response.text())
-    .then((html) => {
-      $("#topNav")(html);
-    });
-});
 
-fetch("_footer")
-  .then((response) => response.text())
-  .then((html) => {
-    $("#footer")(html);
-  });
 
 // CLOSE & OPEN POPUP
 const popup = $(".reward-list");

@@ -59,7 +59,7 @@
 //                             <i class="fa-solid fa-check"></i>
 //                         </div>
 //    <div id="startchallenge">
-//                         <a href="multichoices?topic=${name}&id=${challengeId}&cateID=${categories}">Start</a>
+//                         <Link href="multichoices?topic=${name}&id=${challengeId}&cateID=${categories}">Start</Link>
 //                     </div>
 //                     </div>
 //                 </div>`;

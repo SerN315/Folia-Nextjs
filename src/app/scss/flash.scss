@@ -13,7 +13,6 @@
     padding-right: 10vw;
   }
 }
-
 // FLASHCARD MIXIN
 @mixin headline {
   justify-content: center;
@@ -31,12 +30,13 @@
   font-size: 1.5rem;
   @include flexP;
 }
-main {
+.flasharticle {
+  // padding-top: 50px;
   width: 100%;
   position: relative;
   top: 100px;
   min-height: 80vh;
-  padding-bottom: 50px;
+  // padding-bottom: 50px;
 }
 @mixin buttona {
   position: relative;
@@ -66,6 +66,7 @@ main {
 
 // NAVIGATION PANEL
 .nav-panel {
+  background-color: #fff;
   @include itemALign();
   padding-top: 50px;
   padding-bottom: 25px;
@@ -310,7 +311,7 @@ main {
 }
 
 @media (max-width: 769px) {
-  main {
+  .flasharticle {
     min-height: 60vh;
   }
   #backB,

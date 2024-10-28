@@ -1,10 +1,11 @@
 'use client'
 import { useState, useEffect } from "react";
 import Head from "next/head";
-import Footer from "../Component/footer";
-import TopNav from "../Component/header";
+//import Footer from "../Component/footer";
+// import TopNav from "../Component/header";
 import "../scss/vocabularies.scss";
 import "../scss/subnav.scss";
+import Link from "next/link";
 import {
   onAuthStateChanged,
 } from "firebase/auth";
@@ -283,20 +284,20 @@ export default function Vocabularies() {
         <title>English - Vocabulary</title>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" />
       </Head>
-      <TopNav />
+      {/* <TopNav/> */}
       <div id="progress">
         <span id="progress-value">
           <i className="fa-solid fa-arrow-up" />
         </span>
       </div>
-
+<main className="bigArticle">
       {/* NAVIGATION PANEL */}
         {/* NAVIGATION PANEL */}
         <div className="nav-panel">
           <p className="nav-panel__navigation">
-            <a href="#" cate="" className="cate-link">
+            <Link href="#" cate="" className="cate-link">
               Categories
-            </a>{" "}
+            </Link>{" "}
             &gt; Category: <span className="category">...</span> &gt; Topic:
             <span className="topic">...</span>
           </p>
@@ -306,19 +307,19 @@ export default function Vocabularies() {
             <i className="fa-solid fa-chevron-down fa-s" />
           </div>
           <div className="nav-panel__game-list">
-            <a href={`/flashcard?topic=${topicID}`} className="nav-panel__game-list__game-item flashcard-link">
+            <Link href={`/flashcard?topic=${topicID}`} className="nav-panel__game-list__game-item flashcard-link">
               <i className="fa-regular fa-images" />
               <p>Flashcard</p>
-            </a>
-            <a href={`/dragdrop?topic=${topicID}`} className="nav-panel__game-list__game-item d-and-d-link">
+            </Link>
+            <Link href={`/dragdrop?topic=${topicID}`} className="nav-panel__game-list__game-item d-and-d-link">
               <i className="fa-regular fa-hand" />
               <p>Drag&amp;Drop</p>
-            </a>
+            </Link>
           </div>
         </div>
 
       {/* VOCABULARY MAIN CONTENT */}
-      <main className="article">
+      <div className="article">
       {loading ? ( // Show loading state
     // Skeleton loader for vocabulary item
     <>
@@ -441,10 +442,11 @@ export default function Vocabularies() {
       <p>No vocabulary found.</p> // Message if no data
     )
   )}
+  </div>
 </main>
 
       <div className="word-box-overlay overlay hidden"></div>
-      <Footer />
+      {/* <Footer /> */}
     </>
   );
 }

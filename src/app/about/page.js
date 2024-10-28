@@ -1,8 +1,9 @@
 import Image from "next/image";
 import Head from "next/head";
 import Script from "next/script";
-import Footer from "../Component/footer";
-import TopNav from "../Component/header";
+//import Footer from "../Component/footer";
+// // import TopNav from "../Component/header";
+import Link from "next/link";
 export default function About() {
   return (
     <>
@@ -12,12 +13,12 @@ export default function About() {
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Folia - About Us</title>
       </Head>
-    <TopNav/>
+    {/* <TopNav/> */}
   <main className="hub">
     <div className="header">
-      <a className="home-link" href="/">
+      <Link className="home-link" href="/">
         <h1 className="logo">FOLIA</h1>
-      </a>
+      </Link>
     </div>
     <div className="content">
       <div className="title">
@@ -69,7 +70,7 @@ export default function About() {
         </div>
       </div>
       {/* <div className="cta">
-        <a href="./hub">
+        <Link href="./hub">
           <div className="flex-container">
             <p>Learn more about Folia’s Subjects</p>
             <div className="arrow">
@@ -77,7 +78,7 @@ export default function About() {
               <span className="arrow__head" />
             </div>
           </div>
-        </a>
+        </Link>
       </div> */}
     </div>
   </main>

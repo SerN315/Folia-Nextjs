@@ -5,9 +5,10 @@ import { auth, firestore } from "../firebase/authenciation.js";
 import { collection, onSnapshot, getFirestore } from "firebase/firestore";
 import Image from "next/image";
 import Head from "next/head";
-import Footer from "../Component/footer";
-import TopNav from "../Component/header";
+//import Footer from "../Component/footer";
+// import TopNav from "../Component/header";
 import "../scss/challenge.scss";
+import Link from "next/link.js";
 
 export default function Challenge() {
   const [categories, setCategories] = useState([]);
@@ -146,13 +147,13 @@ export default function Challenge() {
               </div>
             ) : null}
             <div id="startchallenge">
-              <a
+              <Link
                 href={`multichoices?topic=${name}&id=${challengeId}&cateID=${categories.join(
                   ","
                 )}`}
               >
                 Start
-              </a>
+              </Link>
             </div>
           </div>
         </div>
@@ -169,14 +170,14 @@ export default function Challenge() {
         <link rel="icon" type="image/x-icon" href="../favicon.ico" />
         <title>Challenge</title>
       </Head>
-      <TopNav />
+      {/* <TopNav/> */}
       <section className="challenge">
         <div className="challenge__container">
           <div className="titles">
             <h1>Challenge</h1>
-            <a className="leaderboard" href="./leaderboard">
+            <Link className="leaderboard" href="./leaderboard">
               Leaderboard
-            </a>
+            </Link>
           </div>
           <div className="challenges">
             {/* Render the dynamic challenge elements */}
@@ -184,7 +185,7 @@ export default function Challenge() {
           </div>
         </div>
       </section>
-      <Footer />
+      {/* <Footer /> */}
     </>
   );
 }

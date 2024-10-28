@@ -2,10 +2,11 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Head from "next/head";
-import Footer from "../Component/footer";
-import TopNav from "../Component/header";
+//import Footer from "../Component/footer";
+// import TopNav from "../Component/header";
 import ScrollableList from "../Component/scrollableComponent"; 
 import { getDatabase } from "../js/api/databaseAPI";
+import Link from "next/link";
 
 export default function Home1() {
   const [mostLearnedTopics, setMostLearnedTopics] = useState([]);
@@ -67,7 +68,7 @@ export default function Home1() {
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Folia</title>
       </Head>
-      <TopNav />
+      {/* <TopNav/> */}
       <main className="home">
         {/* Hero Section */}
         <div className="home__hero-section">
@@ -107,9 +108,9 @@ export default function Home1() {
                 <h5>Welcome to Folia - English,</h5>
                 <h1>Start Learning Your Favorite Language here,</h1>
                 <div className="home-hero-text__container__cate-link">
-                  <a className="cate-link" href="/cate?topic=folia-language">
+                  <Link className="cate-link" href="/cate?topic=folia-language">
                     View our categories
-                  </a>
+                  </Link>
                   <i className="fa-solid fa-arrow-right" />
                 </div>
               </div>
@@ -125,7 +126,7 @@ export default function Home1() {
           </div>
           <ScrollableList className="home__most-learned__list">
             {mostLearnedTopics.map((topic) => (
-              <a
+              <Link
                 key={topic.topicId}
                 href={`vocabularies?topic=${topic.topicId}`}
                 className="home__most-learned__list__item"
@@ -144,7 +145,7 @@ export default function Home1() {
                     <p>Total Words: {topic.wordCount}</p>
                   </div>
                 </div>
-              </a>
+              </Link>
             ))}
           </ScrollableList>
         </div>
@@ -162,7 +163,7 @@ export default function Home1() {
               <ScrollableList className="home__suggest__cate__list">
                 {category.topics && category.topics.map((topic) => (
                   <div key={topic.topicId} className="home__suggest__cate__list__item">
-                    <a href={`vocabularies?topic=${topic.topicId}`} style={{ width: "100%" }}>
+                    <Link href={`vocabularies?topic=${topic.topicId}`} style={{ width: "100%" }}>
                       <div className="card">
                         <Image
                           src={topic.topicImage}
@@ -176,7 +177,7 @@ export default function Home1() {
                           <p className="card-body__wrd-cnt">Total Words: {topic.wordCount}</p>
                         </div>
                       </div>
-                    </a>
+                    </Link>
                   </div>
                 ))}
               </ScrollableList>
@@ -184,7 +185,7 @@ export default function Home1() {
           ))}
         </div>
       </main>
-      <Footer />
+      {/* <Footer /> */}
     </>
   );
 }

@@ -2,8 +2,8 @@
 import Image from "next/image";
 import Head from "next/head";
 import Script from "next/script";
-import Footer from "../Component/footer";
-import TopNav from "../Component/header";
+//import Footer from "../Component/footer";
+// import TopNav from "../Component/header";
 import "../scss/multi.scss";
 import { getDatabase } from "../js/api/databaseAPI";
 import { db, auth } from "../firebase/authenciation";
@@ -589,7 +589,7 @@ async function saveQuizData(
         <link rel="icon" type="image/x-icon" href="../favicon.ico" />
         {/* GG analytics */}
       </Head>
-      <TopNav />
+      {/* <TopNav/> */}
       <div className="main_content">
         <div className="background" />
         <div className="progress_bar">
@@ -738,7 +738,7 @@ async function saveQuizData(
       </div>
       {showInteract && renderInteract()}
       {/* <div id="Timer">adafa</div> */}
-      <Footer />
+      {/* <Footer /> */}
     </>
   );
 }

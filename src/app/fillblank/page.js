@@ -1,9 +1,10 @@
 import Image from "next/image";
 import Head from "next/head";
 import Script from "next/script";
-import Footer from "../Component/footer";
-import TopNav from "../Component/header";
+//import Footer from "../Component/footer";
+// import TopNav from "../Component/header";
 import "../scss/fill-blank.scss";
+import Link from "next/link";
 export default function FillBlank() {
   return (
     <>
@@ -11,13 +12,12 @@ export default function FillBlank() {
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Fill-in-the-blank - Folia</title>
   <link rel="icon" href="../favicon.ico" /></Head>
-  <TopNav/>
   <main className="fill-blank">
     <div className="nav-panel">
       <p className="nav-panel__navigation">
-        <a href="/cate" cate="">
+        <Link href="/cate" cate="">
           Categories
-        </a>{" "}
+        </Link>{" "}
         &gt; Category: Animals &gt; Topic: Marine life
       </p>
       <h3 className="nav-panel__main-title">Fill in the blank</h3>
@@ -26,26 +26,26 @@ export default function FillBlank() {
         <i className="fa-solid fa-chevron-down fa-s" />
       </div>
       <div className="nav-panel__game-list">
-        <a
+        <Link
           href="vocabularies"
           className="nav-panel__game-list__game-item"
           vocab=""
         >
           <i className="fa-solid fa-a" />
           <p>Vocabulary</p>
-        </a>
-        <a
+        </Link>
+        <Link
           href="flashcard"
           className="nav-panel__game-list__game-item"
           flashcard=""
         >
           <i className="fa-solid fa-image" />
           <p>Flashcard</p>
-        </a>
-        <a href="#" className="nav-panel__game-list__game-item" d-and-d="">
+        </Link>
+        <Link href="#" className="nav-panel__game-list__game-item" d-and-d="">
           <i className="fa-solid fa-pencil" />
           <p>Matching</p>
-        </a>
+        </Link>
       </div>
     </div>
     <div className="fill-blank__main-content">
@@ -64,6 +64,5 @@ export default function FillBlank() {
       </form>
     </div>
   </main>
-  <Footer/>
     </>
   )}

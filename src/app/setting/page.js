@@ -1,7 +1,8 @@
-import TopNav from "../Component/header";
-import Footer from "../Component/footer";
+// import TopNav from "../Component/header";
+//import Footer from "../Component/footer";
 import Image from "next/image";
 import Head from "next/head";
+import Link from "next/link";
 export default function Setting() {
   return (
     <>
@@ -12,11 +13,11 @@ export default function Setting() {
         <link rel="stylesheet" href="./scss/setting.scss" />
         <link rel="icon" type="image/x-icon" href="../favicon.ico" />
       </Head>
-      <TopNav />
+      {/* <TopNav/> */}
       <main className="setting">
         <div className="setting__main">
           <h2 className="title">
-            <a href="/home">Home</a> &gt; Settings
+            <Link href="/home">Home</Link> &gt; Settings
           </h2>
           <div id="avatar-list">
             <div id="closebtn">x</div>
@@ -36,42 +37,42 @@ export default function Setting() {
                   <h4 className="created_text">Started from 2024</h4>
                 </div>
               </div>
-              <a href="/profile" style={{ fontSize: 35 }}>
+              <Link href="/profile" style={{ fontSize: 35 }}>
                 <i className="fa-solid fa-user" />
-              </a>
+              </Link>
             </div>
             <hr />
             <div className="content__options account">
               <h5>Account settings</h5>
-              <a href="#" className="languages cta">
+              <Link href="#" className="languages cta">
                 <h6>Languages</h6>
                 <i className="fa-solid fa-chevron-right" />
-              </a>
-              <a href="#" className="acc-update cta">
+              </Link>
+              <Link href="#" className="acc-update cta">
                 <h6>Change Account Settings</h6>
                 <i className="fa-solid fa-chevron-right" />
-              </a>
-              <a href="#" className="pw cta">
+              </Link>
+              <Link href="#" className="pw cta">
                 <h6>Change Password</h6>
                 <i className="fa-solid fa-chevron-right" />
-              </a>
-              <a href="#" className="payment cta">
+              </Link>
+              <Link href="#" className="payment cta">
                 <h6>Payment Methods</h6>
                 <i className="fa-solid fa-chevron-right" />
-              </a>
+              </Link>
             </div>
             <hr />
             <div className="content__options more">
               <h5>More</h5>
-              <a href="intro" className="languages cta">
+              <Link href="intro" className="languages cta">
                 <h6>About Us</h6>
-              </a>
-              <a href="#" className="pw cta">
+              </Link>
+              <Link href="#" className="pw cta">
                 <h6>Privacy Policy</h6>
-              </a>
-              <a href="#" className="payment cta">
+              </Link>
+              <Link href="#" className="payment cta">
                 <h6>Terms and Conditions</h6>
-              </a>
+              </Link>
             </div>
           </div>
         </div>
@@ -80,7 +81,7 @@ export default function Setting() {
       <div className="popup-container hidden">
         <div className="popup" />
       </div>
-      <Footer />
+      {/* <Footer /> */}
     </>
   );
 }

@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Head from "next/head";
 import Script from "next/script";
+import Link from "next/link";
 export default function Footer() {
   return (
     <section className="footer">
@@ -10,10 +11,10 @@ export default function Footer() {
             <h1>FOLIA</h1>
           </div>
           <div className="left__social">
-            <a href="#" />
-            <a href="#" />
-            <a href="#" />
-            <a href="#" />
+            <Link href="#" />
+            <Link href="#" />
+            <Link href="#" />
+            <Link href="#" />
           </div>
           <div className="left__des">
             <h3>
@@ -38,7 +39,7 @@ export default function Footer() {
           </div>
           <div className="right__ourservices">
             <h1>Our services</h1>
-            <a href="/about">About us</a>
+            <Link href="/about">About us</Link>
           </div>
           <div className="right__partner">
             <h1>Partner</h1>
@@ -47,7 +48,7 @@ export default function Footer() {
       </div>
       <div className="footer__rights">
         <h3>Copyright by Folia 2023 All rights reserved</h3> |{" "}
-        <a href="#">Privacy Policy</a>
+        <Link href="#">Privacy Policy</Link>
       </div>
     </section>
   );

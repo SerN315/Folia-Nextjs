@@ -1,9 +1,10 @@
 import Image from "next/image";
 import Head from "next/head";
 import Script from "next/script";
-import Footer from "../Component/footer";
-import TopNav from "../Component/header";
+//import Footer from "../Component/footer";
+// import TopNav from "../Component/header";
 import "../scss/material.scss";
+import Link from "next/link";
 export default function Home() {
   return (
     <>
@@ -17,9 +18,9 @@ export default function Home() {
       {/* NAVIGATION PANEL */}
   <div className="nav-panel">
     <p className="nav-panel__navigation">
-      <a href="#" cate="" className="cate-link">
+      <Link href="#" cate="" className="cate-link">
         Categories
-      </a>{" "}
+      </Link>{" "}
       &gt; Category:
       <span className="category">...</span> &gt; Topic:
       <span className="topic">...</span>
@@ -30,30 +31,30 @@ export default function Home() {
       <i className="fa-solid fa-chevron-down fa-s" />
     </div>
     <div className="nav-panel__game-list">
-      <a
+      <Link
         href="#"
         className="nav-panel__game-list__game-item vocabulary-link"
         vocabularies=""
       >
         <i className="fa-solid fa-a" />
         <p>Vocabulary</p>
-      </a>
-      <a
+      </Link>
+      <Link
         href="#"
         className="nav-panel__game-list__game-item flashcard-link"
         flashcard=""
       >
         <i className="fa-regular fa-images" />
         <p>Flashcard</p>
-      </a>
-      <a
+      </Link>
+      <Link
         href="#"
         className="nav-panel__game-list__game-item d-and-d-link"
         flashcard=""
       >
         <i className="fa-regular fa-hand" />
         <p>Drag&amp;Drop</p>
-      </a>
+      </Link>
     </div>
   </div>
   <main className="material">

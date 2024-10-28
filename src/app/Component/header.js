@@ -13,6 +13,8 @@ import {
   query,
   setDoc,
 } from "firebase/firestore";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 export default function TopNav() {
   const [vocab, setVocab] = useState([]);
@@ -22,6 +24,8 @@ export default function TopNav() {
   const resultContainerRef = useRef(null);
   const searchInputRef = useRef(null);
   const firestore = getFirestore();
+  const pathname = usePathname();
+  const hideTopNavPaths = ["/", "/hub"];
 
   const handleLogoutClick = () => {
     signOut(auth)
@@ -154,13 +158,18 @@ export default function TopNav() {
     document.querySelector(dropdownClass).classList.toggle("active");
   };
 
+
+  if (hideTopNavPaths.includes(pathname)) {
+    return null; // Do not render TopNav if on specified paths
+  }
+
   return (
     <>
       <div className="flex-container">
         <div className="info-box">
-          <a href="hub" className="info-box__title">
+          <Link href="hub" className="info-box__title">
             FOLIA
-          </a>
+          </Link>
         </div>
 
         <div className="search-bar" tabIndex={0}>
@@ -191,7 +200,7 @@ export default function TopNav() {
 
         <div className="buttons">
           <button className="open-popup login-button">Login</button>
-          <a href="/challenge" className="ranking hidden">
+          <Link href="/challenge" className="ranking hidden">
             <Image
               src="/img/features-icon/ranking-ico.svg"
               className="ranking--ico"
@@ -199,7 +208,7 @@ export default function TopNav() {
               width={25}
               height={25}
             />
-          </a>
+          </Link>
           <div className="streak hidden">
             <button
               className="streak__btn"
@@ -229,14 +238,14 @@ export default function TopNav() {
                 </div>
               </div>
               <hr />
-              <a href="/streak" className="link">
+              <Link href="/streak" className="link">
                 View More
-              </a>
+              </Link>
             </div>
           </div>
-          <a href="/about">
+          <Link href="/about">
             <Image src="/img/help.svg" width={40} height={40} />
-          </a>
+          </Link>
 
           <div className="profile">
             <button
@@ -246,7 +255,7 @@ export default function TopNav() {
               <Image src="" className="avatar" width={25} height={25} />
             </button>
             <div className="profile__dropdown">
-              <a className="detail" href="/profile">
+              <Link className="detail" href="/profile">
                 <Image
                   className="detail__avatar"
                   src=""
@@ -257,15 +266,15 @@ export default function TopNav() {
                   <h5 className="user-name">username</h5>
                   <p className="user-email">example@domain.com</p>
                 </div>
-              </a>
+              </Link>
               <hr />
-              <a href="/favorite" className="link">
+              <Link href="/favorite" className="link">
                 Favorites
-              </a>
+              </Link>
               <hr />
-              <a href="/setting" className="link">
+              <Link href="/setting" className="link">
                 Settings
-              </a>
+              </Link>
               <div className="logout link hidden" onClick={handleLogoutClick}>
                 Log Out
               </div>

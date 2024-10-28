@@ -4,8 +4,8 @@ import { useEffect } from "react";
 import { getFirestore, doc, getDoc, updateDoc } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../firebase/authenciation";
-import Footer from "../Component/footer";
-import TopNav from "../Component/header";
+//import Footer from "../Component/footer";
+// import TopNav from "../Component/header";
 import Head from "next/head";
 import "../scss/favorite.scss";
 
@@ -136,12 +136,12 @@ export default function Favorite() {
         <title>Favorite - Folia</title>
         <link rel="icon" href="../favicon.ico" />
       </Head>
-      <TopNav />
+      {/* <TopNav/> */}
       <main className="favorite-content">
         <h1 className="favorite-title">Favorite List</h1>
         <div className="favorite__list" />
       </main>
-      <Footer />
+      {/* <Footer /> */}
     </>
   );
 }

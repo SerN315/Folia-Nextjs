@@ -106,7 +106,7 @@
 
 //               <div class="word-pronunciation">
 //                 <i class="fa-solid fa-volume-high pronunciation"></i> ${pronunciation}
-//                   <audio id="myAudio" class="hidden" src="path_to_your_audio_file.mp3"></audio>
+//                   <Linkudio id="myAudio" class="hidden" src="path_to_your_audio_file.mp3"></Linkudio>
 //               </div>
 //               <div class="word-audio"></div>
 //             </div>
@@ -330,7 +330,7 @@
 
 //             <div class="word-pronunciation">
 //               <i class="fa-solid fa-volume-high pronunciation"></i> ${pronun}
-//                 <audio id="myAudio" class="hidden" src="path_to_your_audio_file.mp3"></audio>
+//                 <Linkudio id="myAudio" class="hidden" src="path_to_your_audio_file.mp3"></Linkudio>
 //             </div>
 //             <div class="word-audio"></div>
 //           </div>

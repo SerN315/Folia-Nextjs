@@ -4,9 +4,10 @@ import ScrollableList from "../Component/scrollableComponent";
 import { useEffect, useState } from "react";
 import { getDatabase } from "../js/api/databaseAPI";
 import { useSearchParams } from "next/navigation";
-import Footer from "../Component/footer";
-import TopNav from "../Component/header";
+//import Footer from "../Component/footer";
+// import TopNav from "../Component/header";
 import Head from "next/head";
+import Link from "next/link";
 import "../scss/cate_2.scss";
 
 export default function Category2() {
@@ -146,7 +147,7 @@ export default function Category2() {
         <title>Folia</title>
       </Head>
 
-      <TopNav />
+      {/* <TopNav/> */}
       <div className="home__hero-section">
         <div className="home__hero-section__container">
           {/* Hero image and text content */}
@@ -175,7 +176,7 @@ export default function Category2() {
               <h5>{text.text1},</h5>
               <h1>{text.text2}</h1>
               <div className="home-hero-text__container__cate-link">
-                {/* <a href="hub.html">View our categories</a>
+                {/* <Link href="hub.html">View our categories</Link>
                 <i className="fa-solid fa-arrow-right"></i> */}
               </div>
             </div>
@@ -236,7 +237,7 @@ export default function Category2() {
                   data-topic-id={topic.topicID}
                   key={topic.topicID}
                 >
-                  <a href={`multichoices?topic=${topic.db}&tag=${topic.fname}`}>
+                  <Link href={`subhub?topic=${topic.db}&tag=${topic.fname}`}>
                     <div
                       className="topic-img"
                       style={{ backgroundImage: `url(${topic.SVG})` }}
@@ -246,7 +247,7 @@ export default function Category2() {
                       <h3>{topic.des}</h3>
                       <h2 style={{ color: "#226500" }}>Practice</h2>
                     </div>
-                  </a>
+                  </Link>
                 </div>
               ))
             )}
@@ -254,7 +255,7 @@ export default function Category2() {
         </div>
       </div>
 
-      <Footer />
+      {/* <Footer /> */}
     </>
   );
 }

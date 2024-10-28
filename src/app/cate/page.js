@@ -4,9 +4,10 @@ import ScrollableList from "../Component/scrollableComponent";
 import { useEffect, useState } from "react";
 import { getDatabase } from "../js/api/databaseAPI";
 import { useSearchParams } from "next/navigation";
-import Footer from "../Component/footer";
-import TopNav from "../Component/header";
+//import Footer from "../Component/footer";
+// import TopNav from "../Component/header";
 import Head from "next/head";
+import Link from 'next/link';
 
 export default function Category() {
   const [response1, setResponse1] = useState([]);
@@ -84,7 +85,7 @@ export default function Category() {
           <h5>Welcome to Folia,</h5>
           <h1>Start Learning Your Suitable Subject,</h1>
           <div className="home-hero-text__container__cate-link">
-            <a href="hub.html">View our categories</a>
+            <Link href="hub.html">View our categories</Link>
             <i className="fa-solid fa-arrow-right" />
           </div>
         </div>
@@ -164,7 +165,7 @@ export default function Category() {
 
                         if (formulaValue && formulaValue.split(" ").length > 4) {
                           return (
-                            <a href={`vocabularies?topic=${topicId}`} className="topic" key={topicId}>
+                            <Link href={`vocabularies?topic=${topicId}`} className="topic" key={topicId}>
                               <div className="topic__img">
                                 <img src={img} alt={topicName} />
                               </div>
@@ -172,7 +173,7 @@ export default function Category() {
                                 <h3>{topicName}</h3>
                                 <p>Total words: {formulaValue.split(" ").length}</p>
                               </div>
-                            </a>
+                            </Link>
                           );
                         }
                         return null;
@@ -204,9 +205,9 @@ export default function Category() {
           </>
         )}
       </Head>
-      <TopNav />
+      {/* <TopNav/> */}
       {renderContent()}
-      <Footer />
+      {/* <Footer /> */}
     </>
   );
 }

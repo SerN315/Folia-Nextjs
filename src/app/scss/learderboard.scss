@@ -7,17 +7,15 @@ $top1color: linear-gradient(325deg, #ebc600 -21.8%, #e8dc9d 94.17%);
 $top2color: linear-gradient(138deg, #e7e7e7 9.28%, #a8a8a8 118.44%);
 $top3color: linear-gradient(323deg, #cd7f32 -26.39%, #ecc8a4 116.07%);
 
-body {
-  background-image: url(../img/Rectangle\ 1694.png);
+
+
+.leaderboardContent {
+  background-image: url(../../../public/img/Rectangle1694.png);
   background-position: center;
   background-size: cover;
-}
-
-.leaderboard {
   margin-bottom: 50px;
   position: relative;
   top: 100px;
-
   &__container {
     width: 100%;
     height: 100%;

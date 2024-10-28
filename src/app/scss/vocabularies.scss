@@ -25,9 +25,9 @@
 html {
   scroll-behavior: smooth;
 }
-body {
-  background: #f4f4f4;
-}
+// body {
+//   background: #f4f4f4;
+// }
 .topic_1 {
   padding: 20px 20vw;
   & span {
@@ -37,12 +37,15 @@ body {
     color: var(--pronun-text-color);
   }
 }
+.bigArticle{
+  padding-top: 100px;
+}
 
 // NAVIGATION PANEL
 .nav-panel {
   background-color: #f4f4f4;
   @include itemAlign();
-  padding-top: 150px;
+  padding-top: 50px;
   @include laptop {
     padding-top: 150px;
     padding-bottom: 5px;
@@ -125,7 +128,7 @@ body {
   width: 100%;
   height: 100%;
   @include itemAlign();
-  padding-top: 35px;
+  padding-top: 50px;
   padding-bottom: 100px;
   background-color: #f4f4f4;
 }

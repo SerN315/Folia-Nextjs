@@ -1,8 +1,9 @@
 import Image from "next/image";
 import Head from "next/head";
 import Script from "next/script";
-import Footer from "../Component/footer";
+//import Footer from "../Component/footer";
 import "../scss/hub.scss";
+import Link from "next/link";
 export default function Hub() {
   return (
     <>
@@ -13,9 +14,9 @@ export default function Hub() {
       </Head>
       <main className="hub">
         <div className="header">
-          <a className="home-link" href="/">
+          <Link className="home-link" href="/">
             <h1 className="logo">FOLIA</h1>
-          </a>
+          </Link>
         </div>
         <div className="content">
           <div className="title">
@@ -45,10 +46,12 @@ export default function Hub() {
               <h2 style={{ wordSpacing: 4 }}>SUBJECTS LIST</h2>
             </div>
             <div className="features__list">
-              <a href="/home" className="link link--english">
+            <h2>Language</h2>
+              <div className="Language">
+              <Link href="/home" className="link link--english">
                 <div className="item">
                   <Image
-                    src="./img/features-icon/english-ico.svg"
+                    src="/img/features-icon/E.svg"
                     width={100}
                     height={100}
                   />
@@ -61,8 +64,46 @@ export default function Hub() {
                     </p>
                   </div>
                 </div>
-              </a>
-              <a href="/subhome?topic=folia-asvab" className="link link--asvab">
+              </Link>
+              <Link href="/home" className="link link--vie">
+                <div className="item">
+                  <Image
+                    src="/img/features-icon/V.svg"
+                    width={100}
+                    height={100}
+                    
+                  />
+                  <div className="text">
+                    <h4>Vietnamese</h4>
+                    <p>
+                      Unlock fluency, confidence, and mastery effortlessly in
+                      Vietnamese through our topic-based courses, games and
+                      practice excercises
+                    </p>
+                  </div>
+                </div>
+              </Link>
+              <Link href="/home" className="link link--fr">
+                <div className="item">
+                  <Image
+                    src="/img/features-icon/F.svg"
+                    width={100}
+                    height={100}
+                  />
+                  <div className="text">
+                    <h4>French</h4>
+                    <p>
+                      Unlock fluency, confidence, and mastery effortlessly in
+                      French through our topic-based courses, games and
+                      practice excercises
+                    </p>
+                  </div>
+                </div>
+              </Link>
+              </div>
+              <h2>Certificate Practice</h2>
+              <div className="cert">
+              <Link href="/subhome?topic=folia-asvab" className="link link--asvab">
                 <div className="item">
                   <Image
                     src="/img/features-icon/asvab-ico.svg"
@@ -78,8 +119,8 @@ export default function Hub() {
                     </p>
                   </div>
                 </div>
-              </a>
-              <a href="/subhome?topic=folia-SAT" className="link link--sat">
+              </Link>
+              <Link href="/subhome?topic=folia-SAT" className="link link--sat">
                 <div className="item">
                   <Image
                     src="/img/features-icon/sat-ico.svg"
@@ -96,8 +137,8 @@ export default function Hub() {
                     </p>
                   </div>
                 </div>
-              </a>
-              <a href="/subhome?topic=folia-NCLEX" className="link link--nclex">
+              </Link>
+              <Link href="/subhome?topic=folia-NCLEX" className="link link--nclex">
                 <div className="item">
                   <Image
                     src="/img/features-icon/nclex-ico.svg"
@@ -117,8 +158,8 @@ export default function Hub() {
                     </p>
                   </div>
                 </div>
-              </a>
-              <a href="/subhome?topic=folia-ACT" className="link link--act">
+              </Link>
+              <Link href="/subhome?topic=folia-ACT" className="link link--act">
                 <div className="item">
                   <Image
                     src="/img/features-icon/act-ico.svg"
@@ -145,11 +186,12 @@ export default function Hub() {
                     </p>
                   </div>
                 </div>
-              </a>
+              </Link>
+              </div>
             </div>
           </div>
         </div>
-        <Footer />
+        {/* <Footer /> */}
       </main>
     </>
   );

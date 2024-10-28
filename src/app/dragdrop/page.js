@@ -2,8 +2,8 @@
 'use client';
 
 import Head from "next/head";
-import Footer from "../Component/footer";
-import TopNav from "../Component/header";
+//import Footer from "../Component/footer";
+// import TopNav from "../Component/header";
 import "../scss/d_and_d.scss";
 import { useEffect, useState } from "react";
 import { db, auth } from "../firebase/authenciation";
@@ -537,7 +537,7 @@ const handlePlayAgain = () => {
   if (loading) {
     return (
       <>
-        <TopNav />
+        {/* <TopNav/> */}
     <div class="drag_content">
       <section class="score">
         <div class="score_right">
@@ -560,7 +560,7 @@ const handlePlayAgain = () => {
         </section>
         </div>
         </div>
-        <Footer />
+        {/* <Footer /> */}
       </>
     );
   }
@@ -572,7 +572,7 @@ const handlePlayAgain = () => {
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Hobbies - Matching</title>
       </Head>
-      <TopNav />
+      {/* <TopNav/> */}
       <div className="drag_content">
         {/* Score Section */}
         <section className="score">
@@ -607,7 +607,7 @@ const handlePlayAgain = () => {
         {/* Interact Section (Only for Challenges) */}
         {showInteract && renderInteract()}
       </div>
-      <Footer />
+      {/* <Footer /> */}
     </>
   );
 }

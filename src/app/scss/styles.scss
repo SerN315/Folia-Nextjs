@@ -1,3 +1,6 @@
+// @tailwind base;
+// @tailwind components;
+// @tailwind utilities;
 //File dùng chung cho tất cả các file (toàn bộ file html sẽ dùng file này)
 
 $main-color: #3fbd00;
@@ -6,6 +9,7 @@ $fa-font-path: "../webfonts";
 $primary-color: #77b255;
 $primary: $main-color; // Đổi màu chính của Bootstrap
 @import url("https://fonts.cdnfonts.com/css/poppins");
+
 
 // MAIN COLOR
 $text-color: #18264c;
@@ -94,6 +98,9 @@ $mobile-s-width: 321px;
     @content;
   }
 }
+main{
+  background-color: white;
+}
 * {
   margin: 0;
   padding: 0;
@@ -120,6 +127,6 @@ body {
   min-height: 100vh;
   position: relative;
 }
-main {
-  padding-bottom: 500px;
-}
+// main {
+//   padding-bottom: 500px;
+// }

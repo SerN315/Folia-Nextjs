@@ -11,7 +11,7 @@ import {
 } from "firebase/auth";
 import { getFirestore, doc, getDoc, updateDoc, setDoc, Timestamp } from "firebase/firestore";
 import { saveUserData } from "../js/setting"; // Ensure this path is correct
-
+import Link from "next/link";
 export default function Login() {
   // State for login form
   
@@ -107,53 +107,55 @@ const signupFormRef = useRef(null);
       getDoc(streakRef).then((docSnapshot) => {
         if (docSnapshot.exists()) {
           let streak = docSnapshot.data().streakCnt;
-          let check = docSnapshot.data().streakCheck;
-          let lastUpdated = docSnapshot.data().lastUpdated.toMillis();
-          const currentTime = Date.now();
-          if (currentTime - lastUpdated >= 86400000 && check) {
+          let lastUpdated = docSnapshot.data().lastUpdated.toDate(); // Convert to Date object
+          const currentTime = new Date(); // Current date
+    
+          // Check if last login and current login are on consecutive days
+          if (
+            lastUpdated.getDate() === currentTime.getDate() - 1 && // Last updated was yesterday
+            lastUpdated.getMonth() === currentTime.getMonth() && // Same month
+            lastUpdated.getFullYear() === currentTime.getFullYear() // Same year
+          ) {
+            // Increment streak
+            streak += 1;
             updateDoc(streakRef, {
-              lastUpdated: Timestamp.now(),
-              streakCheck: false,
-              streakCnt: 0,
+              lastUpdated: Timestamp.now(), // Update lastUpdated time
+              streakCnt: streak, // Update streak count
             });
-            document.querySelector(".streak-cnt").textContent = streak;
+          } else if (
+            lastUpdated.getDate() === currentTime.getDate() && // Last updated is today
+            lastUpdated.getMonth() === currentTime.getMonth() &&
+            lastUpdated.getFullYear() === currentTime.getFullYear()
+          ) {
+            // If logged in today, do nothing
+            console.log("Already logged in today.");
           } else {
-            if (lastUpdated < dayStart() && !check) {
-              updateDoc(streakRef, {
-                lastUpdated: Timestamp.now(),
-                streakCheck: false,
-                streakCnt: 0,
-              });
-              document.querySelector(".streak-cnt").textContent = 0;
-            } else if (lastUpdated < dayStart() && check) {
-              const currentDate = new Date();
-              currentDate.setHours(0, 0, 0, 0);
-              updateDoc(streakRef, {
-                lastUpdated: Timestamp.fromDate(currentDate),
-                streakCheck: false,
-                streakCnt: streak,
-              });
-              document.querySelector(".streak-cnt").textContent = streak;
-            } else {
-              document.querySelector(".streak-cnt").textContent = streak;
-            }
+            // If last updated is not today or yesterday, reset streak
+            streak = 0;
+            updateDoc(streakRef, {
+              lastUpdated: Timestamp.now(), // Update to current time
+              streakCnt: streak, // Reset streak count
+            });
           }
+    
+          document.querySelector(".streak-cnt").textContent = streak; // Update streak display
         } else {
+          // If no document exists, create one
           const userStreakData = {
             streakCnt: 0,
-            streakCheck: false,
             lastUpdated: Timestamp.now(),
           };
           setDoc(streakRef, userStreakData);
         }
       });
     };
+    
 
-    const dayStart = () => {
-      const now = new Date();
-      now.setHours(0, 0, 0, 0);
-      return now.getTime();
-    };
+    // const dayStart = () => {
+    //   const now = new Date();
+    //   now.setHours(0, 0, 0, 0);
+    //   return now.getTime();
+    // };
 
     const attachEventListeners = () => {
       document.querySelector(".register-link")?.addEventListener("click", () => {
@@ -228,9 +230,9 @@ const signupFormRef = useRef(null);
             </button>
             <div className="login-register">
               <p>
-                <a href="#" className="login-link">
+                <Link href="#" className="login-link">
                   Back to log in
-                </a>
+                </Link>
               </p>
             </div>
           </form>
@@ -256,9 +258,9 @@ const signupFormRef = useRef(null);
             Continue
           </button>
           <div className="login-register">
-            <a href="#" className="login-link">
+            <Link href="#" className="login-link">
               Back to log in
-            </a>
+            </Link>
           </div>
         </div>
         <div className="form-box forgot">
@@ -276,9 +278,9 @@ const signupFormRef = useRef(null);
               Send Verification Email
             </button>
             <div className="login-register">
-              <a href="#" className="login-link">
+              <Link href="#" className="login-link">
                 Back to log in
-              </a>
+              </Link>
             </div>
           </form>
         </div>
@@ -309,9 +311,9 @@ const signupFormRef = useRef(null);
                 <input type="checkbox" />
                 Remember me
               </label>
-              <a href="#" className="forgot-link">
+              <Link href="#" className="forgot-link">
                 Forgot Password
-              </a>
+              </Link>
             </div>
             <div
               id="loginAlert"
@@ -327,9 +329,9 @@ const signupFormRef = useRef(null);
             <div className="login-register">
               <p>
                 Don't have an account?
-                <a href="#" className="register-link">
+                <Link href="#" className="register-link">
                   SIGN UP
-                </a>
+                </Link>
               </p>
             </div>
           </form>
@@ -399,9 +401,9 @@ const signupFormRef = useRef(null);
             <div className="login-register">
               <p>
                 Already have an account?
-                <a href="#" className="login-link">
+                <Link href="#" className="login-link">
                   Login
-                </a>
+                </Link>
               </p>
             </div>
           </form>

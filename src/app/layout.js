@@ -9,7 +9,8 @@ import "./scss/hub.scss";
 import "./scss/home.scss";
 import "./scss/pro5.scss";
 import "./scss/setting.scss";
-
+import TopNav from "./Component/header";
+import Footer from "./Component/footer";
 
 
 
@@ -24,7 +25,11 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body className={inter.className}>
+        <TopNav/>
+          {children}
+         <Footer /> 
+        </body>
     </html>
   );
 }

@@ -3,16 +3,9 @@
 @import "footer";
 @import "styles";
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: "Poppins", sans-serif;
-}
-
-body {
-  background-color: #f8f8f8;
   main {
+    padding-top: 150px;
+    padding-bottom: 100px;
     position: relative;
   }
   .practice-title {
@@ -20,6 +13,16 @@ body {
     color: $text-color;
     font-weight: 800;
     font-size: 40px;
+    @include mobile-m {
+      font-size: 30px;
+    }
+  }
+  .descriptions {
+    text-align: center;
+    color: $text-color;
+    margin: 20px;
+    font-weight: 700;
+    font-size: 30px;
     @include mobile-m {
       font-size: 30px;
     }
@@ -51,21 +54,44 @@ body {
       @include mobile-l {
         width: 85%;
       }
+      .practice{
+        &__multi-choice{
+          background-image: url(../../../public/img/multiple-choice.jpg);
+          background-position: center;
+          background-size: cover;
+          border-radius: 20px;
+        }
+        &__flashcard{
+          background-image: url(../../../public/img/flashcard.png);
+          background-position: center;
+          background-size: cover;
+          border-radius: 20px;
+        } 
+        &__text-ex{
+          background-image: url(../../../public/img/practice-matching.jpg);
+          background-position: center;
+          background-size: cover;
+          border-radius: 20px;
+        }
+        &__matching{
+          background-image: url(../../../public/img/matching.jpg);
+          background-position: center;
+          background-size: cover;
+          border-radius: 20px;
+        }
+      }
       .multi-choice {
-        background-image: url("../img/practice-multi-choice.jpg");
-        background-position: center;
+        background-color: rgba(0, 0, 0, 0.43);
       }
       .flashcard {
-        background-image: url("../img/practifce-flashcard.jpg");
-        background-position: center;
+        background-color: rgba(0, 0, 0, 0.423);
       }
       .text-ex {
-        background-image: url("../img/practice-text-excercise.jpg");
-        background-position: center;
+        background-color: rgba(0, 0, 0, 0.423);
       }
       .matching {
-        background-image: url("../img/practice-matching.jpg");
-        background-position: center;
+        background-color: rgba(0, 0, 0, 0.423);
+
       }
       .practice-button {
         width: 100%;
@@ -85,4 +111,3 @@ body {
       }
     }
   }
-}
