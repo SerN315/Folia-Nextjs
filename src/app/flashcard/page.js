@@ -12,6 +12,8 @@ import { auth } from "../firebase/authenciation";
 import { getDatabase } from "../js/api/databaseAPI";
 import { fetchTopic } from "../js/api/specificPageApi";
 import Link from "next/link";
+import DOMPurify from "dompurify";
+
 
 export default function FlashCard() {
   const searchParams = useSearchParams(); // Access query params
@@ -25,6 +27,7 @@ export default function FlashCard() {
   const autoCycleInterval = useRef(null);
   const [isFlipped, setIsFlipped] = useState(false);
   const [showLoginPrompt, setShowLoginPrompt] = useState(false);
+  const [allData, setAllData] = useState([]); // State to hold all fetched data
 
   const ht2 = [
     "8e3fdb05-5ef5-4e77-b400-0d8767fb539e",
@@ -80,6 +83,7 @@ export default function FlashCard() {
     const databaseId = ht2.includes(topicID)
       ? "c3428e69474d46a790fe5e4d37f1600d"
       : "8240dd072127443f8e51d09de242c2d9";
+  
     getDatabase(databaseId, {
       filter: {
         property: ht2.includes(topicID) ? "topic" : "Topic",
@@ -89,8 +93,18 @@ export default function FlashCard() {
       },
     })
       .then((response) => {
+        if (!response || response.length === 0) {
+          console.error("No data returned from the database.");
+          setLoading(false);
+          setData([]); // Set an empty array in case of no data
+          return;
+        }
+  
         console.log("API Response:", response);
-
+  
+        // Limit response to 30 items
+        // const limitedResponse = response.slice(0, 30);
+  
         const newData = response
           .map((item) => {
             try {
@@ -99,14 +113,13 @@ export default function FlashCard() {
                 const word = item.properties.Name.title[0]?.plain_text;
                 const meaning = item.properties.Answer_Content.formula.string;
                 const pronunciation =
-                item.properties.explanation.rich_text[0]?.plain_text;
+                  item.properties.explanation.rich_text[0]?.plain_text;
                 const img = item.properties.Img.files?.[0]?.url;
-                console.log({
-                  word,
-                  meaning,
-                  pronunciation,
-                  img,
-                });
+  
+                if (!word || !meaning || !pronunciation || !img) {
+                  console.warn("Incomplete data for item:", item);
+                }
+  
                 return {
                   word,
                   meaning,
@@ -115,25 +128,19 @@ export default function FlashCard() {
                 };
               } else {
                 // Handle regular data structure
-                const uniqueId = item.properties.ID.unique_id.number; // Make sure 'ID' exists
-                const word = item.properties.Name.title[0]?.plain_text; // Check 'Name'
-                const set = item.properties.Set.multi_select[0]?.name; // Check 'Set'
+                const uniqueId = item.properties.ID.unique_id.number;
+                const word = item.properties.Name.title[0]?.plain_text;
+                const set = item.properties.Set.multi_select[0]?.name;
                 const meaning =
-                  item.properties.Meaning.rich_text[0]?.plain_text; // Check 'Meaning'
+                  item.properties.Meaning.rich_text[0]?.plain_text;
                 const pronunciation =
-                  item.properties.Pronunciation.rich_text[0]?.plain_text; // Check 'Pronunciation'
-                const img = item.properties.img.rich_text[0]?.plain_text; // Check 'img'
-
-                // Log each extracted value for debugging
-                console.log({
-                  uniqueId,
-                  word,
-                  set,
-                  meaning,
-                  pronunciation,
-                  img,
-                });
-
+                  item.properties.Pronunciation.rich_text[0]?.plain_text;
+                const img = item.properties.img.rich_text[0]?.plain_text;
+  
+                if (!uniqueId || !word || !meaning || !pronunciation || !img) {
+                  console.warn("Incomplete data for item:", item);
+                }
+  
                 return {
                   Id: uniqueId,
                   Word: word,
@@ -149,41 +156,42 @@ export default function FlashCard() {
             }
           })
           .filter((item) => item !== null); // Filter out any null values
-
-        setData(newData);
+  
+        setAllData(newData);
+        setData(newData.slice(0,30))
         setLoading(false); // Stop loading
-
+  
         fetchTopic(topicID)
           .then((topic) => {
+            if (!topic || !topic.topicName) {
+              console.warn("No topic data available:", topic);
+              document.querySelector(".topic").innerHTML = "No topic available";
+              return;
+            }
+  
             console.log("Topic:", topic);
-
+  
             // Select the element with the class 'topic'
             const topicElement = document.querySelector(".topic");
             const cateElement = document.querySelector(".category");
-            // Check if topic exists and has a name
-            if (topic && topic.topicName) {
-              topicElement.innerHTML = topic.topicName; // Set the topic name
-            } else {
-              topicElement.innerHTML = "No topic available"; // Fallback message
-            }
-            if (topic && topic.topicName) {
-              cateElement.innerHTML = topic.categories[0].categoryName; // Set the topic name
-            } else {
-              cateElement.innerHTML = "No topic available"; // Fallback message
-            }
+  
+            topicElement.innerHTML = topic.topicName; // Set the topic name
+            cateElement.innerHTML =
+              topic.categories?.[0]?.categoryName || "No category available"; // Set category name or fallback
           })
           .catch((error) => {
-            console.error("Error:", error);
-            document.querySelector(".topic").innerHTML = "Error fetching topic"; // Error handling message
+            console.error("Error fetching topic:", error);
+            document.querySelector(".topic").innerHTML = "Error fetching topic";
           });
       })
       .catch((error) => {
         console.error("Error fetching vocabularies:", error);
-        setData([]);
+        setData([]); // Ensure data is reset on error
         setLoading(false); // Stop loading even on error
       });
   };
-
+  
+  
   const shuffleArray = (array) => {
     const shuffled = [...array];
     for (let i = shuffled.length - 1; i > 0; i--) {
@@ -387,7 +395,9 @@ export default function FlashCard() {
         >
           <div className="flashcard-content">
             {loading ? (
-              <div class="card">
+              <div class="card" style={{
+                height:ht2.includes(topicID) ? "300px" : ""
+              }}>
                 <div class="content">
                   <div class="loading"></div>
                 </div>
@@ -415,25 +425,34 @@ export default function FlashCard() {
                       >
                         {/* Word section */}
                         <div className="word">
-                          <h2>
-                            {ht2.includes(topicID) ? item.word : item.Word}
-                          </h2>
+            <div
+              style={{
+                padding: "0px 50px",
+                fontSize: "25px",
+              }}
+              dangerouslySetInnerHTML={{
+                __html: DOMPurify.sanitize(ht2.includes(topicID) ? item.word : item.Word, {
+                  ALLOWED_TAGS: ["small", "b", "i", "strong", "em"], // Add safe tags here
+                  ALLOWED_ATTR: [], // Restrict attributes if necessary
+                }),
+              }}
+            ></div>
                           {ht2.includes(topicID) ? (
                             <>
                               <h3>{item.pronunciation}</h3>
-                              {/* <h3>{item.meaning}</h3> */}
+                              {item.img && <img src={item}></img>}
                             </>
                           ) : (
                             <>
                               <h3>{item.Pronunciation}</h3>
                               <h3>{item.Set}</h3>
-                              {/* <h3>{item.Meaning}</h3> */}
+                              
                             </>
                           )}
                         </div>
 
                         {/* Image section */}
-                        {item.Img && (
+                        {item.Img && !ht2.includes(topicID) && (
                           <div className="flashcardimg">
                             <img
                               src={item.Img}
@@ -443,11 +462,14 @@ export default function FlashCard() {
                               width={200}
                               height={200}
                             />
-                            {ht2.includes(topicID) ? (
-                              <h2>{item.meaning}</h2>
-                            ) : (
-                              <h2>{item.Meaning}</h2>
-                            )}
+                            <h2>{item.Meaning}</h2>
+                          </div>
+                        )}
+                        {ht2.includes(topicID) && (
+                          <div className="flashcardimg">
+                            <h1 style={{
+                              fontSize:"25px",
+                            }}>{item.meaning}</h1>
                           </div>
                         )}
                       </div>

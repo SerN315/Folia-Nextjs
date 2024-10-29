@@ -37,9 +37,9 @@ export default function Setting() {
                   <h4 className="created_text">Started from 2024</h4>
                 </div>
               </div>
-              <Link href="/profile" style={{ fontSize: 35 }}>
+              <a href="/profile" style={{ fontSize: 35 }}>
                 <i className="fa-solid fa-user" />
-              </Link>
+              </a>
             </div>
             <hr />
             <div className="content__options account">

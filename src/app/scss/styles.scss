@@ -98,6 +98,7 @@ $mobile-s-width: 321px;
     @content;
   }
 }
+
 main{
   background-color: white;
 }
@@ -128,5 +129,6 @@ body {
   position: relative;
 }
 // main {
-//   padding-bottom: 500px;
+//   display: flex;
+//   flex-direction: column;
 // }

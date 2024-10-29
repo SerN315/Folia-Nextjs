@@ -17,7 +17,7 @@ export default function Subhub() {
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Hobbies - Practice</title>
 </Head>
-  <main>
+  <main className="subhubMain">
     {/* PRACTICE PAGE CONTENT */}
     <h2 className="practice-title">Practices</h2>
     <h2 className="descriptions">Choose Your Prefered Practice Style</h2>
@@ -36,8 +36,8 @@ export default function Subhub() {
           </Link>
         </div>
         <div className="practice__text-ex">
-          <Link href={`/fillblank?topic=${id}&tag=${tag}`}>
-            <button className="practice-button text-ex">Fill The Blank</button>
+          <Link href={`#`}>
+            <button className="practice-button text-ex">Function In Progress</button>
           </Link>
         </div>
         <div className="practice__matching">

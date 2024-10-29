@@ -12,13 +12,13 @@ a {
   text-decoration: none;
   font-weight: bold;
 }
-main {
-  position: relative;
-  top: 0;
-  @include flexP;
-  background-color: #162938;
-  min-height: 100vh;
-}
+// main {
+//   position: relative;
+//   top: 0;
+//   @include flexP;
+//   background-color: #162938;
+//   min-height: 100vh;
+// }
 .wrapper {
   position: absolute;
   top: 30px;

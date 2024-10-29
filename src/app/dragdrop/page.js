@@ -1,6 +1,5 @@
-
-'use client';
-
+"use client";
+import Link from "next/link";
 import Head from "next/head";
 //import Footer from "../Component/footer";
 // import TopNav from "../Component/header";
@@ -8,6 +7,7 @@ import "../scss/d_and_d.scss";
 import { useEffect, useState } from "react";
 import { db, auth } from "../firebase/authenciation";
 import { onAuthStateChanged } from "firebase/auth";
+import DOMPurify from "dompurify";
 import {
   getFirestore,
   doc,
@@ -21,11 +21,17 @@ import {
 } from "firebase/firestore";
 import { useSearchParams } from "next/navigation";
 import { getDatabase } from "../js/api/databaseAPI";
+import { fetchTopic } from "../js/api/specificPageApi";
 
 export default function DragDrop() {
   const searchParams = useSearchParams(); // Access query params
   const id = searchParams.get("topic"); // Get the 'topic' query param
   const idd = searchParams.get("id");
+  const storedTopicName = localStorage.getItem(`topic_${id}`);
+  const storedCategoryName = localStorage.getItem(`category_name`) ;
+  const topicName = storedTopicName ? storedTopicName.replace(/"/g, "") : "null";
+  const categoryName = storedCategoryName ? storedCategoryName.replace(/"/g, "") : "null";
+  
 
   // State variables
   const [responseData, setResponseData] = useState([]);
@@ -46,8 +52,6 @@ export default function DragDrop() {
   const [droppedQuestions, setDroppedQuestions] = useState([]);
   const [progress, setProgress] = useState(0);
   const [gameCompleted, setGameCompleted] = useState(false);
-  
-
 
   // Constants
   const ht2 = [
@@ -162,7 +166,8 @@ export default function DragDrop() {
         if (id.includes("challenge")) {
           // Handle challenge-specific data
           try {
-            const storedOriginalQuestions = localStorage.getItem("originalQuestions");
+            const storedOriginalQuestions =
+              localStorage.getItem("originalQuestions");
             const storedScore = localStorage.getItem("points");
             const storedStreak = localStorage.getItem("streak");
 
@@ -194,6 +199,8 @@ export default function DragDrop() {
     fetchData();
   }, [id, idd]);
 
+  
+  
   // Function: Initialize Game
   const initiateGame = (data) => {
     if (!data || data.length === 0) {
@@ -203,43 +210,47 @@ export default function DragDrop() {
     }
 
     const shuffledData = [...data].sort(() => Math.random() - 0.5);
-    const selectedQuestions = shuffledData.slice(0, totalMatchingPairs).map((item) => ({
-      Q:
-        item.properties.img?.rich_text[0]?.plain_text ||
-        item.properties.Name?.title[0]?.text.content ||
-        "N/A",
-      answer:
-        item.properties.Answer_Content?.formula.string ||
-        item.properties.Name?.title[0]?.plain_text ||
-        "N/A",
-      dropped: false, // Add 'dropped' property
-      source: "Drag and Drop",
-    }));
+    const selectedQuestions = shuffledData
+      .slice(0, totalMatchingPairs)
+      .map((item) => ({
+        Q:
+          item.properties.img?.rich_text[0]?.plain_text ??
+          item.properties.Name?.title[0]?.text.content ??
+          "N/A",
+        answer:
+          item.properties.Answer_Content?.formula.string ??
+          item.properties.Name?.title[0]?.plain_text ??
+          "N/A",
+        dropped: false, // Add 'dropped' property
+        source: "Drag and Drop",
+      }));
 
     console.log("Initializing game with questions:", selectedQuestions);
 
     setQuestions(selectedQuestions);
 
     const uniqueAnswersSet = new Set(selectedQuestions.map((q) => q.answer));
-    const uniqueAnswersArray = Array.from(uniqueAnswersSet).sort(() => Math.random() - 0.5);
+    const uniqueAnswersArray = Array.from(uniqueAnswersSet).sort(
+      () => Math.random() - 0.5
+    );
     setUniqueAnswers(uniqueAnswersArray);
 
     setLoading(false);
   };
 
- const handleTouchStart = (e, answer) => {
-  e.preventDefault(); // Prevent default touch behavior
-  setDraggedAnswer(answer); // Store the dragged answer in state
-};
+  const handleTouchStart = (e, answer) => {
+    e.preventDefault(); // Prevent default touch behavior
+    setDraggedAnswer(answer); // Store the dragged answer in state
+  };
 
-// Handle Touch End
-const handleTouchEnd = (e, expectedAnswer, questionIndex) => {
-  e.preventDefault();
-  if (draggedAnswer) {
-    processDrop(draggedAnswer, expectedAnswer, questionIndex);
-    setDraggedAnswer(null); // Clear the dragged answer
-  }
-};
+  // Handle Touch End
+  const handleTouchEnd = (e, expectedAnswer, questionIndex) => {
+    e.preventDefault();
+    if (draggedAnswer) {
+      processDrop(draggedAnswer, expectedAnswer, questionIndex);
+      setDraggedAnswer(null); // Clear the dragged answer
+    }
+  };
 
   // Function: Handle Drag Start
   const handleDragStart = (e, answer) => {
@@ -247,74 +258,74 @@ const handleTouchEnd = (e, expectedAnswer, questionIndex) => {
   };
 
   // Handle Drop (Mouse)
-const handleDrop = (e, expectedAnswer, questionIndex) => {
-  e.preventDefault();
-  const draggedAnswer = e.dataTransfer.getData("text/plain");
-  processDrop(draggedAnswer, expectedAnswer, questionIndex);
-};
+  const handleDrop = (e, expectedAnswer, questionIndex) => {
+    e.preventDefault();
+    const draggedAnswer = e.dataTransfer.getData("text/plain");
+    processDrop(draggedAnswer, expectedAnswer, questionIndex);
+  };
 
+  // Function to process the drop logic
+  const processDrop = (draggedAnswer, expectedAnswer, questionIndex) => {
+    const isCorrect = draggedAnswer === expectedAnswer;
 
-// Function to process the drop logic
-const processDrop = (draggedAnswer, expectedAnswer, questionIndex) => {
-  const isCorrect = draggedAnswer === expectedAnswer;
+    setTotal((prev) => prev + 1);
 
-  setTotal((prev) => prev + 1);
+    if (isCorrect) {
+      setScore((prev) => prev + 100);
+      setCorrectCount((prev) => prev + 1);
+      setStreak((prev) => prev + 1);
 
-  if (isCorrect) {
-    setScore((prev) => prev + 100);
-    setCorrectCount((prev) => prev + 1);
-    setStreak((prev) => prev + 1);
+      // Remove the answer from uniqueAnswers to hide the draggable
+      setUniqueAnswers((prev) => prev.filter((ans) => ans !== draggedAnswer));
 
-    // Remove the answer from uniqueAnswers to hide the draggable
-    setUniqueAnswers((prev) => prev.filter((ans) => ans !== draggedAnswer));
+      // Update the corresponding question's 'dropped' property to true
+      setQuestions((prevQuestions) => {
+        const updatedQuestions = [...prevQuestions];
+        updatedQuestions[questionIndex] = {
+          ...updatedQuestions[questionIndex],
+          dropped: true,
+        };
+        return updatedQuestions;
+      });
 
-    // Update the corresponding question's 'dropped' property to true
-    setQuestions((prevQuestions) => {
-      const updatedQuestions = [...prevQuestions];
-      updatedQuestions[questionIndex] = { ...updatedQuestions[questionIndex], dropped: true };
-      return updatedQuestions;
-    });
+      // Add the question to the droppedQuestions state to apply the class
+      setDroppedQuestions((prev) => [...prev, questionIndex]);
+    } else {
+      setScore((prev) => Math.max(prev - 25, 0));
+      setStreak(0);
+    }
 
-    // Add the question to the droppedQuestions state to apply the class
-    setDroppedQuestions((prev) => [...prev, questionIndex]);
-  } else {
-    setScore((prev) => Math.max(prev - 25, 0));
-    setStreak(0);
-  }
+    // Update highest streak if necessary
+    setHighestStreak((prev) =>
+      streak + (isCorrect ? 1 : 0) > prev ? streak + (isCorrect ? 1 : 0) : prev
+    );
 
-  // Update highest streak if necessary
-  setHighestStreak((prev) => (streak + (isCorrect ? 1 : 0) > prev ? streak + (isCorrect ? 1 : 0) : prev));
-
-  checkGameCompletion();
-};
-
-  
+    checkGameCompletion();
+  };
 
   // Function: Allow Drop
   const allowDrop = (e) => {
     e.preventDefault();
   };
 
-
-
   // Function: Handle Play Again
-const handlePlayAgain = () => {
-  setShowResult(false);
-  setShowInteract(false);
-  setShowContentInteract(true);
-  setScore(0);
-  setTotal(0);
-  setStreak(0);
-  setHighestStreak(0);
-  setCorrectCount(0);
-  setUniqueAnswers([]);
-  setDroppedQuestions([]); // Reset dropped questions
-  setShowPlayAgain(false);
-  localStorage.removeItem("points");
-  localStorage.removeItem("streak");
-  // Reinitialize the game
-  initiateGame(responseData);
-};
+  const handlePlayAgain = () => {
+    setShowResult(false);
+    setShowInteract(false);
+    setShowContentInteract(true);
+    setScore(0);
+    setTotal(0);
+    setStreak(0);
+    setHighestStreak(0);
+    setCorrectCount(0);
+    setUniqueAnswers([]);
+    setDroppedQuestions([]); // Reset dropped questions
+    setShowPlayAgain(false);
+    localStorage.removeItem("points");
+    localStorage.removeItem("streak");
+    // Reinitialize the game
+    initiateGame(responseData);
+  };
 
   // Function: Handle Continue (Challenge)
   const handleContinue = () => {
@@ -322,7 +333,12 @@ const handlePlayAgain = () => {
   };
 
   // Function: Save Quiz Data to Firestore
-  const saveQuizData = async (currentScore, currentHighestStreak, currentQuestions, userId) => {
+  const saveQuizData = async (
+    currentScore,
+    currentHighestStreak,
+    currentQuestions,
+    userId
+  ) => {
     const firestore = getFirestore();
     const userDocRef = doc(db, `user_history/${userId}`);
 
@@ -338,9 +354,10 @@ const handlePlayAgain = () => {
     const data = {
       score: currentScore,
       originalQuestions: originalQuestions.map((question) => ({
-        userAnswer:question.UserAnswer || "N/A",
+        userAnswer: question.UserAnswer || "N/A",
         question: question.properties.Name.title[0].plain_text || "N/A",
-        correctAnswer: question.properties.Answer_Content.formula.string || "N/A",
+        correctAnswer:
+          question.properties.Answer_Content.formula.string || "N/A",
         source: "Multiple Choices",
       })),
       highestStreak: currentHighestStreak,
@@ -353,7 +370,13 @@ const handlePlayAgain = () => {
     };
 
     try {
-      await addDoc(collection(userDocRef, id.includes("challenge") ? "challenge" : "practices"), data);
+      await addDoc(
+        collection(
+          userDocRef,
+          id.includes("challenge") ? "challenge" : "practices"
+        ),
+        data
+      );
       console.log("Quiz attempt saved for user:", userId);
     } catch (error) {
       console.error("Error saving quiz attempt:", error);
@@ -365,8 +388,7 @@ const handlePlayAgain = () => {
     console.log("Dropped Questions:", droppedQuestions.length);
     console.log("Total Matching Pairs:", totalMatchingPairs);
 
-  
-    if (droppedQuestions.length === totalMatchingPairs-1) {
+    if (droppedQuestions.length === totalMatchingPairs - 1) {
       setShowResult(true);
       setShowContentInteract(false);
       setGameCompleted(true);
@@ -382,8 +404,6 @@ const handlePlayAgain = () => {
       }
     }
   };
-  
-
 
   // Function: Check Streak (Used inside saveQuizData)
   const checkStreak = async (userId) => {
@@ -436,7 +456,9 @@ const handlePlayAgain = () => {
   const renderMatchingPairs = () => {
     return questions.map((question, index) => (
       <div key={index} className="matching-pair">
-        {question.Q.startsWith("http://") || question.Q.startsWith("https://") || question.Q.startsWith("data:") ? (
+        {question.Q.startsWith("http://") ||
+        question.Q.startsWith("https://") ||
+        question.Q.startsWith("data:") ? (
           <span
             className="label"
             style={{
@@ -444,21 +466,23 @@ const handlePlayAgain = () => {
             }}
           ></span>
         ) : (
-          <span className="label">{question.Q}</span>
+          <span className="label"dangerouslySetInnerHTML={{
+            __html: DOMPurify.sanitize(question.Q, {
+              ALLOWED_TAGS: ["small", "b", "i", "strong", "em"], // Add safe tags here
+              ALLOWED_ATTR: [], // Restrict attributes if necessary
+            }),
+          }}
+        ></span>
         )}
         <span
-          className={`droppable ${question.dropped ? 'dropped' : ''}`} // Conditionally add the 'dropped' class
+          className={`droppable ${question.dropped ? "dropped" : ""}`} // Conditionally add the 'dropped' class
           data-answer={question.answer}
           onDragOver={allowDrop}
           onDrop={(e) => handleDrop(e, question.answer, index)} // pass index to handleDrop
           onTouchEnd={(e) => handleTouchEnd(e, question.answer, index)} // Add touch end handler
         >
           {/* If already dropped, show the answer */}
-          {question.dropped && (
-            <span>
-              {question.answer}
-            </span>
-          )}
+          {question.dropped && <span>{question.answer}</span>}
         </span>
       </div>
     ));
@@ -478,28 +502,34 @@ const handlePlayAgain = () => {
           clearInterval(progressInterval);
         }
       }, speed);
-      
+
       return () => clearInterval(progressInterval);
     }
   }, [gameCompleted, correctCount, total]);
 
   // Rendering Result Section
   const renderResult = () => {
-
     return (
       <div className="result_shower">
         <h1>You Achieved</h1>
         <div className="result_content">
           <div className="percentage-result">
-            <div className="circular-progress" style={{
-              background: `conic-gradient(#3fbd00 ${progress * 3.6}deg, #ededed 0deg)`
-            }}>
+            <div
+              className="circular-progress"
+              style={{
+                background: `conic-gradient(#3fbd00 ${
+                  progress * 3.6
+                }deg, #ededed 0deg)`,
+              }}
+            >
               <span className="circular-value">{progress}%</span>
             </div>
           </div>
           <div className="point-result">
             <div className="score-points">Your Score: {score}</div>
-            <div className="max-streak">Best Streak this run: {highestStreak}</div>
+            <div className="max-streak">
+              Best Streak this run: {highestStreak}
+            </div>
           </div>
         </div>
       </div>
@@ -508,11 +538,8 @@ const handlePlayAgain = () => {
   // Rendering Interact Section
   const renderInteract = () => {
     return (
-      <div className="interact" >
-        <button
-          id="challenge__continue"
-          onClick={handleContinue}
-        >
+      <div className="interact">
+        <button id="challenge__continue" onClick={handleContinue}>
           Finish
         </button>
       </div>
@@ -523,12 +550,8 @@ const handlePlayAgain = () => {
   const renderContentInteract = () => {
     return (
       <div className="content_interact">
-        <section className="draggable-items">
-          {renderDraggableItems()}
-        </section>
-        <section className="matching-pairs">
-          {renderMatchingPairs()}
-        </section>
+        <section className="draggable-items">{renderDraggableItems()}</section>
+        <section className="matching-pairs">{renderMatchingPairs()}</section>
       </div>
     );
   };
@@ -538,27 +561,26 @@ const handlePlayAgain = () => {
     return (
       <>
         {/* <TopNav/> */}
-    <div class="drag_content">
-      <section class="score">
-        <div class="score_right">
-          <h1 class="left_score">Right Tries</h1>
-          <span class="correct">0</span>
-        </div>
-        <div class="score_right">
-          <h1 class="right_score">Total Tries</h1>
-          <span class="total">0</span>
-        </div>
-        <button id="play-again-btn">Play Again</button>
-      </section>
-      <div class="content_interact">
-        <section class="draggable-items">
-        </section>
-        <section class="matching-pairs">
-        <div class="spinner-border" role="status">
-        <span class="visually-hidden">Loading...</span>
-      </div>
-        </section>
-        </div>
+        <div class="drag_content">
+          <section class="score">
+            <div class="score_right">
+              <h1 class="left_score">Right Tries</h1>
+              <span class="correct">0</span>
+            </div>
+            <div class="score_right">
+              <h1 class="right_score">Total Tries</h1>
+              <span class="total">0</span>
+            </div>
+            <button id="play-again-btn">Play Again</button>
+          </section>
+          <div class="content_interact">
+            <section class="draggable-items"></section>
+            <section class="matching-pairs">
+              <div class="spinner-border" role="status">
+                <span class="visually-hidden">Loading...</span>
+              </div>
+            </section>
+          </div>
         </div>
         {/* <Footer /> */}
       </>
@@ -572,17 +594,60 @@ const handlePlayAgain = () => {
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Hobbies - Matching</title>
       </Head>
+      <main className="dragdropMain">
       {/* <TopNav/> */}
+              {/* NAVIGATION PANEL */}
+              {!id.includes("challenge") && !ht2.includes(id) && (
+        <div className="nav-panel">
+          <p className="nav-panel__navigation">
+            <Link href="/cate?topic=folia-language" className="cate-link">
+              Categories
+            </Link>{" "}
+            &gt; Category: <span className="category">{categoryName}</span> &gt; Topic:
+            <span className="topic">{topicName}</span>
+          </p>
+          <h3 className="nav-panel__main-title">Drag&amp;Drop</h3>
+          <div className="nav-panel__dropdown">
+            <p>Practices</p>
+            <i className="fa-solid fa-chevron-down fa-s" />
+          </div>
+          <div className="nav-panel__game-list">
+            <Link
+              href={`vocabularies?topic=${id}`}
+              className="nav-panel__game-list__game-item vocabulary-link"
+            >
+              <i className="fa-solid fa-a" />
+              <p>Vocabulary</p>
+            </Link>
+            <Link
+              href={`flashcard?topic=${id}`}
+              className="nav-panel__game-list__game-item d-and-d-link"
+            >
+              <i className="fa-regular fa-images" />
+              <p>FlashCard</p>
+            </Link>
+          </div>
+        </div>
+        )
+}
       <div className="drag_content">
         {/* Score Section */}
         <section className="score">
           <div className="score_right">
-            <h1 className="left_score">{id.includes("challenge") ? "Points" : "Right Tries"}</h1>
-            <span className="correct">{id.includes("challenge") ? score : correctCount}</span>
+            <h1 className="left_score">
+              {id.includes("challenge") ? "Points" : "Right Tries"}
+            </h1>
+            <span className="correct">
+              {id.includes("challenge") ? score : correctCount}
+            </span>
           </div>
           <div className="score_right">
-            <h1 className="right_score">{id.includes("challenge") ? "Streak" : "Total Tries"}</h1>
-            <span className="total">{id.includes("challenge") ? streak : total}</span>
+            <h1 className="right_score">
+              {id.includes("challenge") ? "Streak" : "Total Tries"}
+            </h1>
+            <span className="total">
+              {id.includes("challenge") ? streak : total}
+            </span>
           </div>
           {!id.includes("challenge") && (
             <button
@@ -607,65 +672,67 @@ const handlePlayAgain = () => {
         {/* Interact Section (Only for Challenges) */}
         {showInteract && renderInteract()}
       </div>
+      </main>
       {/* <Footer /> */}
     </>
   );
 }
 
-  // return (
-  //   <>
-  //   <Head>
-  //   <meta charSet="UTF-8" />
-  // <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  // <title>Hobbies - Matching</title>
-  //   </Head>
-  //   <TopNav/>
-  //   <div className="drag_content">
-  //   <section className="score">
-  //     <div className="score_right">
-  //       <h1 className="left_score">Right Tries</h1>
-  //       <span className="correct">0</span>
-  //     </div>
-  //     <div className="score_right">
-  //       <h1 className="right_score">Total Tries</h1>
-  //       <span className="total">0</span>
-  //     </div>
-  //     <button id="play-again-btn">Play Again</button>
-  //   </section>
-  //   <div className="spinner-border" role="status">
-  //     <span className="visually-hidden">Loading...</span>
-  //   </div>
-  //   <div className="content_interact">
-  //     <section className="draggable-items">
-  //       {/* Will be dynamically populated - Example Element: */}
-  //       {/* <div class="draggable" draggable="true">ABCD</div> */}
-  //     </section>
-  //     <section className="matching-pairs">
-  //       {/* Will be dynamically populated - Example Element: */}
-  //       {/* <div class="matching-pair">
-  //   <span class="label"><img src="img/Rectangle 1694.png" alt=""></span>
-  //   <span class="droppable" data-answer="ABCD"></span>
-  // </div> */}
-  //     </section>
-  //   </div>
-  //   <div className="result_shower">
-  //     <h1>You Archived</h1>
-  //     <div className="result_content">
-  //       <div className="percentage-result">
-  //         <div className="circular-progress">
-  //           <span className="circular-value">0%</span>
-  //         </div>
-  //       </div>
-  //       <div className="point-result">
-  //         <div className="score-points" />
-  //         <div className="max-streak" />
-  //       </div>
-  //     </div>
-  //   </div>
-  //   <div className="interact">
-  //     <button id="challenge__continue">Finish</button>
-  //   </div>
-  // </div>
-  // <Footer/>
-  //   </>
-  // )}
+// return (
+//   <>
+//   <Head>
+//   <meta charSet="UTF-8" />
+// <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+// <title>Hobbies - Matching</title>
+//   </Head>
+//   <TopNav/>
+//   <div className="drag_content">
+//   <section className="score">
+//     <div className="score_right">
+//       <h1 className="left_score">Right Tries</h1>
+//       <span className="correct">0</span>
+//     </div>
+//     <div className="score_right">
+//       <h1 className="right_score">Total Tries</h1>
+//       <span className="total">0</span>
+//     </div>
+//     <button id="play-again-btn">Play Again</button>
+//   </section>
+//   <div className="spinner-border" role="status">
+//     <span className="visually-hidden">Loading...</span>
+//   </div>
+//   <div className="content_interact">
+//     <section className="draggable-items">
+//       {/* Will be dynamically populated - Example Element: */}
+//       {/* <div class="draggable" draggable="true">ABCD</div> */}
+//     </section>
+//     <section className="matching-pairs">
+//       {/* Will be dynamically populated - Example Element: */}
+//       {/* <div class="matching-pair">
+//   <span class="label"><img src="img/Rectangle 1694.png" alt=""></span>
+//   <span class="droppable" data-answer="ABCD"></span>
+// </div> */}
+//     </section>
+//   </div>
+//   <div className="result_shower">
+//     <h1>You Archived</h1>
+//     <div className="result_content">
+//       <div className="percentage-result">
+//         <div className="circular-progress">
+//           <span className="circular-value">0%</span>
+//         </div>
+//       </div>
+//       <div className="point-result">
+//         <div className="score-points" />
+//         <div className="max-streak" />
+//       </div>
+//     </div>
+//   </div>
+//   <div className="interact">
+//     <button id="challenge__continue">Finish</button>
+//   </div>
+// </div>
+
+// <Footer/>
+//   </>
+// )}

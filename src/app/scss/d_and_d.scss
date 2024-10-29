@@ -3,6 +3,7 @@
 @import "footer";
 @import "topnav";
 @import "login";
+@import "navigation";
 @mixin interactB {
   @include flexR;
   width: 200px;
@@ -14,6 +15,14 @@
   color: #8d8d8d;
   bottom: -35px;
 }
+@mixin itemALign {
+  padding-left: 20vw;
+  padding-right: 20vw;
+  @include laptop {
+    padding-left: 10vw;
+    padding-right: 10vw;
+  }
+}
 
 * {
   margin: 0;
@@ -22,24 +31,29 @@
 }
 
 // STYLING FOR TOPNAV (ONLY IN D_AND_D)
-#topNav {
-  height: 100px;
-}
-
-body {
+.dragdropMain {
+  padding-top: 100px;
   font-family: "Poppins";
-  background-color: #eee;
+  // background-color: #eee;
   color: #111;
   overflow-x: hidden;
 }
 
+.nav-panel {
+  background-color: #f4f4f4;
+  @include itemALign();
+  padding-top: 50px;
+  padding-bottom: 25px;
+}
+
 .drag_content {
+    background-color: #f4f4f4;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   padding-bottom: 100px;
-  padding-top: 100px;
+  // padding-top: 100px;
 }
 
 .score {

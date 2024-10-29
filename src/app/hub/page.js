@@ -65,7 +65,7 @@ export default function Hub() {
                   </div>
                 </div>
               </Link>
-              <Link href="/home" className="link link--vie">
+              {/* <Link href="/home" className="link link--vie">
                 <div className="item">
                   <Image
                     src="/img/features-icon/V.svg"
@@ -99,7 +99,7 @@ export default function Hub() {
                     </p>
                   </div>
                 </div>
-              </Link>
+              </Link> */}
               </div>
               <h2>Certificate Practice</h2>
               <div className="cert">
@@ -120,7 +120,7 @@ export default function Hub() {
                   </div>
                 </div>
               </Link>
-              <Link href="/subhome?topic=folia-SAT" className="link link--sat">
+              {/* <Link href="/subhome?topic=folia-SAT" className="link link--sat">
                 <div className="item">
                   <Image
                     src="/img/features-icon/sat-ico.svg"
@@ -186,7 +186,7 @@ export default function Hub() {
                     </p>
                   </div>
                 </div>
-              </Link>
+              </Link> */}
               </div>
             </div>
           </div>

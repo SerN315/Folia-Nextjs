@@ -255,7 +255,7 @@ export default function TopNav() {
               <Image src="" className="avatar" width={25} height={25} />
             </button>
             <div className="profile__dropdown">
-              <Link className="detail" href="/profile">
+              <a className="detail" href="/profile">
                 <Image
                   className="detail__avatar"
                   src=""
@@ -266,15 +266,15 @@ export default function TopNav() {
                   <h5 className="user-name">username</h5>
                   <p className="user-email">example@domain.com</p>
                 </div>
-              </Link>
+              </a>
               <hr />
               <Link href="/favorite" className="link">
                 Favorites
               </Link>
               <hr />
-              <Link href="/setting" className="link">
+              <a href="/setting" className="link">
                 Settings
-              </Link>
+              </a>
               <div className="logout link hidden" onClick={handleLogoutClick}>
                 Log Out
               </div>

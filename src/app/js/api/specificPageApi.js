@@ -24,6 +24,7 @@ const fetchCategory = async (categoryId) => {
 
       // Cache the category result
       categoryCache[categoryId] = result;
+      localStorage.setItem(`category_name`, JSON.stringify(result.categoryName));
       console.log("Fetched category from API:", result);
       return result;
     } else {
@@ -67,6 +68,7 @@ export const fetchTopic = async (topicID) => {
 
       // Cache the topic result
       cache[topicID] = result;
+      localStorage.setItem(`topic_${topicID}`, JSON.stringify(result.topicName));
       console.log("Fetched from API:", result);
       return result;
     } else {

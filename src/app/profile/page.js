@@ -116,9 +116,9 @@ export default function Profile() {
                 <Link href="/history" style={{ fontSize: 35, marginRight: 30 }}>
                   <i className="fa-solid fa-clock-rotate-left" />
                 </Link>
-                <Link href="/setting" style={{ fontSize: 35 }}>
+                <a href="/setting" style={{ fontSize: 35 }}>
                   <i className="fa-solid fa-gear" />
-                </Link>
+                </a>
               </div>
             </div>
             <hr />

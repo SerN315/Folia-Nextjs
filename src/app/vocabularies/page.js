@@ -55,6 +55,7 @@ export default function Vocabularies() {
 
   const fetchVocabBasedOnTopic = (favoriteList, favoriteRef, firestore) => {
     setLoading(true); // Start loading
+  
     getDatabase("8240dd072127443f8e51d09de242c2d9", {
       filter: {
         property: "Topic",
@@ -63,81 +64,97 @@ export default function Vocabularies() {
         },
       },
     })
-    .then((response) => {
-      console.log("API Response:", response);
-      
-      const newData = response.map((item) => {
-        try {
-          const uniqueId = item.properties.ID.unique_id.number; // Make sure 'ID' exists
-          const word = item.properties.Name.title[0]?.plain_text; // Check 'Name'
-          const set = item.properties.Set.multi_select[0]?.name; // Check 'Set'
-          const meaning = item.properties.Meaning.rich_text[0]?.plain_text; // Check 'Meaning'
-          const pronunciation = item.properties.Pronunciation.rich_text[0]?.plain_text; // Check 'Pronunciation'
-          const img = item.properties.img.rich_text[0]?.plain_text; // Check 'img'
-      
-          // Log each extracted value for debugging
-          console.log({
-            uniqueId,
-            word,
-            set,
-            meaning,
-            pronunciation,
-            img,
-          });
-      
-          return {
-            Id: uniqueId,
-            Word: word,
-            Set: set,
-            Meaning: meaning,
-            Pronunciation: pronunciation,
-            Img: img,
-          };
-        } catch (error) {
-          console.error("Error processing item:", item, error);
-          return null; // Return null in case of error
-        }
-      }).filter(item => item !== null); // Filter out any null values
-      
-      // Use the previous state to append new vocabulary items
-      setData((prevData) => {
-        const updatedData = [...prevData, ...newData];
-        console.log("Updated Data:", updatedData); // Log the updated data
-        return updatedData;
-      });
-
-
-      fetchTopic(topicID)
-      .then((topic) => {
-        console.log("Topic:", topic);
-    
-        // Select the element with the class 'topic'
+      .then((response) => {
+        console.log("API Response:", response);
+  
+        const newData = response.map((item) => {
+          try {
+            const uniqueId = item.properties.ID.unique_id.number; // Make sure 'ID' exists
+            const word = item.properties.Name.title[0]?.plain_text; // Check 'Name'
+            const set = item.properties.Set.multi_select[0]?.name; // Check 'Set'
+            const meaning = item.properties.Meaning.rich_text[0]?.plain_text; // Check 'Meaning'
+            const pronunciation = item.properties.Pronunciation.rich_text[0]?.plain_text; // Check 'Pronunciation'
+            const img = item.properties.img.rich_text[0]?.plain_text; // Check 'img'
+  
+            // Log each extracted value for debugging
+            console.log({
+              uniqueId,
+              word,
+              set,
+              meaning,
+              pronunciation,
+              img,
+            });
+  
+            return {
+              Id: uniqueId,
+              Word: word,
+              Set: set,
+              Meaning: meaning,
+              Pronunciation: pronunciation,
+              Img: img,
+            };
+          } catch (error) {
+            console.error("Error processing item:", item, error);
+            return null; // Return null in case of error
+          }
+        }).filter(item => item !== null); // Filter out any null values
+  
+        // Use the previous state to append new vocabulary items
+        setData((prevData) => {
+          const updatedData = [...prevData, ...newData];
+          console.log("Updated Data:", updatedData); // Log the updated data
+          return updatedData;
+        });
+  
+        // Check localStorage for topic and category names
+        const storedTopicName = localStorage.getItem(`topic_${topicID}`);
+        const storedCategoryName = localStorage.getItem(`category_name`);
+        let topicName = storedTopicName.replace(/"/g, "");
+        let categoryName = storedCategoryName.replace(/"/g, "")
         const topicElement = document.querySelector(".topic");
         const cateElement = document.querySelector(".category");
-        // Check if topic exists and has a name
-        if (topic && topic.topicName) {
-          topicElement.innerHTML = topic.topicName; // Set the topic name
+  
+        // If stored topic name exists, use it
+        if (storedTopicName) {
+          topicElement.innerHTML = topicName; // Set the topic name from localStorage
         } else {
-          topicElement.innerHTML = "No topic available"; // Fallback message
+          // Fetch the topic if not found in localStorage
+          fetchTopic(topicID)
+            .then((topic) => {
+              console.log("Topic:", topic);
+              // Check if topic exists and has a name
+              if (topic && topic.topicName) {
+                topicElement.innerHTML = topic.topicName; // Set the topic name
+              } else {
+                topicElement.innerHTML = "No topic available"; // Fallback message
+              }
+              if (topic && topic.categories && topic.categories.length > 0) {
+                cateElement.innerHTML = topic.categories[0].categoryName; // Set the category name
+              } else {
+                cateElement.innerHTML = "No category available"; // Fallback message
+              }
+            })
+            .catch((error) => {
+              console.error("Error:", error);
+              topicElement.innerHTML = "Error fetching topic"; // Error handling message
+            });
         }
-        if (topic && topic.topicName) {
-          cateElement.innerHTML = topic.categories[0].categoryName; // Set the topic name
-        } else {
-          cateElement.innerHTML = "No topic available"; // Fallback message
+  
+        // If stored category name exists, use it
+        if (storedTopicName && storedCategoryName) {
+          cateElement.innerHTML = categoryName; // Set the category name from localStorage
         }
+  
+        setLoading(false); // Stop loading
       })
       .catch((error) => {
-        console.error("Error:", error);
-        document.querySelector(".topic").innerHTML = "Error fetching topic"; // Error handling message
+        console.error("Error fetching vocabularies:", error);
+        setData([]); 
+        setLoading(false); // Stop loading even on error
       });
-      setLoading(false); // Stop loading
-    })
-    .catch((error) => {
-      console.error("Error fetching vocabularies:", error);
-      setData([]); 
-      setLoading(false); // Stop loading even on error
-    });
   };
+  
 
   const handleFavoriteToggle = (word) => {
     const index = favoriteList.findIndex(item => item.id === word.Id);

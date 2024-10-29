@@ -193,7 +193,7 @@ export default function Category2() {
           >
             {loading ? (
               <div id="topic-list" class="topic-list loading">
-                <div class="card topic">
+                <div class="card topics">
                   <div class="topic-img">
                     <div class="spinner-border" role="status">
                       <span class="visually-hidden">Loading...</span>
@@ -205,7 +205,7 @@ export default function Category2() {
                     <h2></h2>
                   </div>
                 </div>
-                <div class="card topic">
+                <div class="card topics">
                   <div class="topic-img">
                     <div class="spinner-border" role="status">
                       <span class="visually-hidden">Loading...</span>
@@ -217,7 +217,7 @@ export default function Category2() {
                     <h2></h2>
                   </div>
                 </div>
-                <div class="card topic">
+                <div class="card topics">
                   <div class="topic-img">
                     <div class="spinner-border" role="status">
                       <span class="visually-hidden">Loading...</span>
@@ -233,7 +233,7 @@ export default function Category2() {
             ) : (
               topics.map((topic) => (
                 <div
-                  className="card topic"
+                  className="card topics"
                   data-topic-id={topic.topicID}
                   key={topic.topicID}
                 >

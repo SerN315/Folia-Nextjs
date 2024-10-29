@@ -200,27 +200,36 @@ function getRandomQuestions(questionsArray, count) {
     setTimer(newTimer);
   }
 
-function handleTimeUp() {
+  function handleTimeUp() {
     // Get the correct answer for the current question
-    const correctAnswer = originalQuestions[currentIndex]?.properties?.Answer?.rich_text[0]?.text.content || properties?.correct?.rich_text[0]?.text.content ;
+    const correctAnswer = originalQuestions[currentIndex]?.properties?.Answer?.rich_text[0]?.text.content;
 
     // Reset streak if no answer is selected
     setStreak(0);
     setTimeBonus(0);
     setChoicesDisabled(true);
 
-    // Store the user's answer
+    // Store the user's answer (you may want to adjust what you store)
     setUserAnswers((prevAnswers) => [
         ...prevAnswers,
-        correctAnswer, // Storing the correct answer
+        null, // Assuming you want to store user's answer here
     ]);
+
+    // Debugging statement to verify correct answer
+    console.log("Correct Answer:", correctAnswer);
 
     // Use a timeout to allow the UI to render before applying the class
     setTimeout(() => {
         // Find the correct answer element and add the 'correct-answer' class
         const correctChoiceElement = document.querySelector(`[data-answer="${correctAnswer}"]`);
+        
+        // Debugging statement to check if the element was found
+        console.log("Correct Choice Element:", correctChoiceElement);
+        
         if (correctChoiceElement) {
             correctChoiceElement.classList.add("correct-answer");
+        } else {
+            console.warn("No correct answer element found.");
         }
 
         // Show the correct answer briefly before moving to the next question
@@ -232,6 +241,7 @@ function handleTimeUp() {
         }, 3000); // Adjust delay for how long to show the correct answer
     }, 100); // Small delay to ensure the DOM updates
 }
+
 
 
 function handleNextQuestion() {
