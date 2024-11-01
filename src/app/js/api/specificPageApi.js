@@ -1,7 +1,21 @@
 import { getDatabase } from "../api/databaseAPI";
 
-const cache = {};
+const cache = {}; // Cache for topics
 const categoryCache = {}; // Cache for categories
+
+// Helper function to manage localStorage
+const manageLocalStorage = (key, value) => {
+  const currentCache = JSON.parse(localStorage.getItem('cache')) || {};
+  
+  if (value) {
+    currentCache[key] = value; // Store value
+  } else {
+    // Retrieve value if it exists
+    return currentCache[key];
+  }
+  
+  localStorage.setItem('cache', JSON.stringify(currentCache)); // Update localStorage
+};
 
 // Fetch category by its ID
 const fetchCategory = async (categoryId) => {
@@ -19,12 +33,12 @@ const fetchCategory = async (categoryId) => {
     if (category) {
       const result = {
         categoryId: category.id,
-        categoryName: category.properties.Name.title[0]?.plain_text || 'No Name', // Adjust based on your actual category structure
+        categoryName: category.properties.Name.title[0]?.plain_text || 'No Name',
       };
 
       // Cache the category result
       categoryCache[categoryId] = result;
-      localStorage.setItem(`category_name`, JSON.stringify(result.categoryName));
+      manageLocalStorage(`category_name_${categoryId}`, result.categoryName);
       console.log("Fetched category from API:", result);
       return result;
     } else {
@@ -68,7 +82,7 @@ export const fetchTopic = async (topicID) => {
 
       // Cache the topic result
       cache[topicID] = result;
-      localStorage.setItem(`topic_${topicID}`, JSON.stringify(result.topicName));
+      manageLocalStorage(`topic_${topicID}`, result.topicName);
       console.log("Fetched from API:", result);
       return result;
     } else {

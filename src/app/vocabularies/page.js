@@ -107,45 +107,34 @@ export default function Vocabularies() {
           return updatedData;
         });
   
-        // Check localStorage for topic and category names
-        const storedTopicName = localStorage.getItem(`topic_${topicID}`);
-        const storedCategoryName = localStorage.getItem(`category_name`);
-        let topicName = storedTopicName.replace(/"/g, "");
-        let categoryName = storedCategoryName.replace(/"/g, "")
-        const topicElement = document.querySelector(".topic");
-        const cateElement = document.querySelector(".category");
-  
-        // If stored topic name exists, use it
-        if (storedTopicName) {
-          topicElement.innerHTML = topicName; // Set the topic name from localStorage
-        } else {
-          // Fetch the topic if not found in localStorage
-          fetchTopic(topicID)
-            .then((topic) => {
-              console.log("Topic:", topic);
-              // Check if topic exists and has a name
-              if (topic && topic.topicName) {
-                topicElement.innerHTML = topic.topicName; // Set the topic name
-              } else {
-                topicElement.innerHTML = "No topic available"; // Fallback message
-              }
-              if (topic && topic.categories && topic.categories.length > 0) {
-                cateElement.innerHTML = topic.categories[0].categoryName; // Set the category name
-              } else {
-                cateElement.innerHTML = "No category available"; // Fallback message
-              }
-            })
-            .catch((error) => {
-              console.error("Error:", error);
-              topicElement.innerHTML = "Error fetching topic"; // Error handling message
-            });
-        }
-  
-        // If stored category name exists, use it
-        if (storedTopicName && storedCategoryName) {
-          cateElement.innerHTML = categoryName; // Set the category name from localStorage
-        }
-  
+        fetchTopic(topicID)
+        .then((topic) => {
+          if (!topic || !topic.topicName) {
+            console.warn("No topic data available:", topic);
+            document.querySelector(".topic").innerHTML = "No topic available";
+            return;
+          }
+      
+          console.log("Topic:", topic);
+      
+          // Select the element with the class 'topic'
+          const topicElement = document.querySelector(".topic");
+          const cateElement = document.querySelector(".category");
+      
+          // Update the topic name and category name in the UI
+          topicElement.innerHTML = topic.topicName; // Set the topic name
+          const categoryName = topic.categories?.[0]?.categoryName || "No category available"; // Get category name or fallback
+          cateElement.innerHTML = categoryName; // Set category name
+      
+          // Store the topic and category in localStorage
+          localStorage.setItem("Topic", topic.topicName);
+          localStorage.setItem("Category", categoryName);
+        })
+        .catch((error) => {
+          console.error("Error fetching topic:", error);
+          document.querySelector(".topic").innerHTML = "Error fetching topic";
+        });
+      
         setLoading(false); // Stop loading
       })
       .catch((error) => {

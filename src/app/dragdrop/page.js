@@ -27,8 +27,8 @@ export default function DragDrop() {
   const searchParams = useSearchParams(); // Access query params
   const id = searchParams.get("topic"); // Get the 'topic' query param
   const idd = searchParams.get("id");
-  const storedTopicName = localStorage.getItem(`topic_${id}`);
-  const storedCategoryName = localStorage.getItem(`category_name`) ;
+  const storedTopicName = localStorage.getItem(`Topic`);
+  const storedCategoryName = localStorage.getItem(`Category`) ;
   const topicName = storedTopicName ? storedTopicName.replace(/"/g, "") : "null";
   const categoryName = storedCategoryName ? storedCategoryName.replace(/"/g, "") : "null";
   
