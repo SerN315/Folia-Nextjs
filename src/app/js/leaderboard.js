@@ -21,19 +21,6 @@ import {
   limit,
 } from "firebase/firestore";
 
-$(function () {
-  fetch("_topNav")
-    .then((response) => response.text())
-    .then((html) => {
-      $("#topNav")(html);
-    });
-
-  fetch("_footer")
-    .then((response) => response.text())
-    .then((html) => {
-      $("#footer")(html);
-    });
-});
 
 // Khởi tạo Firestore instance
 const firestore = getFirestore();
