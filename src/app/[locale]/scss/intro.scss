@@ -1,0 +1,118 @@
+@import "styles";
+@import "footer";
+@import "topnav";
+@import "login";
+@import "hub";
+
+@mixin bars {
+  .right {
+    flex-direction: column;
+    width: 20%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    h1 {
+      font-size: 30px;
+      text-wrap: nowrap;
+      font-weight: bold;
+      transform: rotate(-90deg);
+      display: flex;
+      justify-content: center;
+
+    }
+  }
+  .left {
+    @include flexP;
+    padding: 30px;
+  }
+}
+
+.hub{
+  padding: 0;
+.content{
+  padding: 0px;
+
+.title{
+  padding-left: 4.5vw;
+
+}
+.des_img{
+  @include flexP;
+  flex-direction: column;
+  width: 100%;
+  height: 685px;
+  background:linear-gradient(#00000087, #00000087),url(../../../../public/img/Rectangle1800.png) rgba(0, 0, 0, 0.444);
+  background-position: center;
+  background-size: cover;
+  h1{
+    color:white;
+    font-size:60px;
+    font-weight: bold;
+    text-align: center
+  }
+  h3{
+    color:white;
+    font-size: 30px;
+  }
+  }
+.description {
+
+  .para{
+    margin-top: 30px;
+    margin-bottom: 30px;
+    padding:100px;
+  }
+  .about_folia {
+    width: 100%;
+    display: flex;
+    height: 400px;
+    @include bars;
+    .right {
+      background-color: #afe893;
+      h1 {
+        color: #226500;
+      }
+    }
+    .left {
+      background-color: #f9f9f9;
+    }
+  }
+  .decor {
+    width: 100%;
+    @include flexP;
+
+    img {
+      width: 60%;
+      position: relative;
+      bottom: -10px;
+    }
+  }
+  .why_folia {
+    width: 100%;
+    display: flex;
+    height: 400px;
+    @include bars;
+    .right {
+      background-color: #246a00;
+      h1 {
+        color: white;
+        transform: rotate(-270deg);
+      }
+    }
+    .left {
+      background-color: #1e5a00;
+      p {
+        color: white;
+        padding: 30px;
+      }
+      &_decor {
+        height: 50%;
+        background-image: url(../../../../public/img/Rectangle1815.png);
+        background-position: center;
+        background-size: cover;
+      }
+    }
+  }
+  margin-bottom: 0px;
+}
+}}

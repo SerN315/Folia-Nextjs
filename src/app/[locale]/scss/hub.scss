@@ -1,0 +1,230 @@
+@import "styles";
+@import "footer";
+
+* {
+  transition: 0.5s;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.hub {
+  .header {
+    width: 100%;
+    padding: 4.5vh 4.5vw;
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    @include mobile-xl {
+      justify-content: center;
+    }
+    .home-link {
+      .logo {
+        font-size: 40px;
+        font-weight: 800;
+        color: $main-color;
+      }
+    }
+  }
+  .content {
+    width: 100%;
+    padding: 2.5vh 7.5vw;
+    .title {
+      padding-left: 0;
+      margin-bottom: 40px;
+      p {
+        font-size: 17px;
+        font-weight: 600;
+        color: #9a9a9a;
+      }
+      h2 {
+        font-size: 40px;
+        font-weight: 700;
+        color: #555555;
+      }
+    }
+    .description {
+      margin-bottom: 60px;
+      p {
+        font-size: 17px;
+        font-weight: 600;
+        color: #474747;
+        margin-bottom: 1rem;
+        @include mobile-l {
+          font-size: 15px;
+        }
+        &:last-child {
+          margin-bottom: 0;
+        }
+      }
+    }
+    .features {
+      margin-bottom: 60px;
+      &__title {
+        margin-bottom: 40px;
+        p {
+          font-size: 17px;
+          font-weight: 600;
+          color: #9a9a9a;
+        }
+        h2 {
+          font-size: 40px;
+          font-weight: 700;
+          color: #555555;
+        }
+      }
+      &__list {
+        h2 {
+          font-size: 30px;
+          font-weight: 700;
+          color:#2e7a48;
+        }
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        .Language{
+          @include flexP;
+          gap: 30px;
+          flex-wrap: wrap;
+          margin: 30px 0px 30px 0px;
+
+        }
+        .cert{
+          @include flexP;
+          gap: 30px;
+          flex-wrap: wrap;
+          margin: 30px 0px 30px 0px;
+        }
+        .link {
+          width: 25%;
+          @include laptop {
+            width: 45%;
+          }
+          @include mobile-xl {
+            width: 100%;
+          }
+          .item {
+            width: 100%;
+            padding: 50px 30px;
+            text-align: center;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s ease-in-out;
+            &:hover {
+              transform: translateY(-5px) ;
+            }
+            img {
+              display: inline;
+              margin-bottom: 30px;
+              max-height: 85px;
+              @include mobile-m {
+                margin-bottom: 20px;
+                width: 60px;
+              }
+            }
+            .text {
+              h4 {
+                font-size: 30px;
+                font-weight: 700;
+                color: #606060;
+                margin-bottom: 15px;
+                @include mobile-m {
+                  font-size: 25px;
+                  margin-bottom: 10px;
+                }
+              }
+              p {
+                font-size: 15px;
+                font-weight: 600;
+                color: #707070;
+                display: -webkit-box; /* Dùng cho Safari */
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+                -webkit-line-clamp: 4;
+              }
+            }
+          }
+        }
+      }
+    }
+    .cta {
+      margin-bottom: 100px;
+      h2 {
+        font-size: 40px;
+        font-weight: 700;
+        color: #555555;
+        margin-bottom: 20px;
+      }
+      a {
+        display: inline-block;
+        .flex-container {
+          display: flex;
+          gap: 20px;
+          align-items: center;
+          @include mobile-l {
+            gap: 5px;
+          }
+          &:hover {
+            .arrow {
+              width: 150px;
+              @include tablet-l {
+                width: 60px;
+              }
+              @include tablet {
+                width: 50px;
+              }
+              @include mobile-xl {
+                width: 35px;
+              }
+              .arrow__body {
+                width: 150px;
+                @include mobile-xl {
+                  width: 35px;
+                }
+              }
+            }
+          }
+          p {
+            font-size: 24px;
+            font-weight: 600;
+            color: #2e7a48;
+            margin-bottom: 0;
+            @include laptop {
+              font-size: 20px;
+            }
+            @include tablet {
+              font-size: 15px;
+            }
+          }
+          .arrow {
+            position: relative;
+            width: 35px;
+            display: flex;
+            align-items: center;
+            transition: 0.5s;
+            @include mobile-l {
+              width: 0;
+            }
+            &__body {
+              content: "";
+              width: 35px;
+              height: 2px;
+              background: #2e7a48;
+              transition: 0.5s;
+            }
+            &__head {
+              position: absolute;
+              right: 0;
+              width: 10px;
+              height: 10px;
+              border-top: solid 2px #2e7a48;
+              border-right: solid 2px #2e7a48;
+              transform: rotate(45deg);
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,113 @@
+@import "topnav";
+@import "subnav";
+@import "footer";
+@import "styles";
+
+  .subhubMain {
+    padding-top: 150px;
+    padding-bottom: 100px;
+    position: relative;
+  }
+  .practice-title {
+    text-align: center;
+    color: $text-color;
+    font-weight: 800;
+    font-size: 40px;
+    @include mobile-m {
+      font-size: 30px;
+    }
+  }
+  .descriptions {
+    text-align: center;
+    color: $text-color;
+    margin: 20px;
+    font-weight: 700;
+    font-size: 30px;
+    @include mobile-m {
+      font-size: 30px;
+    }
+  }
+  .practice-content-box {
+    display: flex;
+    justify-content: center;
+    margin: 50px 0 50px 0;
+    @include tablet {
+      margin-top: 50px;
+    }
+    .grid-container {
+      display: grid;
+      width: 50%;
+      height: 550px;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 1fr 1fr;
+      gap: 20px;
+      margin-bottom: 50px;
+      @include laptop {
+        width: 70%;
+      }
+      @include tablet {
+        width: 60%;
+        grid-template-columns: 1fr;
+        grid-template-rows: repeat(4, 1fr);
+        gap: 15px;
+      }
+      @include mobile-l {
+        width: 85%;
+      }
+      .practice{
+        &__multi-choice{
+          background-image: url(../../../../public/img/multiple-choice.jpg);
+          background-position: center;
+          background-size: cover;
+          border-radius: 20px;
+        }
+        &__flashcard{
+          background-image: url(../../../../public/img/flashcard.png);
+          background-position: center;
+          background-size: cover;
+          border-radius: 20px;
+        } 
+        &__text-ex{
+          background-image: url(../../../../public/img/practice-matching.jpg);
+          background-position: center;
+          background-size: cover;
+          border-radius: 20px;
+        }
+        &__matching{
+          background-image: url(../../../../public/img/matching.jpg);
+          background-position: center;
+          background-size: cover;
+          border-radius: 20px;
+        }
+      }
+      .multi-choice {
+        background-color: rgba(0, 0, 0, 0.43);
+      }
+      .flashcard {
+        background-color: rgba(0, 0, 0, 0.423);
+      }
+      .text-ex {
+        background-color: rgb(86, 86, 86);
+      }
+      .matching {
+        background-color: rgba(0, 0, 0, 0.423);
+
+      }
+      .practice-button {
+        width: 100%;
+        height: 100%;
+        border: none;
+        border-radius: 20px;
+        color: white;
+        font-size: 40px;
+        font-weight: 700;
+        cursor: pointer;
+        @include tablet {
+          font-size: 30px;
+        }
+        @include mobile-l {
+          font-size: 25px;
+        }
+      }
+    }
+  }
