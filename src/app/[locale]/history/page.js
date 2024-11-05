@@ -177,7 +177,7 @@ export default function History() {
             <section>
               <h2 class="title">Challenge History</h2>
               {challengeData.length === 0 ? (
-                <p>You haven't completed any challenges yet.</p>
+                <p>You have not completed any challenges yet.</p>
               ) : (
                 challengeData.map((data) => (
                   <div
@@ -205,7 +205,7 @@ export default function History() {
             <section>
               <h2 class="title">Practices History</h2>
               {practicesData.length === 0 ? (
-                <p>You haven't completed any practices yet.</p>
+                <p>You have not completed any practices yet.</p>
               ) : (
                 practicesData.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)).map((data,index) => (
                   <div

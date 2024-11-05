@@ -1,4 +1,3 @@
-// TranslationContext.js
 "use client";
 import { createContext, useContext, useEffect, useState } from "react";
 import initTranslations from '../../i18n';
@@ -6,18 +5,33 @@ import initTranslations from '../../i18n';
 const TranslationContext = createContext();
 
 export function TranslationProvider({ children, locale }) {
-  const [t, setT] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [t, setT] = useState(() => (key) => key); // Fallback function
+  const [isLoading, setLoading] = useState(true);
 
   useEffect(() => {
+    const getCookie = (name) => {
+      const value = `; ${document.cookie}`;
+      const parts = value.split(`; ${name}=`);
+
+      if (parts.length === 2) {
+        return parts.pop().split(';').shift();
+      }
+      return null; // return null if cookie doesn't exist
+    };
+
+    const savedLocale = getCookie('NEXT_LOCALE') || locale;
+    console.log(`Using locale: ${savedLocale}`); // Log the locale being used
+
     const loadTranslations = async () => {
+      setLoading(true); // Start loading
       try {
-        const translations = await initTranslations(locale, ['common']);
-        setT(() => translations.t);
+        const { t: translationFunction } = await initTranslations(savedLocale, ['footer']);
+        console.log("Loaded translations for footer:", translationFunction); // Log loaded translations
+        setT(() => translationFunction);
       } catch (error) {
         console.error("Error loading translations:", error);
       } finally {
-        setLoading(false);
+        setLoading(false); // End loading
       }
     };
 
@@ -25,7 +39,7 @@ export function TranslationProvider({ children, locale }) {
   }, [locale]);
 
   return (
-    <TranslationContext.Provider value={{ t, loading }}>
+    <TranslationContext.Provider value={{ t, isLoading }}>
       {children}
     </TranslationContext.Provider>
   );

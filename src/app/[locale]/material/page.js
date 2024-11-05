@@ -14,7 +14,7 @@ export default function Home() {
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Folia - Learning Material</title>
     </Head>
-    <TopNav/>
+    {/* <TopNav/> */}
       {/* NAVIGATION PANEL */}
   <div className="nav-panel">
     <p className="nav-panel__navigation">
@@ -72,6 +72,6 @@ export default function Home() {
     </div>
   </main>
   <div className="popup-flex-container hidden" />
-  <Footer/>
+  {/* <Footer/> */}
     </>
   )}

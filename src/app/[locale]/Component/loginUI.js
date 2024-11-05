@@ -328,7 +328,7 @@ const signupFormRef = useRef(null);
             </button>
             <div className="login-register">
               <p>
-                Don't have an account?
+                Do not have an account?
                 <Link href="#" className="register-link">
                   SIGN UP
                 </Link>

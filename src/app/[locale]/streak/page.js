@@ -124,7 +124,7 @@ export default function Streak() {
       {isPopupOpen && (
         <section className="reward-list">
           <div className="rewards">
-            <h1 className="rewards__title">Streak's Monthly Rewards</h1>
+            <h1 className="rewards__title">Streaks Monthly Rewards</h1>
             <p className="rewards__des">
               Earn ranking points each month by joining games and activities
             </p>

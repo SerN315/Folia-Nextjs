@@ -1,8 +1,12 @@
-import Image from "next/image";
-import Head from "next/head";
-import Script from "next/script";
+'use client';
 import Link from "next/link";
+import { useTranslation } from './TranslationProvider';
+
 export default function Footer() {
+  const { t, isLoading } = useTranslation();
+
+  if (isLoading) return <div>Loading...</div>;
+
   return (
     <section className="footer">
       <div className="footer__container">
@@ -10,23 +14,13 @@ export default function Footer() {
           <div className="left__logo">
             <h1>FOLIA</h1>
           </div>
-          <div className="left__social">
-            <Link href="#" />
-            <Link href="#" />
-            <Link href="#" />
-            <Link href="#" />
-          </div>
           <div className="left__des">
-            <h3>
-              Folia is a fun learning platform for all levels. Personalized
-              lessons improve your desirable subjects. Track progress and set
-              goals easily. Start your journey with Folia!
-            </h3>
+            <h3>{t('des')}</h3>
           </div>
         </div>
         <div className="footer__container__right">
           <div className="right__contact">
-            <h1>Contact Us</h1>
+            <h1>{t('contact')}</h1>
             <div className="phonenumber">
               <h3>0123456789</h3>
             </div>
@@ -34,21 +28,21 @@ export default function Footer() {
               <h3>folia@gmail.com</h3>
             </div>
             <div className="address">
-              <h3>78 Giai Phong street, HaNoi,Vietnam</h3>
+              <h3>78 Giai Phong street, HaNoi, Vietnam</h3>
             </div>
           </div>
           <div className="right__ourservices">
-            <h1>Our services</h1>
-            <Link href="/about">About us</Link>
+            <h1>{t('services')}</h1>
+            <Link href="/about">{t('aboutus', { ns: 'footer' })}</Link>
           </div>
           <div className="right__partner">
-            <h1>Partner</h1>
+            <h1>{t('Partner')}</h1>
           </div>
         </div>
       </div>
       <div className="footer__rights">
-        <h3>Copyright by Folia 2023 All rights reserved</h3> |{" "}
-        <Link href="#">Privacy Policy</Link>
+        <h3>{t('copyrights')}</h3> |{" "}
+        <Link href="#">{t('privacy')}</Link>
       </div>
     </section>
   );
