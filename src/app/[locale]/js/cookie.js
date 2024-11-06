@@ -1,3 +1,4 @@
+// Function to get a cookie value by name
 export const getCookie = (name) => {
   if (typeof document === "undefined") {
     return null; // Prevents server-side execution
@@ -6,8 +7,8 @@ export const getCookie = (name) => {
   const cookieArr = document.cookie.split(";");
 
   // Loop through the array elements
-  for (var i = 0; i < cookieArr.length; i++) {
-    var cookiePair = cookieArr[i].split("=");
+  for (let i = 0; i < cookieArr.length; i++) {
+    const cookiePair = cookieArr[i].split("=");
 
     // Removing whitespace at the beginning of the cookie name
     // and compare it with the given string
@@ -21,6 +22,7 @@ export const getCookie = (name) => {
   return null;
 };
 
+// Function to set a cookie with a specific name, value, and expiration time in days
 export const setCookie = (name, value, days) => {
   if (typeof document === "undefined") {
     return; // Prevents server-side execution

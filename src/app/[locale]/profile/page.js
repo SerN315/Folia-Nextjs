@@ -15,8 +15,9 @@ import { onAuthStateChanged } from "firebase/auth";
 import Image from "next/image";
 import Head from "next/head";
 import Link from "next/link";
-
+import { useTranslation } from "../Component/TranslationProvider";
 export default function Profile() {
+  const { t } = useTranslation();
   const [userStreak, setUserStreak] = useState(0);
   const [totalPoints, setTotalPoints] = useState(0);
   const [user, setUser] = useState(null);
@@ -122,7 +123,7 @@ export default function Profile() {
               </div>
             </div>
             <hr />
-            <h1 style={{ fontSize: 30, marginBottom: 20 }}>Statistic</h1>
+            <h1 style={{ fontSize: 30, marginBottom: 20 }}>{t('statistic', { ns: 'profile+setting' })}</h1>
             <div className="content__stats">
               <div className="streak stat">
                 <div className="icon">
@@ -138,7 +139,7 @@ export default function Profile() {
                     <h1>{userStreak}</h1>
                   </div>
                   <div className="title">
-                    <h3>Streak</h3>
+                    <h3>{t('content1', { ns: 'profile+setting' })}</h3>
                   </div>
                 </div>
               </div>

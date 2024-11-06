@@ -3,7 +3,9 @@
 import Image from "next/image";
 import Head from "next/head";
 import Link from "next/link";
-export default function Setting() {
+import initTranslations from '../../i18n';
+export default async function Setting({ params: { locale } }) {
+  const { t } = await initTranslations(locale, ['profile+setting']);
   return (
     <>
       <Head>
@@ -29,12 +31,12 @@ export default function Setting() {
           <div className="content">
             <div className="content__user-info">
               <div className="userinfos">
-                <div className="hover_overlay">Click to change your avatar</div>
+                <div className="hover_overlay">{t('changeavatar')}</div>
                 <img src="./img/folia-asvab.png" className="user-img" />
                 <div className="user-text">
                   <h2 className="username_text">USERNAME</h2>
                   <h5 className="userId_text">USERID</h5>
-                  <h4 className="created_text">Started from 2024</h4>
+                  <h4 className="created_text">{t('time')} 2024</h4>
                 </div>
               </div>
               <a href="/profile" style={{ fontSize: 35 }}>
@@ -43,35 +45,35 @@ export default function Setting() {
             </div>
             <hr />
             <div className="content__options account">
-              <h5>Account settings</h5>
+              <h5>{t('title_1')}</h5>
               <Link href="#" className="languages cta">
-                <h6>Languages</h6>
+                <h6>{t('language')}</h6>
                 <i className="fa-solid fa-chevron-right" />
               </Link>
               <Link href="#" className="acc-update cta">
-                <h6>Change Account Settings</h6>
+                <h6>{t('accountS')}</h6>
                 <i className="fa-solid fa-chevron-right" />
               </Link>
               <Link href="#" className="pw cta">
-                <h6>Change Password</h6>
+                <h6>{t('password')}</h6>
                 <i className="fa-solid fa-chevron-right" />
               </Link>
               <Link href="#" className="payment cta">
-                <h6>Payment Methods</h6>
+                <h6>{t('payment')}</h6>
                 <i className="fa-solid fa-chevron-right" />
               </Link>
             </div>
             <hr />
             <div className="content__options more">
-              <h5>More</h5>
+              <h5>{t('title_2')}</h5>
               <Link href="intro" className="languages cta">
-                <h6>About Us</h6>
+                <h6>{t('aboutus')}</h6>
               </Link>
               <Link href="#" className="pw cta">
-                <h6>Privacy Policy</h6>
+                <h6>{t('privacy')}</h6>
               </Link>
               <Link href="#" className="payment cta">
-                <h6>Terms and Conditions</h6>
+                <h6>{t('term')}</h6>
               </Link>
             </div>
           </div>

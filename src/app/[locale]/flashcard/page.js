@@ -13,9 +13,11 @@ import { getDatabase } from "../js/api/databaseAPI";
 import { fetchTopic } from "../js/api/specificPageApi";
 import Link from "next/link";
 import DOMPurify from "dompurify";
-
+import { getCookie } from "../js/cookie";
 
 export default function FlashCard() {
+  const locale = getCookie("NEXT_LOCALE");
+  console.log(locale); // Logs the value of the locale cookie or null if not found
   const searchParams = useSearchParams(); // Access query params
   const topicID = searchParams.get("topic"); // Get the 'topic' query param
   const [data, setData] = useState([]);
@@ -112,6 +114,7 @@ export default function FlashCard() {
                 // Handle ht2 data structure
                 const word = item.properties.Name.title[0]?.plain_text;
                 const meaning = item.properties.Answer_Content.formula.string;
+              
                 const pronunciation =
                   item.properties.explanation.rich_text[0]?.plain_text;
                 const img = item.properties.Img.files?.[0]?.url;
@@ -136,12 +139,21 @@ export default function FlashCard() {
                 const pronunciation =
                   item.properties.Pronunciation.rich_text[0]?.plain_text;
                 const img = item.properties.img.rich_text[0]?.plain_text;
-  
+                let jp = item.properties.jp.rich_text[0]?.plain_text; // Check 'Meaning'
+                let cn = item.properties.cn.rich_text[0]?.plain_text; // Check 'Meaning'
+                if (jp?.endsWith(',')) {
+                  jp = jp.slice(0, -1); // Remove the last character (comma)
+                }
+                if (cn?.endsWith(',')) {
+                  cn = cn.slice(0, -1); // Remove the last character (comma)
+                }
                 if (!uniqueId || !word || !meaning || !pronunciation || !img) {
                   console.warn("Incomplete data for item:", item);
                 }
   
                 return {
+                  Cn:cn,
+                  Jp:jp,
                   Id: uniqueId,
                   Word: word,
                   Set: set,
@@ -226,6 +238,8 @@ export default function FlashCard() {
           id: word.Id,
           img: word.Img,
           meaning: word.Meaning,
+          jpMeaning:word.jp,
+          cnMeaning:word.cn,
           pronunciation: word.Pronunciation,
           set: word.Set,
           word: word.Word,
@@ -469,7 +483,7 @@ export default function FlashCard() {
                               width={200}
                               height={200}
                             />
-                            <h2>{item.Meaning}</h2>
+                            <h2>{locale === 'ja' ? word.Jp : locale === 'zh' ? word.Cn : word.Meaning}</h2>
                           </div>
                         )}
                         {ht2.includes(topicID) && (

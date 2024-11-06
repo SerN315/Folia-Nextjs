@@ -24,7 +24,7 @@ export default function RootLayout({ children, params: { locale } }) {
   return (
     <html lang={locale || "en"}>
       <body className={inter.className}>
-        <TranslationProvider locale={locale} namespaces={['footer', 'profile+setting']}>
+        <TranslationProvider locale={locale} namespaces={['footer', 'topnav', 'profile+setting']}>
           <TopNav />
           {children}
           <Footer />
@@ -33,3 +33,4 @@ export default function RootLayout({ children, params: { locale } }) {
     </html>
   );
 }
+

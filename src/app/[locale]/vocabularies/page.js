@@ -21,8 +21,11 @@ import { useSearchParams } from 'next/navigation';
 import { auth } from "../firebase/authenciation"; 
 import { getDatabase } from "../js/api/databaseAPI";
 import { fetchTopic } from "../js/api/specificPageApi";
+import { getCookie } from "../js/cookie";
 
 export default function Vocabularies() {
+  const locale = getCookie("NEXT_LOCALE");
+  console.log(locale); // Logs the value of the locale cookie or null if not found
   const searchParams = useSearchParams(); // Access query params
   const topicID = searchParams.get('topic'); // Get the 'topic' query param
   const [data, setData] = useState([]);
@@ -53,6 +56,8 @@ export default function Vocabularies() {
     return () => unsubscribe(); // Cleanup listener on unmount
   }, [topicID]);
 
+  
+
   const fetchVocabBasedOnTopic = (favoriteList, favoriteRef, firestore) => {
     setLoading(true); // Start loading
   
@@ -73,9 +78,16 @@ export default function Vocabularies() {
             const word = item.properties.Name.title[0]?.plain_text; // Check 'Name'
             const set = item.properties.Set.multi_select[0]?.name; // Check 'Set'
             const meaning = item.properties.Meaning.rich_text[0]?.plain_text; // Check 'Meaning'
+            let jp = item.properties.jp.rich_text[0]?.plain_text; // Check 'Meaning'
+            let cn = item.properties.cn.rich_text[0]?.plain_text; // Check 'Meaning'
             const pronunciation = item.properties.Pronunciation.rich_text[0]?.plain_text; // Check 'Pronunciation'
             const img = item.properties.img.rich_text[0]?.plain_text; // Check 'img'
-  
+            if (jp?.endsWith(',')) {
+              jp = jp.slice(0, -1); // Remove the last character (comma)
+            }
+            if (cn?.endsWith(',')) {
+              cn = cn.slice(0, -1); // Remove the last character (comma)
+            }
             // Log each extracted value for debugging
             console.log({
               uniqueId,
@@ -84,6 +96,8 @@ export default function Vocabularies() {
               meaning,
               pronunciation,
               img,
+              jp,
+              cn,
             });
   
             return {
@@ -93,6 +107,8 @@ export default function Vocabularies() {
               Meaning: meaning,
               Pronunciation: pronunciation,
               Img: img,
+              Jp:jp,
+              Cn:cn,
             };
           } catch (error) {
             console.error("Error processing item:", item, error);
@@ -230,7 +246,7 @@ export default function Vocabularies() {
         </div>
         <div class="meaning-box">
           <p class="definition-viet">
-            <span style="color:green">Nghĩa: </span>${word.Meaning}
+            <span style="color:green">Nghĩa: </span>${locale === 'ja' ? word.Jp : locale === 'zh' ? word.Cn : word.Meaning}
           </p>
           <p class="definition-example">
             <span style="color:green">Example: </span>
@@ -431,7 +447,7 @@ export default function Vocabularies() {
             <div className="word-pronunciation">
               <i className="fa-solid fa-volume-high" /> {word.Pronunciation}
             </div>
-            <div className="word-meaning">{word.Meaning}</div> {/* Add meaning if needed */}
+            <div className="word-meaning">{locale === 'ja' ? word.Jp : locale === 'zh' ? word.Cn : word.Meaning}</div> {/* Add meaning if needed */}
           </div>
           <div className="icon-container">
             <i className="fa-solid fa-flag report" onClick={() => handleReport(word.Word)}></i>

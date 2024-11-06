@@ -5,6 +5,7 @@ import Login from "../Component/loginUI";
 import { getDatabase } from "../js/api/databaseAPI";
 import { auth } from "../firebase/authenciation";
 import { signOut } from "firebase/auth";
+import LanguageChanger from "./languageChanger";
 import {
   collection,
   doc,
@@ -15,8 +16,10 @@ import {
 } from "firebase/firestore";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useTranslation } from './TranslationProvider';
 
 export default function TopNav() {
+  const { t } = useTranslation();
   const [vocab, setVocab] = useState([]);
   const [searchValue, setSearchValue] = useState("");
   const [searchResultsVisible, setSearchResultsVisible] = useState(false);
@@ -162,7 +165,6 @@ export default function TopNav() {
   if (hideTopNavPaths.includes(pathname)) {
     return null; // Do not render TopNav if on specified paths
   }
-
   return (
     <>
       <div className="flex-container">
@@ -199,7 +201,7 @@ export default function TopNav() {
         </div>
 
         <div className="buttons">
-          <button className="open-popup login-button">Login</button>
+          <button className="open-popup login-button">{t('login', { ns: 'topnav' })}</button>
           <Link href="/challenge" className="ranking hidden">
             <Image
               src="/img/features-icon/ranking-ico.svg"
@@ -233,19 +235,17 @@ export default function TopNav() {
                 />
                 <div className="info__text">
                   <h4 className="streak-cnt">0</h4>
-                  <p className="days-cnt">learning day streak</p>
-                  <p className="tips">Play a game today to keep your streak!</p>
+                  <p className="days-cnt">{t('streak1', { ns: 'topnav' })}</p>
+                  <p className="tips">{t('streak2', { ns: 'topnav' })}</p>
                 </div>
               </div>
               <hr />
               <Link href="/streak" className="link">
-                View More
+              {t('view', { ns: 'topnav' })}
               </Link>
             </div>
           </div>
-          <Link href="/about">
-            <Image src="/img/help.svg" width={40} height={40} />
-          </Link>
+          <LanguageChanger/>
 
           <div className="profile">
             <button
@@ -269,14 +269,14 @@ export default function TopNav() {
               </a>
               <hr />
               <Link href="/favorite" className="link">
-                Favorites
+                {t('favorite', { ns: 'topnav' })}
               </Link>
               <hr />
               <a href="/setting" className="link">
-                Settings
+              {t('settings', { ns: 'topnav' })}
               </a>
               <div className="logout link hidden" onClick={handleLogoutClick}>
-                Log Out
+              {t('logout', { ns: 'topnav' })}
               </div>
             </div>
           </div>
