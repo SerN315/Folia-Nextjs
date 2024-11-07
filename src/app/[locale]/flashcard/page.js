@@ -85,7 +85,7 @@ export default function FlashCard() {
     const databaseId = ht2.includes(topicID)
       ? "c3428e69474d46a790fe5e4d37f1600d"
       : "8240dd072127443f8e51d09de242c2d9";
-  
+
     getDatabase(databaseId, {
       filter: {
         property: ht2.includes(topicID) ? "topic" : "Topic",
@@ -101,12 +101,12 @@ export default function FlashCard() {
           setData([]); // Set an empty array in case of no data
           return;
         }
-  
+
         console.log("API Response:", response);
-  
+
         // Limit response to 30 items
         // const limitedResponse = response.slice(0, 30);
-  
+
         const newData = response
           .map((item) => {
             try {
@@ -114,15 +114,15 @@ export default function FlashCard() {
                 // Handle ht2 data structure
                 const word = item.properties.Name.title[0]?.plain_text;
                 const meaning = item.properties.Answer_Content.formula.string;
-              
+
                 const pronunciation =
                   item.properties.explanation.rich_text[0]?.plain_text;
                 const img = item.properties.Img.files?.[0]?.url;
-  
+
                 if (!word || !meaning || !pronunciation || !img) {
                   console.warn("Incomplete data for item:", item);
                 }
-  
+
                 return {
                   word,
                   meaning,
@@ -141,19 +141,19 @@ export default function FlashCard() {
                 const img = item.properties.img.rich_text[0]?.plain_text;
                 let jp = item.properties.jp.rich_text[0]?.plain_text; // Check 'Meaning'
                 let cn = item.properties.cn.rich_text[0]?.plain_text; // Check 'Meaning'
-                if (jp?.endsWith(',')) {
+                if (jp?.endsWith(",")) {
                   jp = jp.slice(0, -1); // Remove the last character (comma)
                 }
-                if (cn?.endsWith(',')) {
+                if (cn?.endsWith(",")) {
                   cn = cn.slice(0, -1); // Remove the last character (comma)
                 }
                 if (!uniqueId || !word || !meaning || !pronunciation || !img) {
                   console.warn("Incomplete data for item:", item);
                 }
-  
+
                 return {
-                  Cn:cn,
-                  Jp:jp,
+                  Cn: cn,
+                  Jp: jp,
                   Id: uniqueId,
                   Word: word,
                   Set: set,
@@ -168,11 +168,11 @@ export default function FlashCard() {
             }
           })
           .filter((item) => item !== null); // Filter out any null values
-  
+
         setAllData(newData);
-        setData(newData.slice(0,30))
+        setData(newData.slice(0, 30));
         setLoading(false); // Stop loading
-  
+
         fetchTopic(topicID)
           .then((topic) => {
             if (!topic || !topic.topicName) {
@@ -180,13 +180,13 @@ export default function FlashCard() {
               document.querySelector(".topic").innerHTML = "No topic available";
               return;
             }
-  
+
             console.log("Topic:", topic);
-  
+
             // Select the element with the class 'topic'
             const topicElement = document.querySelector(".topic");
             const cateElement = document.querySelector(".category");
-  
+
             topicElement.innerHTML = topic.topicName; // Set the topic name
             cateElement.innerHTML =
               topic.categories?.[0]?.categoryName || "No category available"; // Set category name or fallback
@@ -202,8 +202,7 @@ export default function FlashCard() {
         setLoading(false); // Stop loading even on error
       });
   };
-  
-  
+
   const shuffleArray = (array) => {
     const shuffled = [...array];
     for (let i = shuffled.length - 1; i > 0; i--) {
@@ -238,8 +237,8 @@ export default function FlashCard() {
           id: word.Id,
           img: word.Img,
           meaning: word.Meaning,
-          jpMeaning:word.jp,
-          cnMeaning:word.cn,
+          jpMeaning: word.jp,
+          cnMeaning: word.cn,
           pronunciation: word.Pronunciation,
           set: word.Set,
           word: word.Word,
@@ -416,9 +415,12 @@ export default function FlashCard() {
         >
           <div className="flashcard-content">
             {loading ? (
-              <div class="card" style={{
-                height:ht2.includes(topicID) ? "300px" : ""
-              }}>
+              <div
+                class="card"
+                style={{
+                  height: ht2.includes(topicID) ? "300px" : "",
+                }}
+              >
                 <div class="content">
                   <div class="loading"></div>
                 </div>
@@ -446,18 +448,27 @@ export default function FlashCard() {
                       >
                         {/* Word section */}
                         <div className="word">
-            <div
-              style={{
-                padding: "0px 50px",
-                fontSize: "25px",
-              }}
-              dangerouslySetInnerHTML={{
-                __html: DOMPurify.sanitize(ht2.includes(topicID) ? item.word : item.Word, {
-                  ALLOWED_TAGS: ["small", "b", "i", "strong", "em"], // Add safe tags here
-                  ALLOWED_ATTR: [], // Restrict attributes if necessary
-                }),
-              }}
-            ></div>
+                          <div
+                            style={{
+                              padding: "0px 50px",
+                              fontSize: "25px",
+                            }}
+                            dangerouslySetInnerHTML={{
+                              __html: DOMPurify.sanitize(
+                                ht2.includes(topicID) ? item.word : item.Word,
+                                {
+                                  ALLOWED_TAGS: [
+                                    "small",
+                                    "b",
+                                    "i",
+                                    "strong",
+                                    "em",
+                                  ], // Add safe tags here
+                                  ALLOWED_ATTR: [], // Restrict attributes if necessary
+                                }
+                              ),
+                            }}
+                          ></div>
                           {ht2.includes(topicID) ? (
                             <>
                               <h3>{item.pronunciation}</h3>
@@ -467,7 +478,6 @@ export default function FlashCard() {
                             <>
                               <h3>{item.Pronunciation}</h3>
                               <h3>{item.Set}</h3>
-                              
                             </>
                           )}
                         </div>
@@ -483,14 +493,24 @@ export default function FlashCard() {
                               width={200}
                               height={200}
                             />
-                            <h2>{locale === 'ja' ? word.Jp : locale === 'zh' ? word.Cn : word.Meaning}</h2>
+                            <h2>
+                              {locale === "ja"
+                                ? item.Jp
+                                : locale === "zh"
+                                ? item.Cn
+                                : item.Meaning}
+                            </h2>
                           </div>
                         )}
                         {ht2.includes(topicID) && (
                           <div className="flashcardimg">
-                            <h1 style={{
-                              fontSize:"25px",
-                            }}>{item.meaning}</h1>
+                            <h1
+                              style={{
+                                fontSize: "25px",
+                              }}
+                            >
+                              {item.meaning}
+                            </h1>
                           </div>
                         )}
                       </div>
