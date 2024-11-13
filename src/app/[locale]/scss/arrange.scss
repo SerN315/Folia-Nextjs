@@ -1,0 +1,187 @@
+@import url("https://fonts.googleapis.com/css?family=Montserrat");
+@import "styles";
+@import "footer";
+@import "topnav";
+@import "login";
+@import "navigation";
+@mixin interactB {
+  @include flexR;
+  width: 200px;
+  height: 70px;
+  font-size: 2rem;
+  background-color: #e7e7e7;
+  justify-content: center;
+  border-radius: 30px;
+  color: #8d8d8d;
+  bottom: -35px;
+}
+@mixin itemALign {
+  padding-left: 20vw;
+  padding-right: 20vw;
+  @include laptop {
+    padding-left: 10vw;
+    padding-right: 10vw;
+  }
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+.sentencesGame{
+    padding-top: 100px;
+}
+
+.nav-panel {
+    background-color: #f4f4f4;
+    @include itemALign();
+    padding-top: 50px;
+    padding-bottom: 25px;
+  }
+
+
+  .game_content {
+    background-color: #f4f4f4;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding-bottom: 100px;
+  // padding-top: 100px;
+}
+
+.score {
+  justify-content: space-between;
+  display: flex;
+  width: 80%;
+  font-family: "Poppins";
+  text-align: center;
+  font-size: 2rem;
+  font-weight: bold;
+  letter-spacing: 0.25rem;
+  margin: 1rem;
+  position: relative;
+  transition: opacity 0.2s;
+  .score_right {
+    display: flex;
+    align-items: center;
+    h1 {
+      color: $main-color;
+      font-size: 25px;
+      font-weight: bold;
+      margin: 0;
+      margin-right: 10px;
+    }
+  }
+}
+
+#play-again-btn {
+  position: absolute;
+  // top: -0.5rem;
+  left: 50%;
+  margin-left: -50px;
+  font-size: 1rem;
+  font-weight: bold;
+  color: #fff;
+  background-color: #111;
+  border: 5px double #fff;
+  border-radius: 14px;
+  padding: 8px 10px;
+  outline: none;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  display: none;
+  opacity: 0;
+  transition: opacity 0.5s, transform 0.5s, background-color 0.2s;
+
+  &:hover {
+    background-color: #333;
+  }
+
+  &:active {
+    background-color: #555;
+  }
+
+  .play-again-btn-entrance {
+    opacity: 1;
+    transform: translateX(6rem);
+  }
+}
+.gameUI{
+    flex-direction: column;
+    padding:  100px 0px 100px 0px ;
+    border: 0.5px solid rgba(0, 0, 0, 0.348);
+    border-radius: 15px;
+    @include flexP;
+    width: 80%;
+    .userMeaning{
+        @include flexP;
+        flex-direction: column;
+        border: 1px solid rgb(0, 0, 0);
+        width: 80%;
+        height: 200px;
+        margin-bottom: 40px;
+        .correctContainer{
+            display: none;
+            margin-top: 10px;
+            color: $main-color;
+        }
+    }
+    .answerContainer{
+        @include flexP;
+        height: 100px;
+        width: 80%;
+        border: 1px dashed;
+        gap:10px;
+        margin-bottom: 40px;
+        .wordItem{
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+        }
+    }
+    .wordHolder{
+        padding: 30px;
+        background-color: $main-color;
+        @include flexP;
+        width: 60%;
+        flex-wrap: wrap;
+        border-radius: 10px;
+        gap: 10px;
+        .wordItem{
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+        }
+    }
+}
+.interact{
+    position: relative;
+    top: -10px;
+    border: 0.5px solid rgba(0, 0, 0, 0.348);
+    border-top:0px;
+    height: 100px;
+    width: 80%;
+    @include flexP;
+    justify-content: space-around;
+    #Skip{
+        color: grey;
+        background-color: #ffff ;
+    }
+    #check{
+        color: grey;
+        background-color: rgb(194, 194, 194);
+    }
+    button{
+        filter: brightness(1);
+        border: 1px solid rgba(0, 0, 0, 0.291);
+        box-shadow: 1px 3px 5px 3px #3636363d;
+        border-radius: 10px;
+        width: 150px;
+        height: 50px;
+        &:hover{
+            filter: brightness(0.75);
+        }
+    }
+}

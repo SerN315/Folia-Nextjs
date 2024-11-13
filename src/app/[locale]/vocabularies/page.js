@@ -79,6 +79,7 @@ export default function Vocabularies() {
             const set = item.properties.Set.multi_select[0]?.name; // Check 'Set'
             const meaning = item.properties.Meaning.rich_text[0]?.plain_text; // Check 'Meaning'
             let jp = item.properties.jp.rich_text[0]?.plain_text; // Check 'Meaning'
+            // const exampleText = item.properties.Example.rich_text[0]?.plain_text;
             let cn = item.properties.cn.rich_text[0]?.plain_text; // Check 'Meaning'
             const pronunciation = item.properties.Pronunciation.rich_text[0]?.plain_text; // Check 'Pronunciation'
             const img = item.properties.img.rich_text[0]?.plain_text; // Check 'img'
@@ -90,6 +91,7 @@ export default function Vocabularies() {
             }
             // Log each extracted value for debugging
             console.log({
+              // exampleText,
               uniqueId,
               word,
               set,
