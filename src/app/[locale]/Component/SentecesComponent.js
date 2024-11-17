@@ -90,7 +90,7 @@ const SentenceArrangeGame = () => {
 
   const translateText = async (text) => {
     try {
-      const response = await fetch("/api/translate", {
+      const response = await fetch("/api/translate/", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ text, targetLang: localeU }), // Convert locale to uppercase
