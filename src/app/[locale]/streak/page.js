@@ -11,8 +11,9 @@ import 'react-calendar/dist/Calendar.css';
 
 export default function Streak() {
   const [streak, setStreak] = useState(0);
-  const [streakDates, setStreakDates] = useState([]);
+  const [streakDates, setStreakDates] = useState([]); // Store streak timestamps from Firestore
   const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [timeSpent, setTimeSpent] = useState(0); // Track time spent on the page
   const daysRef = useRef(null);
   const progressRef = useRef(null);
   const completeColor = "#ffce51";
@@ -22,10 +23,10 @@ export default function Streak() {
     setIsPopupOpen((prev) => !prev);
   };
 
-  const updateStreakUI = (streakValue) => {
-    setStreak(streakValue);
+  const updateStreakUI = (currentStreak) => {
+    setStreak(currentStreak);
     if (progressRef.current) {
-      progressRef.current.style.width = `${(streakValue / 25) * 100}%`;
+      progressRef.current.style.width = `${(currentStreak / 25) * 100}%`;
     }
   };
 
@@ -38,17 +39,17 @@ export default function Streak() {
 
         if (docSnapshot.exists()) {
           const streakData = docSnapshot.data();
-          updateStreakUI(streakData.streakCnt);
 
-          // Set streakDates from Firebase and convert Timestamps to Date objects
+          // Extract timestamps and convert to Date objects
           const datesArray = (streakData.streakDates || []).map((timestamp) => timestamp.toDate());
           setStreakDates(datesArray);
+
+          // Calculate streak based on dates
+          const currentStreak = calculateStreak(datesArray);
+          updateStreakUI(currentStreak);
         } else {
           const userStreakData = {
-            streakCnt: 0,
-            streakCheck: false,
-            lastUpdated: Timestamp.now(),
-            streakDates: []
+            streakDates: [], // Store exact timestamps here
           };
           await setDoc(streakRef, userStreakData);
         }
@@ -57,10 +58,85 @@ export default function Streak() {
     return () => unsubscribe();
   }, []);
 
-  const tileClassName = ({ date }) => 
-    streakDates.some((streakDate) => streakDate.toDateString() === date.toDateString()) 
-      ? "highlight"
+  useEffect(() => {
+    // Track time spent on the page
+    const timer = setInterval(() => {
+      setTimeSpent((prevTime) => prevTime + 1);
+    }, 1000); // Increment every second
+
+    // If the user spends more than 2 minutes (120 seconds), log the session
+    if (timeSpent >= 120) {
+      logSession();
+    }
+
+    return () => clearInterval(timer); // Cleanup the timer when component unmounts
+  }, [timeSpent]);
+
+  const logSession = async () => {
+    const userId = auth.currentUser.uid;
+    const streakRef = doc(firestore, "streaks", userId);
+    const docSnapshot = await getDoc(streakRef);
+
+    const currentTimestamp = Timestamp.now();
+
+    if (docSnapshot.exists()) {
+      const streakData = docSnapshot.data();
+      const updatedStreakDates = [...streakData.streakDates, currentTimestamp];
+
+      // Update Firestore with the new timestamp
+      await updateDoc(streakRef, { streakDates: updatedStreakDates });
+
+      // Update local state
+      setStreakDates((prevDates) => [...prevDates, currentTimestamp.toDate()]);
+
+      // Recalculate streak
+      const newStreak = calculateStreak(updatedStreakDates.map((ts) => ts.toDate()));
+      updateStreakUI(newStreak);
+    } else {
+      // If no streak data exists, initialize it
+      const newStreakData = {
+        streakDates: [currentTimestamp],
+      };
+      await setDoc(streakRef, newStreakData);
+      setStreakDates([currentTimestamp.toDate()]);
+      updateStreakUI(1);
+    }
+  };
+
+  const calculateStreak = (dates) => {
+    if (dates.length === 0) return 0;
+
+    // Sort dates in ascending order
+    dates.sort((a, b) => a - b);
+
+    let streakCount = 1;
+    let lastDate = dates[0];
+
+    for (let i = 1; i < dates.length; i++) {
+      const currentDate = dates[i];
+
+      // Check if the current date is the next consecutive day
+      const timeDifference = currentDate - lastDate;
+      const oneDayInMs = 24 * 60 * 60 * 1000;
+
+      if (timeDifference <= oneDayInMs) {
+        streakCount++;
+      } else if (timeDifference > oneDayInMs) {
+        break; // Streak broken, stop counting
+      }
+
+      lastDate = currentDate;
+    }
+
+    return streakCount;
+  };
+
+  const tileClassName = ({ date }) => {
+    const dateString = date.toDateString();
+    return streakDates.some((streakDate) => streakDate.toDateString() === dateString)
+      ? "highlight" // Highlight dates where the user earned a streak
       : "";
+  };
 
   return (
     <>

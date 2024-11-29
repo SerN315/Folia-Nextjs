@@ -1,17 +1,18 @@
-'use client';
-import '../scss/cate.scss'
+"use client";
+import "../scss/cate.scss";
 import ScrollableList from "../Component/scrollableComponent";
 import { useEffect, useState } from "react";
 import { getDatabase } from "../js/api/databaseAPI";
 import { useSearchParams } from "next/navigation";
-//import Footer from "../Component/footer";
-// import TopNav from "../Component/header";
 import Head from "next/head";
-import Link from 'next/link';
+import Link from "next/link";
+import { getFirestore, collection, getDocs } from "firebase/firestore";
+import { auth } from "../firebase/authenciation";
 
 export default function Category() {
   const [response1, setResponse1] = useState([]);
   const [response2, setResponse2] = useState([]);
+  const [userProgress, setUserProgress] = useState({});
   const searchParams = useSearchParams();
   const id = searchParams.get("topic");
 
@@ -29,7 +30,37 @@ export default function Category() {
     }
   }, [id]);
 
+  useEffect(() => {
+    const fetchUserProgress = async (userId) => {
+      try {
+        const db = getFirestore();
+        const userProgressSnapshot = await getDocs(
+          collection(db, "users", userId, "progress")
+        );
 
+        const progress = {};
+        userProgressSnapshot.forEach((doc) => {
+          const topicId = doc.id;
+          const contentData = doc.data();
+          if (contentData) progress[topicId] = contentData;
+        });
+
+        setUserProgress(progress);
+        console.log("User progress fetched:", progress);
+      } catch (error) {
+        console.error("Error fetching user progress:", error);
+      }
+    };
+
+    // Listen for auth state changes and fetch progress
+    const unsubscribe = auth.onAuthStateChanged((user) => {
+      if (user) {
+        fetchUserProgress(user.uid);
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   const makeRequests = () => {
     Promise.all([
@@ -47,97 +78,23 @@ export default function Category() {
       });
   };
 
+  const calculateProgress = (topicId, totalWords) => {
+    const progressData = userProgress[topicId] || {};
+    const knownWords = Object.values(progressData).filter(
+      (status) => status === "known"
+    ).length;
+    return Math.round((knownWords / totalWords) * 100);
+  };
+
   const renderContent = () => {
-    if (id === 'folia-asvab') {
-      return(
-        <>
+    if (id === "folia-asvab") {
+      // Asvab-specific content
+      return (
         <div className="home__hero-section">
-    <div className="home__hero-section__container">
-      <div className="home-hero-img">
-        <div className="home-hero-img__container">
-          <img
-            src="./img/Rectangle1670.png"
-            className="home-hero-img__container__img1"
-            loading="lazy"
-            width="48%"
-            height="59.2%"
-          />
-          <img
-            src="./img/Rectangle1671.png"
-            className="home-hero-img__container__img2"
-            loading="lazy"
-            width="67%"
-            height="94.6%"
-          />
-          <img
-            src="./img/Rectangle1672.png"
-            className="home-hero-img__container__img3"
-            loading="lazy"
-            width="35.1%"
-            height="29.1%"
-          />
-          <div className="home-hero-img__container__box1" />
-          <div className="home-hero-img__container__box2" />
+          {/* Hero section for folia-asvab */}
         </div>
-      </div>
-      <div className="col-lg-6 home-hero-text">
-        <div className="home-hero-text__container">
-          <h5>Welcome to Folia,</h5>
-          <h1>Start Learning Your Suitable Subject,</h1>
-          <div className="home-hero-text__container__cate-link">
-            <Link href="hub.html">View our categories</Link>
-            <i className="fa-solid fa-arrow-right" />
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div className="main-container container-fluid">
-    <div className="shower">
-      <div id="topic-list" className="topic-list loading">
-        <div className="card topic">
-          <div className="topic-img">
-            <div className="spinner-border" role="status">
-              <span className="visually-hidden">Loading...</span>
-            </div>
-          </div>
-          <div className="topic-title">
-            <h2 />
-            <h3 />
-            <h2 />
-          </div>
-        </div>
-        <div className="card topic">
-          <div className="topic-img">
-            <div className="spinner-border" role="status">
-              <span className="visually-hidden">Loading...</span>
-            </div>
-          </div>
-          <div className="topic-title">
-            <h2 />
-            <h3 />
-            <h2 />
-          </div>
-        </div>
-        <div className="card topic">
-          <div className="topic-img">
-            <div className="spinner-border" role="status">
-              <span className="visually-hidden">Loading...</span>
-            </div>
-          </div>
-          <div className="topic-title">
-            <h2 />
-            <h3 />
-            <h2 />
-          </div>
-        </div>
-      </div>
-      <div className="topic-list" />
-    </div>
-  </div>
-  </>
-      )
-    } else if (id === 'folia-language') {
+      );
+    } else if (id === "folia-language") {
       return (
         <main className="category">
           <h1 className="category__title">
@@ -164,6 +121,9 @@ export default function Category() {
                         const img = topic.properties.SVG.rich_text[0]?.plain_text;
 
                         if (formulaValue && formulaValue.split(" ").length > 4) {
+                          const totalWords = formulaValue.split(" ").length;
+                          const progress = calculateProgress(topicId, totalWords);
+
                           return (
                             <Link href={`vocabularies?topic=${topicId}`} className="topic" key={topicId}>
                               <div className="topic__img">
@@ -171,7 +131,15 @@ export default function Category() {
                               </div>
                               <div className="topic__text">
                                 <h3>{topicName}</h3>
-                                <p>Total words: {formulaValue.split(" ").length}</p>
+                                <p>Total words: {totalWords}</p>
+                                <div className="progress">
+                                  <div
+                                    className="progress-bar"
+                                    style={{ width: `${progress}%`, backgroundColor: "#3fbd00"}}
+                                  >
+                                    {progress}%
+                                  </div>
+                                </div>
                               </div>
                             </Link>
                           );

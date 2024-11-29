@@ -15,6 +15,22 @@
   }
 }
 
+@mixin buttona {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 70px;
+  height: 70px;
+  background-color: white;
+  border: 1px solid rgba(118, 118, 118, 0.422);
+  cursor: pointer;
+  border-radius: 60px;
+  transition: background-color 0.3s ease;
+  &:hover{
+    background-color: grey;
+  }
+}
 :root {
   --main-color: #1e5900;
   --second-main-color: #40bf00;
@@ -331,9 +347,30 @@ html {
       }
     }
     & .definition-example {
+      .highlight{
+        color: $main-color;
+      }
       margin-bottom: 10px;
       @include tablet {
         font-size: 15px;
+      }
+    }
+  }
+  .progress-buttons{
+    display: flex;
+    justify-content: space-around;
+    .btn_success{
+      @include buttona();
+      i{
+        color:$main-color;
+        font-size: 25px;
+      }
+    }
+    .btn_danger{
+      @include buttona();
+      i{
+        color:red;
+        font-size: 25px;
       }
     }
   }
@@ -462,6 +499,12 @@ p {
       }
     }
   }
+}
+.known{
+  border: 1px solid $main-color;
+}
+.unknown{
+  border: 1px solid red;
 }
 @include mobile-l {
   .vocabulary {

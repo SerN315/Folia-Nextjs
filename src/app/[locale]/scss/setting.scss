@@ -281,7 +281,7 @@
   background-color: #fff;
   width: 60vw;
   justify-content: center;
-  display: flex;
+  display: none;
   position: absolute;
   top: 30vh;
   left: 20%;
@@ -315,7 +315,7 @@
   }
 }
 .word-box-overlay {
-  display: flex;
+  display: none;
   justify-content: center;
   align-items: center;
   width: 100%;

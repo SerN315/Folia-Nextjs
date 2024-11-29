@@ -97,11 +97,11 @@ onAuthStateChanged(auth, (user) => {
     // Call the Translation function and pass the month and year
     Translation(month, year);
     // Handle avatar list display
-    const avatarList = getElement("#avatar-list");
-    if (avatarList) avatarList.style.display = "none";
+    // const avatarList = getElement("#avatar-list");
+    // if (avatarList) avatarList.style.display = "none";
 
-    const settingOverlay = getElement(".setting-overlay");
-    if (settingOverlay) settingOverlay.style.display = "none";
+    // const settingOverlay = getElement(".setting-overlay");
+    // if (settingOverlay) settingOverlay.style.display = "none";
 
     function displayAvatars() {
       const avatarList = getElement("#avatar-list");

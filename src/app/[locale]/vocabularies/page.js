@@ -32,31 +32,62 @@ export default function Vocabularies() {
   const [favoriteList, setFavoriteList] = useState([]);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true); // Add loading state
+  const [progress, setProgress] = useState({}); // State to track progress
+  
+  
 
   useEffect(() => {
     const firestore = getFirestore();
-
+  
     // Auth State Listener
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
         setUser(user);
-        const userid = auth.currentUser.uid;
-        const favoriteRef = doc(firestore, "favorites", userid);
-        
+        const userId = user.uid;
+        console.log("User ID:", userId); // Log userId to verify it's correct
+        console.log("Topic ID:", topicID); // Log topicID to verify it's correct
+  
+        // Fetch favorite list
+        const favoriteRef = doc(firestore, "favorites", userId);
         getDoc(favoriteRef).then((docSnapshot) => {
           const favoriteList = docSnapshot.exists() ? docSnapshot.data().favoriteList : [];
           setFavoriteList(favoriteList); // Set favorite list
           fetchVocabBasedOnTopic(favoriteList, favoriteRef, firestore);
+  
+          // Fetch progress data based on user and topicID
+          if (topicID) {
+            const progressRef = doc(firestore, `users/${userId}/progress/${topicID}`);
+            getDoc(progressRef).then((progressSnapshot) => {
+              if (progressSnapshot.exists()) {
+                const fetchedProgress = progressSnapshot.data();
+                console.log("Fetched progress data:", fetchedProgress);
+                setProgress(fetchedProgress);
+              } else {
+                console.log("No progress data found.");
+                setProgress({});
+              }
+            }).catch((error) => {
+              console.error("Error fetching progress:", error);
+            });
+          }
+        }).catch((error) => {
+          console.error("Error fetching favorite list:", error);
         });
       } else {
-        fetchVocabBasedOnTopic([], null, firestore);
+        // No user, reset both favorite list and progress
+        setFavoriteList([]);
+        setProgress({});
+        fetchVocabBasedOnTopic([], null, firestore); // Clear vocab based on topic
       }
     });
-
+  
     return () => unsubscribe(); // Cleanup listener on unmount
-  }, [topicID]);
+  }, [topicID]); // Trigger effect on topicID change
+  
 
   
+
+
 
   const fetchVocabBasedOnTopic = (favoriteList, favoriteRef, firestore) => {
     setLoading(true); // Start loading
@@ -74,24 +105,39 @@ export default function Vocabularies() {
   
         const newData = response.map((item) => {
           try {
-            const uniqueId = item.properties.ID.unique_id.number; // Make sure 'ID' exists
-            const word = item.properties.Name.title[0]?.plain_text; // Check 'Name'
-            const set = item.properties.Set.multi_select[0]?.name; // Check 'Set'
-            const meaning = item.properties.Meaning.rich_text[0]?.plain_text; // Check 'Meaning'
-            let jp = item.properties.jp.rich_text[0]?.plain_text; // Check 'Meaning'
-            // const exampleText = item.properties.Example.rich_text[0]?.plain_text;
-            let cn = item.properties.cn.rich_text[0]?.plain_text; // Check 'Meaning'
-            const pronunciation = item.properties.Pronunciation.rich_text[0]?.plain_text; // Check 'Pronunciation'
-            const img = item.properties.img.rich_text[0]?.plain_text; // Check 'img'
+            const uniqueId = item.properties.ID.unique_id.number; // Ensure 'ID' exists
+            const word = item.properties.Name.title[0]?.plain_text; // Ensure 'Name' exists
+            const set = item.properties.Set.multi_select[0]?.name; // Ensure 'Set' exists
+            const meaning = item.properties.Meaning.rich_text[0]?.plain_text; // Ensure 'Meaning' exists
+            let jp = item.properties.jp.rich_text[0]?.plain_text; // Ensure 'jp' exists
+            const exampleText = item.properties.Example.rich_text[0]?.plain_text;
+            
+            // Split sentences based on punctuation marks and handle extra spaces
+            const sentences = exampleText.split(/(?<=[.!?])\s+/).filter(sentence => sentence.trim() !== '');
+            
+            let cn = item.properties.cn.rich_text[0]?.plain_text; // Ensure 'cn' exists
+            const pronunciation = item.properties.Pronunciation.rich_text[0]?.plain_text; // Ensure 'Pronunciation' exists
+            const img = item.properties.img.rich_text[0]?.plain_text; // Ensure 'img' exists
+        
             if (jp?.endsWith(',')) {
               jp = jp.slice(0, -1); // Remove the last character (comma)
             }
             if (cn?.endsWith(',')) {
               cn = cn.slice(0, -1); // Remove the last character (comma)
             }
+        
+            // Highlight the word in each sentence by wrapping it in a <span> tag
+            const highlightedSentences = sentences.map(sentence => {
+              const highlightedSentence = sentence.replace(
+                new RegExp(`\\b${word}\\b`, 'gi'), // Match the word in the sentence (case insensitive)
+                `<span class="highlight">${word}</span>` // Wrap the word in a <span> tag for highlighting
+              );
+              return highlightedSentence;
+            });
+        
             // Log each extracted value for debugging
             console.log({
-              // exampleText,
+              highlightedSentences,
               uniqueId,
               word,
               set,
@@ -101,16 +147,17 @@ export default function Vocabularies() {
               jp,
               cn,
             });
-  
+        
             return {
+              sentence: highlightedSentences, // Return the highlighted sentences
               Id: uniqueId,
               Word: word,
               Set: set,
               Meaning: meaning,
               Pronunciation: pronunciation,
               Img: img,
-              Jp:jp,
-              Cn:cn,
+              Jp: jp,
+              Cn: cn,
             };
           } catch (error) {
             console.error("Error processing item:", item, error);
@@ -231,13 +278,29 @@ export default function Vocabularies() {
       document.querySelector(".word-box-overlay").innerHTML = "";
     });
   };
+
+  
   const openModal = (word) => {
     const wordBox = document.querySelector(".word-box-overlay");
+    const isKnown = progress[word.Id] === "known";
+    const isUnknown = progress[word.Id] === "unknown";
+  
+    const sentences = word.sentence.map((sentence, index) => ({
+      id: index + 1,
+      sentence: sentence.trim(),
+    }));
+    
     const vocabDetailed = `
-      <div class="modal1">
+      <div class="modal1 ${isKnown ? "known" : isUnknown ? "unknown" : ""}">
         <button class="close-modal">&times;</button>
         <div class="anh">
-          <img src="${word.Img}" width="100%" alt="word-img" />
+          <img 
+            src="${word.Img}" 
+            width="100%" 
+            height="auto" 
+            style="object-fit: cover; image-rendering: -webkit-optimize-contrast; image-rendering: crisp-edges;" 
+            alt="word-img" 
+          />
         </div>
         <div class="word-box">
           <div class="flex-box">
@@ -248,29 +311,70 @@ export default function Vocabularies() {
         </div>
         <div class="meaning-box">
           <p class="definition-viet">
-            <span style="color:green">Nghĩa: </span>${locale === 'ja' ? word.Jp : locale === 'zh' ? word.Cn : word.Meaning}
+            <span style="color:green">Meaning: </span>${locale === 'ja' ? word.Jp : locale === 'zh' ? word.Cn : word.Meaning}
           </p>
-          <p class="definition-example">
+          <div class="definition-example">
             <span style="color:green">Example: </span>
-          </p>
+            ${sentences.map((sentenceObj) => `<p key="${sentenceObj.id}">${sentenceObj.sentence}.</p>`).join('')}
+          </div>
         </div>
-      </div>`;
-
+        <div class="progress-buttons">
+          <button id="mark-known" class="btn_success ${isKnown ? "active" : ""}"><i class="fa-solid fa-check"></i></button>
+          <button id="mark-unknown" class="btn_danger ${isUnknown ? "active" : ""}"><i class="fa-solid fa-x"></i></button>
+        </div>
+      </div>
+    `;
+    
+    
     wordBox.innerHTML = vocabDetailed; // Set the inner HTML
     wordBox.classList.remove("hidden");
-
+  
+    // Handle button clicks
+    document.getElementById("mark-known").addEventListener("click", () => {
+      updateProgress(word.Id, "known");
+      wordBox.classList.add("hidden");
+    });
+  
+    document.getElementById("mark-unknown").addEventListener("click", () => {
+      updateProgress(word.Id, "unknown");
+      wordBox.classList.add("hidden");
+    });
+  
     document.querySelector(".close-modal").addEventListener("click", () => {
       wordBox.classList.add("hidden");
       wordBox.innerHTML = ""; // Clear content
     });
-      // Close modal when clicking outside the .modal1 element
-  wordBox.addEventListener("click", (e) => {
-    if (e.target === wordBox) {
-      wordBox.classList.add("hidden");
-      wordBox.innerHTML = ""; // Clear content
-    }
-  });
+  
+    // Close modal when clicking outside the modal content
+    wordBox.addEventListener("click", (e) => {
+      if (e.target === wordBox) {
+        wordBox.classList.add("hidden");
+        wordBox.innerHTML = ""; // Clear content
+      }
+    });
   };
+  
+  const updateProgress = (vocabId, status) => {
+    const firestore = getFirestore();
+    const userId = auth.currentUser?.uid;
+  
+    if (userId) {
+      const progressRef = doc(firestore, `users/${userId}/progress/${topicID}`);
+  
+      // Update progress locally
+      setProgress((prevProgress) => {
+        const updatedProgress = { ...prevProgress, [vocabId]: status };
+  
+        // Sync with Firebase
+        setDoc(progressRef, updatedProgress, { merge: true })
+          .then(() => console.log("Progress updated successfully"))
+          .catch((error) => console.error("Error updating progress: ", error));
+  
+        return updatedProgress;
+      });
+    }
+  };
+
   const handleScroll = () => {
     let scrollProgress = document.getElementById("progress");
     let calcScrollValue = () => {
@@ -287,12 +391,7 @@ export default function Vocabularies() {
     window.onscroll = calcScrollValue;
     window.onload = calcScrollValue;
   };
-  
-// // LINK TỚI CÁC CHỨC NĂNG KHÁC
-// document.querySelector(
-//   ".flashcard-link"
-// ).href = `flashcard.html?topic=${topicID}`;
-// document.querySelector(".d-and-d-link").href = `d_and_d.html?topic=${topicID}`;
+
 
   useEffect(() => {
     handleScroll();
@@ -437,38 +536,65 @@ export default function Vocabularies() {
 </div>
     </>
   )  : (
-    data.length > 0 ? ( // Check if there's data to render
-      data.map((word, index) => (
-        <div className="vocabulary show-modal" key={index} >
-          <div className="vocabulary-image">
-            <img src={word.Img} alt={word.Word} />
-          </div>
-          <div className="vocabulary-word" onClick={() => openModal(word)}>
-            <div className="word">{word.Word}</div>
-            <div className="word-set">{word.Set}</div>
-            <div className="word-pronunciation">
-              <i className="fa-solid fa-volume-high" /> {word.Pronunciation}
+    data.length > 0 ? (
+      data.map((word, index) => {
+        const wordProgress = progress[word.Id];
+        const isKnown = wordProgress === "known";
+        const isUnknown = wordProgress === "unknown";
+        console.log(progress);
+
+        return (
+          <div
+            className={`vocabulary show-modal ${isKnown ? "known" : isUnknown ? "unknown" : ""}`}
+            key={index}
+          >
+            <div className="vocabulary-image">
+              <img src={word.Img} alt={word.Word} />
             </div>
-            <div className="word-meaning">{locale === 'ja' ? word.Jp : locale === 'zh' ? word.Cn : word.Meaning}</div> {/* Add meaning if needed */}
-          </div>
-          <div className="icon-container">
-            <i className="fa-solid fa-flag report" onClick={() => handleReport(word.Word)}></i>
-            {user && ( // Only show the favorite button if the user is logged in
-          <div className="favorite-toggle">
-            <button
-              className={`favorite-btn ${favoriteList.some(item => item.id === word.Id) ? 'favorited' : ''}`}
-              onClick={(e) => {
-                e.stopPropagation(); // Prevent modal opening
-                handleFavoriteToggle(word); // Pass word object directly
-              }}
+            <div
+              className="vocabulary-word"
+              onClick={() => openModal(word)}
             >
-              <i className="fa fa-heart" style={{ color: favoriteList.some(item => item.id === word.Id) ? 'red' : 'inherit' }}></i>
-            </button>
+              <div className="word">{word.Word}</div>
+              <div className="word-set">{word.Set}</div>
+              <div className="word-pronunciation">
+                <i className="fa-solid fa-volume-high" /> {word.Pronunciation}
+              </div>
+              <div className="word-meaning">
+                {locale === "ja"
+                  ? word.Jp
+                  : locale === "zh"
+                  ? word.Cn
+                  : word.Meaning}
+              </div>
+            </div>
+            <div className="icon-container">
+              <i
+                className="fa-solid fa-flag report"
+                onClick={() => handleReport(word.Word)}
+              ></i>
+              {user && (
+                <div className="favorite-toggle">
+                  <button
+                    className={`favorite-btn ${favoriteList.some((item) => item.id === word.Id) ? "favorited" : ""}`}
+                    onClick={(e) => {
+                      e.stopPropagation(); // Prevent modal opening
+                      handleFavoriteToggle(word); // Pass word object directly
+                    }}
+                  >
+                    <i
+                      className="fa fa-heart"
+                      style={{
+                        color: favoriteList.some((item) => item.id === word.Id) ? "red" : "inherit",
+                      }}
+                    ></i>
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
-        )}
-          </div>
-        </div>
-      ))
+        );
+      })
     ) : (
       <p>No vocabulary found.</p> // Message if no data
     )

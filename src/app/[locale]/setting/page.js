@@ -19,7 +19,7 @@ export default async function Setting({ params: { locale } }) {
       <main className="setting">
         <div className="setting__main">
           <h2 className="title">
-            <Link href="/home">Home</Link> &gt; Settings
+            <Link href="home">Home</Link> &gt; Settings
           </h2>
           <div id="avatar-list">
             <div id="closebtn">x</div>
@@ -46,10 +46,10 @@ export default async function Setting({ params: { locale } }) {
             <hr />
             <div className="content__options account">
               <h5>{t('title_1')}</h5>
-              <Link href="#" className="languages cta">
+              {/* <Link href="#" className="languages cta">
                 <h6>{t('language')}</h6>
                 <i className="fa-solid fa-chevron-right" />
-              </Link>
+              </Link> */}
               <Link href="#" className="acc-update cta">
                 <h6>{t('accountS')}</h6>
                 <i className="fa-solid fa-chevron-right" />
@@ -58,23 +58,23 @@ export default async function Setting({ params: { locale } }) {
                 <h6>{t('password')}</h6>
                 <i className="fa-solid fa-chevron-right" />
               </Link>
-              <Link href="#" className="payment cta">
+              {/* <Link href="#" className="payment cta">
                 <h6>{t('payment')}</h6>
                 <i className="fa-solid fa-chevron-right" />
-              </Link>
+              </Link> */}
             </div>
             <hr />
             <div className="content__options more">
               <h5>{t('title_2')}</h5>
-              <Link href="intro" className="languages cta">
+              <Link href="about" className="languages cta">
                 <h6>{t('aboutus')}</h6>
               </Link>
-              <Link href="#" className="pw cta">
+              {/* <Link href="#" className="pw cta">
                 <h6>{t('privacy')}</h6>
               </Link>
               <Link href="#" className="payment cta">
                 <h6>{t('term')}</h6>
-              </Link>
+              </Link> */}
             </div>
           </div>
         </div>
