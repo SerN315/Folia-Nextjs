@@ -15,11 +15,12 @@ import {
   setDoc,
   getDoc,
   collection,
-  addDoc
+  addDoc,
+  count
 } from "firebase/firestore";
 import { useSearchParams } from 'next/navigation';
 import { auth } from "../firebase/authenciation"; 
-import { getDatabase } from "../js/api/databaseAPI";
+import { getDatabase,getDatabase2 } from "../js/api/databaseAPI";
 import { fetchTopic } from "../js/api/specificPageApi";
 import { getCookie } from "../js/cookie";
 
@@ -28,7 +29,10 @@ export default function Vocabularies() {
   console.log(locale); // Logs the value of the locale cookie or null if not found
   const searchParams = useSearchParams(); // Access query params
   const topicID = searchParams.get('topic'); // Get the 'topic' query param
+  const searchWord = searchParams.get('word'); // Get the 'topic' query param
+  const phrase = searchParams.get('text'); // Get the 'topic' query param
   const [data, setData] = useState([]);
+  const [counts, setCount] = useState(0);
   const [favoriteList, setFavoriteList] = useState([]);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true); // Add loading state
@@ -91,7 +95,7 @@ export default function Vocabularies() {
 
   const fetchVocabBasedOnTopic = (favoriteList, favoriteRef, firestore) => {
     setLoading(true); // Start loading
-  
+    if(topicID){
     getDatabase("8240dd072127443f8e51d09de242c2d9", {
       filter: {
         property: "Topic",
@@ -110,11 +114,10 @@ export default function Vocabularies() {
             const set = item.properties.Set.multi_select[0]?.name; // Ensure 'Set' exists
             const meaning = item.properties.Meaning.rich_text[0]?.plain_text; // Ensure 'Meaning' exists
             let jp = item.properties.jp.rich_text[0]?.plain_text; // Ensure 'jp' exists
-            const exampleText = item.properties.Example.rich_text[0]?.plain_text;
+            const exampleText = item.properties.example.rich_text[0]?.plain_text;
             
             // Split sentences based on punctuation marks and handle extra spaces
-            const sentences = exampleText.split(/(?<=[.!?])\s+/).filter(sentence => sentence.trim() !== '');
-            
+            const sentence = exampleText;
             let cn = item.properties.cn.rich_text[0]?.plain_text; // Ensure 'cn' exists
             const pronunciation = item.properties.Pronunciation.rich_text[0]?.plain_text; // Ensure 'Pronunciation' exists
             const img = item.properties.img.rich_text[0]?.plain_text; // Ensure 'img' exists
@@ -127,17 +130,14 @@ export default function Vocabularies() {
             }
         
             // Highlight the word in each sentence by wrapping it in a <span> tag
-            const highlightedSentences = sentences.map(sentence => {
-              const highlightedSentence = sentence.replace(
-                new RegExp(`\\b${word}\\b`, 'gi'), // Match the word in the sentence (case insensitive)
-                `<span class="highlight">${word}</span>` // Wrap the word in a <span> tag for highlighting
-              );
-              return highlightedSentence;
-            });
+            const highlightedSentence = sentence.replace(
+              new RegExp(`\\b${searchWord}\\b`, 'gi'), // Match the word in the sentence (case insensitive)
+              `<span class="highlight">${searchWord}</span>` // Wrap the word in a <span> tag for highlighting
+            );
         
             // Log each extracted value for debugging
             console.log({
-              highlightedSentences,
+              exampleText,
               uniqueId,
               word,
               set,
@@ -149,7 +149,7 @@ export default function Vocabularies() {
             });
         
             return {
-              sentence: highlightedSentences, // Return the highlighted sentences
+              sentence: highlightedSentence, // Return the highlighted sentences
               Id: uniqueId,
               Word: word,
               Set: set,
@@ -207,6 +207,86 @@ export default function Vocabularies() {
         setData([]); 
         setLoading(false); // Stop loading even on error
       });
+    }
+    if (!topicID && phrase) {
+      getDatabase2(`vocabularies?search=${phrase}&limit=30`).then((response) => {
+        console.log("API Response:", response);
+      
+        const newData = response
+          .map((word, id) => {
+            try {
+              const uniqueId = word?.Id ?? null;
+              const topicID = word?._id ?? null;
+              const wordText = word?.Word ?? null;
+              const pronunciation = word?.Pronunciation ?? null;
+              const set = word?.Set ?? null;
+              const meaning = word?.Meaning ?? null;
+              const img = word?.Img ?? null;
+              let jp = word?.jp ?? null;
+              const exampleText = word?.example ?? null;
+              let cn = word?.cn ?? null;
+      
+              // Remove trailing commas if they exist
+              if (jp?.endsWith(',')) {
+                jp = jp.slice(0, -1);
+              }
+              if (cn?.endsWith(',')) {
+                cn = cn.slice(0, -1);
+              }
+      
+              // Highlight the word in each sentence by wrapping it in a <span> tag
+              const highlightedSentence = exampleText?.replace(
+                new RegExp(`\\b${searchWord}\\b`, 'gi'), // Match the word in the sentence (case insensitive)
+                `<span class="highlight">${searchWord}</span>` // Wrap the word in a <span> tag for highlighting
+              ) ?? null;
+      
+              // Construct the object, only including properties that exist
+              const vocabData = {
+                ...(uniqueId && { Id: uniqueId }),
+                ...(wordText && { Word: wordText }),
+                ...(set && { Set: set }),
+                ...(meaning && { Meaning: meaning }),
+                ...(pronunciation && { Pronunciation: pronunciation }),
+                ...(img && { Img: img }),
+                ...(jp && { Jp: jp }),
+                ...(cn && { Cn: cn }),
+                ...(highlightedSentence && { Sentence: highlightedSentence }),
+              };
+      
+              // Log each extracted value for debugging
+              console.log(vocabData);
+      
+              return vocabData;
+            } catch (error) {
+              console.error("Error processing item:", word, error);
+              return null; // Return null in case of error
+            }
+          })
+          .filter(item => item !== null); // Filter out any null values
+      
+        // Count the number of valid results
+        const count = newData.length;
+      
+        // Use the previous state to append new vocabulary items and update the count
+        setData((prevData) => {
+          const updatedData = [...prevData, ...newData];
+          console.log("Updated Data:", updatedData); // Log the updated data
+          return updatedData;
+        });
+      
+        // Set the count
+        setCount(count);
+      
+        setLoading(false); // Stop loading
+      })
+      .catch((error) => {
+        console.error("Error fetching vocabularies:", error);
+        setData([]);
+        setCount(0); // Reset count on error
+        setLoading(false); // Stop loading even on error
+      });
+    }
+    
   };
   
 
@@ -285,10 +365,10 @@ export default function Vocabularies() {
     const isKnown = progress[word.Id] === "known";
     const isUnknown = progress[word.Id] === "unknown";
   
-    const sentences = word.sentence.map((sentence, index) => ({
-      id: index + 1,
-      sentence: sentence.trim(),
-    }));
+    // const sentences = word.sentence.map((sentence, index) => ({
+    //   id: index + 1,
+    //   sentence: sentence.trim(),
+    // }));
     
     const vocabDetailed = `
       <div class="modal1 ${isKnown ? "known" : isUnknown ? "unknown" : ""}">
@@ -298,7 +378,7 @@ export default function Vocabularies() {
             src="${word.Img}" 
             width="100%" 
             height="auto" 
-            style="object-fit: cover; image-rendering: -webkit-optimize-contrast; image-rendering: crisp-edges;" 
+            style="object-fit: contain;" 
             alt="word-img" 
           />
         </div>
@@ -315,7 +395,7 @@ export default function Vocabularies() {
           </p>
           <div class="definition-example">
             <span style="color:green">Example: </span>
-            ${sentences.map((sentenceObj) => `<p key="${sentenceObj.id}">${sentenceObj.sentence}.</p>`).join('')}
+            ${word.sentence}
           </div>
         </div>
         <div class="progress-buttons">
@@ -397,6 +477,26 @@ export default function Vocabularies() {
     handleScroll();
   }, []);
 
+  useEffect(() => {
+    // Fetch data on page load
+    // fetchVocabByTopic();
+    // Handle opening modal for searchWord
+    if (searchWord) {
+      const checkWordExist = () => {
+        const foundWord = data.find((item) => item.Word === searchWord);
+        if (foundWord) {
+          openModal(foundWord); // Open modal for the found word
+        }
+      };
+
+      // Wait for `data` to load before checking
+      if (!loading) {
+        checkWordExist();
+      }
+    }
+  }, [loading, searchWord, data]); // Re-run when loading or data changes
+
+
   return (
     <>
       <Head>
@@ -416,7 +516,7 @@ export default function Vocabularies() {
 <main className="bigArticle">
       {/* NAVIGATION PANEL */}
         {/* NAVIGATION PANEL */}
-        <div className="nav-panel">
+        <div className="nav-panel" style={{display: phrase ? "none":"flex"}}>
           <p className="nav-panel__navigation">
             <Link href="#" cate="" className="cate-link">
               Categories
@@ -447,6 +547,13 @@ export default function Vocabularies() {
             </Link>
           </div>
         </div>
+        {/* <!-- SEARCH RESULT CONTENT --> */}
+    
+    <div class="search-result"  style={{display: phrase ? "flex":"none"}} >
+      <h1>SEARCH RESULT</h1>
+      <h2>THERE ARE <span class="count">{counts}</span> RESULTS THAT CONTAIN THE PHRASE <span class="input-text">{phrase}</span></h2>
+    </div>
+    
 
       {/* VOCABULARY MAIN CONTENT */}
       <div className="article">

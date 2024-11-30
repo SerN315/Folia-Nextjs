@@ -2,7 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Login from "../Component/loginUI";
-import { getDatabase } from "../js/api/databaseAPI";
+import { getDatabase, getDatabase2 } from "../js/api/databaseAPI";
 import { auth } from "../firebase/authenciation";
 import { signOut } from "firebase/auth";
 import LanguageChanger from "./languageChanger";
@@ -38,7 +38,6 @@ export default function TopNav() {
         document.querySelector(".streak").classList.add("hidden");
         document.querySelector(".ranking").classList.add("hidden");
         document.querySelector(".open-popup").classList.remove("hidden");
-        // document.querySelector(".fav_list").classList.add("hidden");
         wrapperRef.current.classList.add("active-popup");
         console.log("User signed out");
       })
@@ -129,21 +128,30 @@ export default function TopNav() {
   }, [firestore]);
 
   const handleSearchInput = async (e) => {
-    const value = e.target.value.toLowerCase();
+    const value = e.target.value.toLowerCase().trim();
     setSearchValue(value);
-
+  
     if (value === "") {
       setSearchResultsVisible(false);
+      setVocab([]); // Clear results when input is empty
     } else {
       setSearchResultsVisible(true);
-      const response = await getDatabase(`vocabularies?search=${value}`);
-      const sliceResponse = response.slice(0, 5);
-      setVocab(
-        sliceResponse.map((word) => ({
+  
+      try {
+        // Fetch data from the database
+        const response = await getDatabase2(`vocabularies?search=${value}`);
+        const sliceResponse = response.slice(0, 5);
+  
+        // Map and update state
+        const vocabData = sliceResponse.map((word) => ({
           name: word.Word,
           topicID: word.TopicId,
-        }))
-      );
+        }));
+        setVocab(vocabData);
+      } catch (error) {
+        console.error("Error fetching vocab data:", error);
+        setVocab([]); // Clear results in case of error
+      }
     }
   };
 
@@ -157,10 +165,29 @@ export default function TopNav() {
     window.location.href = `/vocabularies?topic=${word.topicID}&word=${word.name}`;
   };
 
+  const handleArrowNavigation = (e) => {
+    if (!searchResultsVisible) return;
+    const searchResults = resultContainerRef.current.querySelectorAll(".cards.show");
+    if (searchResults.length === 0) return;
+
+    let currentIndex = Array.from(searchResults).findIndex(
+      (item) => document.activeElement === item
+    );
+
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      const nextIndex = Math.min(currentIndex + 1, searchResults.length - 1);
+      searchResults[nextIndex]?.focus();
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      const prevIndex = Math.max(currentIndex - 1, 0);
+      searchResults[prevIndex]?.focus();
+    }
+  };
+
   const toggleDropdown = (dropdownClass) => {
     document.querySelector(dropdownClass).classList.toggle("active");
   };
-
 
   if (hideTopNavPaths.includes(pathname)) {
     return null; // Do not render TopNav if on specified paths
@@ -184,20 +211,25 @@ export default function TopNav() {
             onKeyPress={handleEnterKeyPress}
             ref={searchInputRef}
           />
-          {searchResultsVisible && (
-            <div className="search__result" ref={resultContainerRef}>
-              {vocab.map((word, index) => (
-                <div
-                  key={index}
-                  className="cards show"
-                  tabIndex={index}
-                  onClick={() => handleSearchResultClick(word)}
-                >
-                  {word.name}
-                </div>
-              ))}
-            </div>
-          )}
+          {searchResultsVisible && vocab.length > 0 && (
+      <div className="search__result" ref={resultContainerRef} style={{display : "flex"}}>
+        {vocab.map((word, index) => (
+          <div
+            key={index}
+            className="cards show"
+            tabIndex={index}
+            onClick={() => handleSearchResultClick(word)}
+          >
+            {word.name}
+          </div>
+        ))}
+      </div>
+    )}
+    {searchResultsVisible && vocab.length === 0 && (
+      <div className="search__result no-results">
+        <p>No results found</p>
+      </div>
+    )}
         </div>
 
         <div className="buttons">

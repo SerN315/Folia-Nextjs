@@ -306,7 +306,7 @@ html {
       width: 100%;
       max-height: 100%;
       border-radius: 16px;
-      object-fit: cover;
+      object-fit: contain;
     }
   }
   & .new-word {
@@ -328,8 +328,7 @@ html {
     flex-direction: row;
     align-items: center;
     }
-    height: 20%;
-    margin: 10px 0 0 0;
+    margin: 10px 0 10px 0;
     
   }
   & .meaning-box {
@@ -357,6 +356,8 @@ html {
     }
   }
   .progress-buttons{
+    position: relative;
+    bottom: -50px;
     display: flex;
     justify-content: space-around;
     .btn_success{
