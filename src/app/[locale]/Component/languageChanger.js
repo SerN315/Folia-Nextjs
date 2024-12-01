@@ -112,7 +112,7 @@ export default function LanguageChanger() {
           position: absolute;
           width: 150px;
           top: 100%;
-          left: 0;
+          left: -100%;
           background-color: #fff;
           border: 1px solid #ccc;
           border-radius: 4px;

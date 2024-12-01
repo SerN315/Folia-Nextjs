@@ -4,6 +4,7 @@ $main-color: #3fbd00;
 
 // NAVIGATION PANEL
 .nav-panel {
+  flex-direction: column;
   &__navigation {
     margin-bottom: 20px;
     color: $navigation-text-color;
