@@ -428,10 +428,8 @@ function generateOptions() {
   return options.sort(() => Math.random() - 0.5);
 }
 
-
-
 useEffect(() => {
-  if (originalQuestions.length && randomizedQuestionType) {
+  if (originalQuestions.length && randomizedQuestionType && fixedDistractors.length) {
     // Only generate options if the current index is different from the last rendered question
     if (lastRenderedIndex !== currentIndex) {
       const newOptions = generateOptions();
@@ -440,12 +438,10 @@ useEffect(() => {
     }
   }
   // Ensure options only update when the question index changes
-}, [currentIndex, originalQuestions, randomizedQuestionType]);
-
-
+}, [currentIndex, originalQuestions, randomizedQuestionType, fixedDistractors]);
 
 function renderQuestion() {
-  if (!randomizedQuestionType || !shuffledOptions.length) {
+  if (!randomizedQuestionType || !shuffledOptions.length || !fixedDistractors.length) {
     return <div>Loading...</div>; // Prevent flicker until everything is ready
   }
 

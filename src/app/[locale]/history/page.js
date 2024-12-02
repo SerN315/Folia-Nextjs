@@ -6,8 +6,12 @@ import { getFirestore, collection, onSnapshot } from "firebase/firestore";
 // import TopNav from "../Component/header";
 import "../scss/history.scss";
 import "../scss/subnav.scss";
+import initTranslations from "../../i18n";
+import LoadingSpinner from "../Component/loadingSpinner";
 
-export default function History() {
+export default function History({ params: { locale } }) {
+  const [t, setT] = useState(() => (key) => key);
+  const [isLoadingkeys, setLoadingkeys] = useState(true);
   const [challengeData, setChallengeData] = useState([]);
   const [practicesData, setPracticesData] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -17,6 +21,17 @@ export default function History() {
   const [error, setError] = useState(null);
 
   const firestore = getFirestore();
+  useEffect(() => {
+    const loadTranslations = async () => {
+      const { t } = await initTranslations(locale, ["history"]);
+      setT(() => t);
+      setLoadingkeys(false);
+    };
+
+    loadTranslations();
+  }, [locale]);
+
+
 
   useEffect(() => {
     // Listen for authentication state changes
@@ -153,6 +168,8 @@ export default function History() {
     window.scrollTo({ top: 0, behavior: "smooth" });
     console.log("Scrolled to top");
   };
+  if (isLoadingkeys || !t) return <LoadingSpinner />;
+
 
   return (
     <>
@@ -175,7 +192,7 @@ export default function History() {
           <>
             {/* Challenge History Section */}
             <section>
-              <h2 class="title">Challenge History</h2>
+              <h2 class="title">{t("title1")}</h2>
               {challengeData.length === 0 ? (
                 <p>You have not completed any challenges yet.</p>
               ) : (
@@ -190,10 +207,10 @@ export default function History() {
                       {data.id.replace(/_/g, ' ').replace(/^./, str => str.toUpperCase())}
                       </div>
                       <div className="word">
-                        <i className="fa-solid fa-star"></i> Score Achieved: {data.score}
+                        <i className="fa-solid fa-star"></i> {t("content2")} {data.score}
                       </div>
                       <div className="word-set">
-                        <i className="fa-solid fa-fire"></i> Highest Streak: {data.highestStreak}
+                        <i className="fa-solid fa-fire"></i> {t("content1")} {data.highestStreak}
                       </div>
                     </div>
                   </div>
@@ -203,7 +220,7 @@ export default function History() {
 
             {/* Practices History Section */}
             <section>
-              <h2 class="title">Practices History</h2>
+              <h2 class="title">{t("title6")}</h2>
               {practicesData.length === 0 ? (
                 <p>You have not completed any practices yet.</p>
               ) : (
@@ -218,10 +235,10 @@ export default function History() {
                        {index + 1}. {data.type}
                       </div>
                       <div className="word">
-                        <i className="fa-solid fa-star"></i> Score Achieved: {data.score}
+                        <i className="fa-solid fa-star"></i> {t("content2")} {data.score}
                       </div>
                       <div className="word-set">
-                        <i className="fa-solid fa-fire"></i> Highest Streak: {data.highestStreak}
+                        <i className="fa-solid fa-fire"></i> {t("content1")} {data.highestStreak}
                       </div>
                     </div>
                   </div>

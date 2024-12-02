@@ -7,9 +7,13 @@ import { auth } from "../firebase/authenciation";
 import { onAuthStateChanged } from "firebase/auth";
 import { doc, getDoc, setDoc, updateDoc, Timestamp, getFirestore } from "firebase/firestore";
 import "../scss/streak.scss";
+import initTranslations from "../../i18n";
 import 'react-calendar/dist/Calendar.css';
+import LoadingSpinner from "../Component/loadingSpinner";
 
-export default function Streak() {
+export default function Streak({ params: { locale } }) {
+  const [t, setT] = useState(() => (key) => key);
+  const [isLoadingkeys, setLoadingkeys] = useState(true);
   const [streak, setStreak] = useState(0);
   const [streakDates, setStreakDates] = useState([]); // Store streak timestamps from Firestore
   const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -18,6 +22,17 @@ export default function Streak() {
   const progressRef = useRef(null);
   const completeColor = "#ffce51";
   const firestore = getFirestore();
+
+  useEffect(() => {
+    const loadTranslations = async () => {
+      const { t } = await initTranslations(locale, ["streak"]);
+      setT(() => t);
+      setLoadingkeys(false);
+    };
+
+    loadTranslations();
+  }, [locale]);
+
 
   const togglePopup = () => {
     setIsPopupOpen((prev) => !prev);
@@ -137,6 +152,7 @@ export default function Streak() {
       ? "highlight" // Highlight dates where the user earned a streak
       : "";
   };
+  if (isLoadingkeys || !t) return <LoadingSpinner />;
 
   return (
     <>
@@ -166,7 +182,7 @@ export default function Streak() {
               />
               <div className="detail__text">
                 <h1 ref={daysRef} className="days">{streak}</h1>
-                <p>learning day streak</p>
+                <p>{t("streakText")}</p>
               </div>
             </div>
             <Image
@@ -200,9 +216,9 @@ export default function Streak() {
       {isPopupOpen && (
         <section className="reward-list">
           <div className="rewards">
-            <h1 className="rewards__title">Streaks Monthly Rewards</h1>
+            <h1 className="rewards__title">{t("title")}</h1>
             <p className="rewards__des">
-              Earn ranking points each month by joining games and activities
+            {t("subtitle")}
             </p>
             {[5, 10, 15, 20, 25].map((bp) => (
               <div key={bp} className={`reward streak--${bp}`} bp={bp}>
@@ -215,10 +231,10 @@ export default function Streak() {
                     height={50}
                   />
                   <div className="text">
-                    <h3 className="text__title">Achievement Title for {bp} days</h3>
-                    <p className="text__des">Achievement description for {bp} days streak</p>
+                    <h3 className="text__title">{t("title2")} {bp} {t("title22")}</h3>
+                    <p className="text__des">{t("subtitle2")} {bp} {t("subtitle22")}</p>
                     <ul className="text__reward">
-                      <li>Reward: +{bp * 50} ranking points</li>
+                      <li>{t("Ssubtitle2")} +{bp * 50} {t("Ssubtitle22")}</li>
                     </ul>
                   </div>
                 </div>

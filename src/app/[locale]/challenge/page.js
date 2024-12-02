@@ -3,6 +3,8 @@ import { useEffect, useState } from "react";
 import { getDatabase } from "../js/api/databaseAPI.js";
 import { auth, firestore } from "../firebase/authenciation.js";
 import { collection, onSnapshot, getFirestore } from "firebase/firestore";
+import initTranslations from "../../i18n";
+import LoadingSpinner from "../Component/loadingSpinner";
 import Image from "next/image";
 import Head from "next/head";
 //import Footer from "../Component/footer";
@@ -10,11 +12,27 @@ import Head from "next/head";
 import "../scss/challenge.scss";
 import Link from "next/link.js";
 
-export default function Challenge() {
+export default function Challenge({ params: { locale } }) {
+  const [t, setT] = useState(() => (key) => key);
+  const [isLoadingkeys, setLoadingkeys] = useState(true);
   const [categories, setCategories] = useState([]);
   const [completedChallenges, setCompletedChallenges] = useState([]); // State to store completed challenge IDs
   const [userId, setUserId] = useState(null); // State to store the user ID
   const firestore = getFirestore();
+
+  useEffect(() => {
+    const loadTranslations = async () => {
+      const { t } = await initTranslations(locale, ["games"]);
+      setT(() => t);
+      setLoadingkeys(false);
+    };
+
+    loadTranslations();
+  }, [locale]);
+
+
+
+
   useEffect(() => {
     // Listen for authentication state changes
     const unsubscribeAuth = auth.onAuthStateChanged(async (user) => {
@@ -119,7 +137,7 @@ export default function Challenge() {
         <div className="challenges__item" key={challengeName}>
           <div className="challenges__item__left">
             <div className="title">
-              <h2>Challenge {id}</h2>
+              <h2>{t("title1")} {id}</h2>
             </div>
             <div className="tquestion">
               {tag.map((ta) => (
@@ -130,7 +148,7 @@ export default function Challenge() {
 
           <div className="challenges__item__middle">
             <div className="title">
-              <h2>Categories</h2>
+              <h2>{t("title3")}</h2>
             </div>
             <div className="tquestion">
               {categories.map((category) => (
@@ -161,6 +179,8 @@ export default function Challenge() {
     });
   };
 
+  if (isLoadingkeys || !t) return <LoadingSpinner />;
+
   return (
     <>
       <Head>
@@ -174,9 +194,9 @@ export default function Challenge() {
       <section className="challenge">
         <div className="challenge__container">
           <div className="titles">
-            <h1>Challenge</h1>
+            <h1>{t("title1")}</h1>
             <Link className="leaderboard" href="./leaderboard">
-              Leaderboard
+            {t("title2")}
             </Link>
           </div>
           <div className="challenges">
