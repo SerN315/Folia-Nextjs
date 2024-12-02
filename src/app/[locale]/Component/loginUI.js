@@ -9,12 +9,19 @@ import {
   signOut,
   onAuthStateChanged,
 } from "firebase/auth";
-import { getFirestore, doc, getDoc, updateDoc, setDoc, Timestamp } from "firebase/firestore";
+import {
+  getFirestore,
+  doc,
+  getDoc,
+  updateDoc,
+  setDoc,
+  Timestamp,
+} from "firebase/firestore";
 import { saveUserData } from "../js/setting"; // Ensure this path is correct
 import Link from "next/link";
 export default function Login() {
   // State for login form
-  
+
   const [loginEmail, setLoginEmail] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
 
@@ -23,18 +30,19 @@ export default function Login() {
   const [registerEmail, setRegisterEmail] = useState("");
   const [registerPassword, setRegisterPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [loginError, setLoginError] = useState(""); // New state for login error message
 
   // Refs for DOM manipulation
   const wrapperRef = useRef(null);
   const backgroundRef = useRef(null);
   const bodyscrollingRef = useRef(null);
   const loginFormRef = useRef(null);
-const signupFormRef = useRef(null);
-
+  const signupFormRef = useRef(null);
 
   // Handle login form submit
   const handleLoginSubmit = (e) => {
     e.preventDefault();
+    setLoginError(""); // Reset error before trying to log in
     signInWithEmailAndPassword(auth, loginEmail, loginPassword)
       .then((cred) => {
         console.log("User logged in:", cred.user);
@@ -48,6 +56,7 @@ const signupFormRef = useRef(null);
       })
       .catch((err) => {
         console.error("Login error:", err.message);
+        setLoginError("Invalid email or password. Please try again."); // Set error message
       });
   };
 
@@ -60,7 +69,9 @@ const signupFormRef = useRef(null);
     }
     createUserWithEmailAndPassword(auth, registerEmail, registerPassword)
       .then((cred) => {
-        return updateProfile(auth.currentUser, { displayName: registerUsername });
+        return updateProfile(auth.currentUser, {
+          displayName: registerUsername,
+        });
       })
       .then(() => {
         console.log("Sign-up successful, username updated");
@@ -72,7 +83,6 @@ const signupFormRef = useRef(null);
   };
 
   // Handle logout
-
 
   // Handle authentication state changes
   useEffect(() => {
@@ -87,7 +97,7 @@ const signupFormRef = useRef(null);
         document.querySelector(".logout").classList.remove("hidden");
         document.querySelector(".user-name").textContent = user.displayName;
         document.querySelector(".user-email").textContent = user.email;
-        getStreak(user.uid);        
+        getStreak(user.uid);
         if (user.photoURL) {
           document.querySelector(".avatar").src = user.photoURL;
           document.querySelector(".detail__avatar").src = user.photoURL;
@@ -96,7 +106,7 @@ const signupFormRef = useRef(null);
           document.querySelector(".avatar").src = "/img/avatar.png";
           document.querySelector(".detail__avatar").src = "/img/avatar.png";
         }
-      } 
+      }
     };
 
     const authListener = onAuthStateChanged(auth, handleAuthStateChange);
@@ -109,7 +119,7 @@ const signupFormRef = useRef(null);
           let streak = docSnapshot.data().streakCnt;
           let lastUpdated = docSnapshot.data().lastUpdated.toDate(); // Convert to Date object
           const currentTime = new Date(); // Current date
-    
+
           // Check if last login and current login are on consecutive days
           if (
             lastUpdated.getDate() === currentTime.getDate() - 1 && // Last updated was yesterday
@@ -137,7 +147,7 @@ const signupFormRef = useRef(null);
               streakCnt: streak, // Reset streak count
             });
           }
-    
+
           document.querySelector(".streak-cnt").textContent = streak; // Update streak display
         } else {
           // If no document exists, create one
@@ -149,7 +159,6 @@ const signupFormRef = useRef(null);
         }
       });
     };
-    
 
     // const dayStart = () => {
     //   const now = new Date();
@@ -158,9 +167,11 @@ const signupFormRef = useRef(null);
     // };
 
     const attachEventListeners = () => {
-      document.querySelector(".register-link")?.addEventListener("click", () => {
-        wrapperRef.current.classList.add("active");
-      });
+      document
+        .querySelector(".register-link")
+        ?.addEventListener("click", () => {
+          wrapperRef.current.classList.add("active");
+        });
       document.querySelector(".forgot-link")?.addEventListener("click", () => {
         wrapperRef.current.classList.add("active2");
       });
@@ -225,7 +236,10 @@ const signupFormRef = useRef(null);
                 placeholder="Confirm Password"
               />
             </div>
-            <button id="btn__reset" className="btnDn btn__reset btn btn-primary">
+            <button
+              id="btn__reset"
+              className="btnDn btn__reset btn btn-primary"
+            >
               Reset Password
             </button>
             <div className="login-register">
@@ -315,15 +329,24 @@ const signupFormRef = useRef(null);
                 Forgot Password
               </Link>
             </div>
-            <div
-              id="loginAlert"
-              className="alert"
-              role="alert"
-              style={{ display: "none" }}
+            {loginError && (
+              <div
+                id="loginAlert"
+                className="alert alert-danger"
+                style={{
+                  marginTop: "10px",
+                  color: "red",
+                  fontSize: "0.9rem",
+                }}
+              >
+                {loginError}
+              </div>
+            )}
+            <button
+              type="submit"
+              id="btn__login"
+              className="btnDn btn__login btn btn-primary"
             >
-              {/* Notification message will be set here */}
-            </div>
-            <button type="submit" id="btn__login" className="btnDn btn__login btn btn-primary">
               Log in
             </button>
             <div className="login-register">
@@ -379,8 +402,7 @@ const signupFormRef = useRef(null);
             </div>
             <div className="remember-forgot">
               <label>
-                <input type="checkbox" />
-                I agree to the terms and conditions
+                <input type="checkbox" />I agree to the terms and conditions
               </label>
             </div>
             <div
