@@ -3,13 +3,13 @@ import { useEffect, useState } from "react";
 import { getDatabase } from "../js/api/databaseAPI.js";
 import { auth, firestore } from "../firebase/authenciation.js";
 import { collection, onSnapshot, getFirestore } from "firebase/firestore";
-import initTranslations from "../../i18n";
-import LoadingSpinner from "../Component/loadingSpinner";
 import Image from "next/image";
 import Head from "next/head";
 //import Footer from "../Component/footer";
+import initTranslations from "../../i18n";
 // import TopNav from "../Component/header";
 import "../scss/challenge.scss";
+import LoadingSpinner from "../Component/loadingSpinner.js";
 import Link from "next/link.js";
 
 export default function Challenge({ params: { locale } }) {
@@ -29,7 +29,6 @@ export default function Challenge({ params: { locale } }) {
 
     loadTranslations();
   }, [locale]);
-
 
 
 
@@ -170,7 +169,7 @@ export default function Challenge({ params: { locale } }) {
                   ","
                 )}`}
               >
-                Start
+                {t("button1")}
               </Link>
             </div>
           </div>
@@ -178,9 +177,7 @@ export default function Challenge({ params: { locale } }) {
       );
     });
   };
-
   if (isLoadingkeys || !t) return <LoadingSpinner />;
-
   return (
     <>
       <Head>

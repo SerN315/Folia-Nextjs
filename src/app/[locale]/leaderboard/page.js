@@ -11,12 +11,30 @@ import {
 } from 'firebase/firestore';
 import Image from "next/image";
 import Head from "next/head";
+import LoadingSpinner from "../Component/loadingSpinner.js";
+import initTranslations from "../../i18n";
 import Link from "next/link";
 import "../scss/learderboard.scss";
 
-export default function Leaderboard() {
+export default function Leaderboard({ params: { locale } }) {
+  const [t, setT] = useState(() => (key) => key);
+  const [isLoadingkeys, setLoadingkeys] = useState(true);
   const [userInfoData, setUserInfoData] = useState([]);
   const [isVisible, setIsVisible] = useState(true); // For handling ranksList2 visibility
+
+  useEffect(() => {
+    const loadTranslations = async () => {
+      const { t } = await initTranslations(locale, ["games"]);
+      setT(() => t);
+      setLoadingkeys(false);
+    };
+
+    loadTranslations();
+  }, [locale]);
+
+
+
+
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -67,7 +85,7 @@ export default function Leaderboard() {
       unsubscribe();
     };
   }, []);
-
+  if (isLoadingkeys || !t) return <LoadingSpinner />;
   return (
     <>
       <Head>
@@ -78,10 +96,11 @@ export default function Leaderboard() {
       <section className="leaderboardContent">
         <div className="leaderboardContent__container">
           <div className="leaderboardContent__container__title">
+          <h1> {t("title2")}</h1>
             <Link className="challenge" href="/challenge">
-              Challenge
+            {t("title1")}
             </Link>
-            <h1>Leaderboard</h1>
+
           </div>
           <div className="leaderboardContent__container__top3">
           <ul className="ranks">
@@ -128,8 +147,8 @@ export default function Leaderboard() {
           <div className="leaderboardContent__container__rankinglist">
             <div className="content">
               <div className="indicator">
-                <h1>Player ranks</h1>
-                <Link href="#">View all &gt;</Link>
+                <h1>{t("title7")}</h1>
+                {/* <Link href="#">View all &gt;</Link> */}
               </div>
               <ul className="rankings">
                 {/* Render remaining users if more than 3 */}

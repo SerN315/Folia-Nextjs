@@ -206,7 +206,7 @@ export default function TopNav() {
           <input
             type="search"
             className="inside-search-bar"
-            placeholder="Find your favorite topics on Folia"
+            placeholder={t('search', { ns: 'topnav' })}
             onChange={handleSearchInput}
             onKeyPress={handleEnterKeyPress}
             ref={searchInputRef}

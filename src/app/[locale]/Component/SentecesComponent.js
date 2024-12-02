@@ -42,36 +42,26 @@ const SentenceArrangeGame = () => {
       },
     })
       .then(async (response) => {
-        // Process each item and split sentences using regex
-        const sentencePromises = response.flatMap((item) => {
+        // Process each item and handle a single sentence
+        const sentencePromises = response.map(async (item) => {
           try {
-            const exampleText = item.properties.Example.rich_text[0]?.plain_text;
-            if (!exampleText) return []; // Skip items without an example
+            const exampleText = item.properties.example.rich_text[0]?.plain_text;
+            if (!exampleText) return null; // Skip items without an example
   
-            // Split sentences using a more flexible regex pattern
-            const sentencesArray = exampleText.split(/(?<=\.)\s+/);  // Regex for splitting sentences
-  
-            // Translate each sentence individually and create the sentence object
-            return sentencesArray.map(async (sentence) => {
-              try {
-                const translatedText = await translateText(sentence);
-                return {
-                  original: sentence,
-                  translation: translatedText,
-                  diversionWords: ["example", "words", "here"],
-                };
-              } catch (error) {
-                console.error("Translation error for sentence:", sentence, error);
-                return {
-                  original: sentence,
-                  translation: "Translation error", // Fallback for translation failure
-                  diversionWords: ["example", "words", "here"],
-                };
-              }
-            });
+            // Translate the sentence individually and create the sentence object
+            const translatedText = await translateText(exampleText);
+            return {
+              original: exampleText,
+              translation: translatedText,
+              diversionWords: ["example", "words", "here"], // Keep diversion words for shuffling
+            };
           } catch (error) {
-            console.error("Error processing item:", item, error);
-            return []; // Return empty array for this item in case of error
+            console.error("Translation error for sentence:", exampleText, error);
+            return {
+              original: exampleText,
+              translation: "Translation error", // Fallback for translation failure
+              diversionWords: ["example", "words", "here"],
+            };
           }
         });
   

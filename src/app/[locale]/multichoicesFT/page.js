@@ -110,23 +110,23 @@ export default function MultiQFT() {
             // localStorage.setItem("originalQuestions", JSON.stringify(originalQuestions));
         });
     } 
-    // else if (id.includes("challenge")) {
-    //     getDatabase("c3428e69474d46a790fe5e4d37f1600d", {
-    //         filter: {
-    //             property: "topic",
-    //             relation: {
-    //                 contains: id,
-    //             },
-    //         },
-    //     }).then((response) => {
-    //         const shuffledQuestions = shuffleArray([...response]); // Shuffle the questions
-    //         setOriginalFetch(shuffledQuestions);
-    //         const questions = shuffledQuestions.slice(0, 10); // Select the first 10 questions
-    //         setOriginalQuestions(questions);
-    //         startTimer();
-    //         setLoading(false);
-    //     });
-    // } 
+    else if (id.includes("challenge")) {
+        getDatabase("8240dd072127443f8e51d09de242c2d9", {
+            filter: {
+                property: "Challenge",
+                relation: {
+                    contains: idd,
+                },
+            },
+        }).then((response) => {
+            const shuffledQuestions = shuffleArray([...response]); // Shuffle the questions
+            setOriginalFetch(shuffledQuestions);
+            const questions = shuffledQuestions.slice(0, 10); // Select the first 10 questions
+            setOriginalQuestions(questions);
+            startTimer();
+            setLoading(false);
+        });
+    } 
 }
 
   useEffect(() => {
