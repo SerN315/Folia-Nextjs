@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Inter } from "next/font/google";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -11,7 +12,7 @@ import "./scss/pro5.scss";
 import "./scss/setting.scss";
 import TopNav from "./Component/header";
 import Footer from "./Component/footer";
-import { TranslationProvider } from "./Component/TranslationProvider"; // Use named import if it was defined as such
+import { TranslationProvider } from "./Component/TranslationProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -21,6 +22,13 @@ export const metadata = {
 };
 
 export default function RootLayout({ children, params: { locale } }) {
+  useEffect(() => {
+    // Ensure that Bootstrap's JavaScript (if used) works correctly
+    if (typeof window !== "undefined") {
+      require("bootstrap/dist/js/bootstrap.bundle.min.js");
+    }
+  }, []);
+
   return (
     <html lang={locale || "en"}>
       <body className={inter.className}>
