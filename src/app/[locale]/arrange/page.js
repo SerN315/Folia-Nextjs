@@ -2,10 +2,9 @@
 import SentenceArrangeGame from "../Component/SentecesComponent";
 import "../scss/arrange.scss"
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
 export default function SentenceGamePage() {
-  const searchParams = useSearchParams(); // Access query params
-  const topicID = searchParams.get("topic"); // Get the 'topic' query param
+  // const searchParams = useSearchParams(); // Access query params
+  // const topicID = searchParams.get("topic"); // Get the 'topic' query param
   return (
 
 <main className="sentencesGame">
@@ -64,39 +63,6 @@ export default function SentenceGamePage() {
           </div>
         </div>
         <SentenceArrangeGame></SentenceArrangeGame>
-
-  {/* <div className="game_content">
-  <section className="score">
-    <div className="score_right">
-      <h1 className="left_score">Right Tries</h1>
-      <span className="correct">0</span>
-    </div>
-    <div className="score_right">
-      <h1 className="right_score">Total Tries</h1>
-      <span className="total">0</span>
-    </div>
-    <button id="play-again-btn">Play Again</button>
-  </section>
-  <section className="gameUI">
-    <div className="userMeaning">
-      <div className="sentecesContainer">something</div>
-      <div className="correctContainer">something </div>
-    </div>
-    <div className="answerContainer"></div>
-    <div className="wordHolder">
-      <div className="wordItem">something</div>
-      <div className="wordItem">something</div>
-      <div className="wordItem">something</div>
-      <div className="wordItem">something</div>
-      <div className="wordItem">something</div>
-      <div className="wordItem">something</div>
-    </div>
-  </section>
-  <div className="interact">
-    <button id="Skip">Skip</button>
-    <button id="check">Check Answer</button>
-  </div>
-</div> */}
       </main>
   );
 }
