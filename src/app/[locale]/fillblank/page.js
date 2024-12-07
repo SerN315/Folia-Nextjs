@@ -5,6 +5,7 @@ import Link from "next/link";
 import { getDatabase } from "../js/api/databaseAPI";
 import "../scss/fill-blank.scss";
 import { useSearchParams } from "next/navigation";
+import { getCookie } from "../js/cookie";
 
 export default function FillBlank() {
   const locale = getCookie("NEXT_LOCALE");
@@ -171,7 +172,7 @@ export default function FillBlank() {
               <p>Multiple Choices</p>
             </Link>
             <Link
-              href={locale !== "vi" ? `arrange?topic=${id}` : undefined}
+              href={`/arrange?topic=${id}`}
               className={`nav-panel__game-list__game-item d-and-d-link ${
                 locale === "vi" ? "disabled-link" : ""
               }`}

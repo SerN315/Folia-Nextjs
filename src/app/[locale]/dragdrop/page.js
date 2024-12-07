@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import { db, auth } from "../firebase/authenciation";
 import { onAuthStateChanged } from "firebase/auth";
 import DOMPurify from "dompurify";
+import { getCookie } from "../js/cookie";
 import {
   getFirestore,
   doc,
@@ -22,6 +23,7 @@ import {
 import { useSearchParams } from "next/navigation";
 import { getDatabase } from "../js/api/databaseAPI";
 import { fetchTopic } from "../js/api/specificPageApi";
+
 
 export default function DragDrop() {
   const locale = getCookie("NEXT_LOCALE");
@@ -636,7 +638,7 @@ export default function DragDrop() {
               <p>FlashCard</p>
             </Link>
             <Link
-              href={locale !== "vi" ? `arrange?topic=${id}` : undefined}
+              href={`/arrange?topic=${id}`}
               className={`nav-panel__game-list__game-item d-and-d-link ${
                 locale === "vi" ? "disabled-link" : ""
               }`}

@@ -577,7 +577,7 @@ export default function Vocabularies() {
               <p>Multiple Choices</p>
             </Link>
             <Link
-              href={locale !== "vi" ? `arrange?topic=${topicID}` : undefined}
+              href={`/arrange?topic=${topicID}`}
               className={`nav-panel__game-list__game-item d-and-d-link ${
                 locale === "vi" ? "disabled-link" : ""
               }`}
