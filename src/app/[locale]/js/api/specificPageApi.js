@@ -1,3 +1,4 @@
+'use client'
 import { getDatabase } from "./databaseAPI";
 
 const cache = {}; // Cache for topics

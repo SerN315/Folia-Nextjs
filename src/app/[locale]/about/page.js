@@ -83,7 +83,7 @@ export default function About() {
     </div>
   </main>
   {/* <Footer/> */}
-  <Script id="googleMeta"
+  {/* <Script id="googleMeta"
           async
           src="https://www.googletagmanager.com/gtag/js?id=G-T9JC70THEE"
         ></Script>
@@ -98,7 +98,7 @@ export default function About() {
               gtag("config", "G-T9JC70THEE");
             `,
           }}
-        />
+        /> */}
 </>
 );
 }
