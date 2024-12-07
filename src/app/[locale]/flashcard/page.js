@@ -399,6 +399,27 @@ export default function FlashCard() {
               <p>Drag&amp;Drop</p>
             </Link>
             <Link
+              href={`/multichoicesFT?topic=${topicID}`}
+              className="nav-panel__game-list__game-item d-and-d-link"
+            >
+              <i className="fa-regular fa-hand" />
+              <p>Multiple Choices</p>
+            </Link>
+            <Link
+              href={locale !== "vi" ? `arrange?topic=${topicID}` : undefined}
+              className={`nav-panel__game-list__game-item d-and-d-link ${
+                locale === "vi" ? "disabled-link" : ""
+              }`}
+              onClick={(e) => {
+                if (locale === "vi") {
+                  e.preventDefault(); // Prevent navigation
+                }
+              }}
+            >
+              <i className="fa-regular fa-images" />
+              <p>Arrange</p>
+            </Link>
+            <Link
               href={`fillblank?topic=${topicID}`}
               className="nav-panel__game-list__game-item fillblank-link"
             >

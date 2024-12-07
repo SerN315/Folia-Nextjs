@@ -2,40 +2,60 @@
 import SentenceArrangeGame from "../Component/SentecesComponent";
 import "../scss/arrange.scss"
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 export default function SentenceGamePage() {
+  const searchParams = useSearchParams(); // Access query params
+  const topicID = searchParams.get("topic"); // Get the 'topic' query param
   return (
 
 <main className="sentencesGame">
-<div className="nav-panel">
+<div
+          className="nav-panel"
+          style={{ display: phrase ? "none" : "flex" }}
+        >
           <p className="nav-panel__navigation">
-            <Link href="/cate?topic=folia-language" className="cate-link">
+            <Link href="#" cate="" className="cate-link">
               Categories
             </Link>{" "}
             &gt; Category: <span className="category">...</span> &gt; Topic:
             <span className="topic">...</span>
           </p>
-          <h3 className="nav-panel__main-title">Arrange Senteces</h3>
+          <h3 className="nav-panel__main-title">Vocabulary</h3>
           <div className="nav-panel__dropdown">
             <p>Practices</p>
             <i className="fa-solid fa-chevron-down fa-s" />
           </div>
           <div className="nav-panel__game-list">
             <Link
-              href={`vocabularies?topic=`}
-              className="nav-panel__game-list__game-item vocabulary-link"
+              href={`/flashcard?topic=${topicID}`}
+              className="nav-panel__game-list__game-item flashcard-link"
             >
-              <i className="fa-solid fa-a" />
+              <i className="fa-regular fa-images" />
+              <p>Flashcard</p>
+            </Link>
+            <Link
+              href={`/dragdrop?topic=${topicID}`}
+              className="nav-panel__game-list__game-item d-and-d-link"
+            >
+              <i className="fa-regular fa-hand" />
+              <p>Drag&amp;Drop</p>
+            </Link>
+            <Link
+              href={`/multichoicesFT?topic=${topicID}`}
+              className="nav-panel__game-list__game-item d-and-d-link"
+            >
+              <i className="fa-regular fa-hand" />
+              <p>Multiple Choices</p>
+            </Link>
+            <Link
+              href={`/vocabularies?topic=${topicID}`}
+              className="nav-panel__game-list__game-item d-and-d-link"
+            >
+              <i className="fa-regular fa-hand" />
               <p>Vocabulary</p>
             </Link>
             <Link
-              href={`flashcard?topic=`}
-              className="nav-panel__game-list__game-item d-and-d-link"
-            >
-              <i className="fa-regular fa-images" />
-              <p>FlashCard</p>
-            </Link>
-            <Link
-              href={`fillblank?topic=`}
+              href={`fillblank?topic=${topicID}`}
               className="nav-panel__game-list__game-item fillblank-link"
             >
               <i className="fa-solid fa-pen" />

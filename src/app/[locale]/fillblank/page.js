@@ -7,6 +7,8 @@ import "../scss/fill-blank.scss";
 import { useSearchParams } from "next/navigation";
 
 export default function FillBlank() {
+  const locale = getCookie("NEXT_LOCALE");
+  console.log(locale); // Logs the value of the locale cookie or null if not found
   const searchParams = useSearchParams(); // Access query params
   const id = searchParams.get("topic"); // Get the 'topic' query param
   const idd = searchParams.get("id");
@@ -160,6 +162,27 @@ export default function FillBlank() {
             >
               <i className="fa-regular fa-images" />
               <p>FlashCard</p>
+            </Link>
+            <Link
+              href={`/multichoicesFT?topic=${id}`}
+              className="nav-panel__game-list__game-item d-and-d-link"
+            >
+              <i className="fa-regular fa-hand" />
+              <p>Multiple Choices</p>
+            </Link>
+            <Link
+              href={locale !== "vi" ? `arrange?topic=${id}` : undefined}
+              className={`nav-panel__game-list__game-item d-and-d-link ${
+                locale === "vi" ? "disabled-link" : ""
+              }`}
+              onClick={(e) => {
+                if (locale === "vi") {
+                  e.preventDefault(); // Prevent navigation
+                }
+              }}
+            >
+              <i className="fa-regular fa-images" />
+              <p>Arrange</p>
             </Link>
             <Link
               href={`dragdrop?topic=${id}`}

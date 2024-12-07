@@ -24,6 +24,8 @@ import { getDatabase } from "../js/api/databaseAPI";
 import { fetchTopic } from "../js/api/specificPageApi";
 
 export default function DragDrop() {
+  const locale = getCookie("NEXT_LOCALE");
+  console.log(locale); // Logs the value of the locale cookie or null if not found
   const searchParams = useSearchParams(); // Access query params
   const id = searchParams.get("topic"); // Get the 'topic' query param
   const idd = searchParams.get("id");
@@ -620,11 +622,32 @@ export default function DragDrop() {
               <p>Vocabulary</p>
             </Link>
             <Link
+              href={`/multichoicesFT?topic=${id}`}
+              className="nav-panel__game-list__game-item d-and-d-link"
+            >
+              <i className="fa-regular fa-hand" />
+              <p>Multiple Choices</p>
+            </Link>
+            <Link
               href={`flashcard?topic=${id}`}
               className="nav-panel__game-list__game-item d-and-d-link"
             >
               <i className="fa-regular fa-images" />
               <p>FlashCard</p>
+            </Link>
+            <Link
+              href={locale !== "vi" ? `arrange?topic=${id}` : undefined}
+              className={`nav-panel__game-list__game-item d-and-d-link ${
+                locale === "vi" ? "disabled-link" : ""
+              }`}
+              onClick={(e) => {
+                if (locale === "vi") {
+                  e.preventDefault(); // Prevent navigation
+                }
+              }}
+            >
+              <i className="fa-regular fa-images" />
+              <p>Arrange</p>
             </Link>
             <Link
               href={`fillblank?topic=${id}`}
