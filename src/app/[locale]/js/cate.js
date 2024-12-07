@@ -1,3 +1,4 @@
+'use client'
 import { getDatabase } from "./api/databaseAPI";
 
 const urlParams = new URLSearchParams(window.location.search);

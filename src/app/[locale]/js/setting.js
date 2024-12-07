@@ -1,3 +1,4 @@
+'use client'
 import { auth } from "../firebase/authenciation";
 import { db } from "../firebase/authenciation";
 import { storageRef, storage } from "../firebase/authenciation";
