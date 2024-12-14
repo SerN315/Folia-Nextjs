@@ -1,3 +1,4 @@
+'use client'
 // Function to get a cookie value by name
 export const getCookie = (name) => {
   if (typeof document === "undefined") {

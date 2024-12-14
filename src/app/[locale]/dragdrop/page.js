@@ -21,7 +21,7 @@ import {
   collection,
 } from "firebase/firestore";
 import { useSearchParams } from "next/navigation";
-import { getDatabase } from "../js/api/databaseAPI";
+import { getDatabase,getDatabase2 } from "../js/api/databaseAPI";
 import { fetchTopic } from "../js/api/specificPageApi";
 
 
@@ -145,14 +145,9 @@ export default function DragDrop() {
           });
         } else if (!ht2.includes(id) && !id.includes("challenge")) {
           // Fetch data for non-ht2, non-challenge topics
-          fetchedData = await getDatabase("8240dd072127443f8e51d09de242c2d9", {
-            filter: {
-              property: "Topic",
-              relation: {
-                contains: id,
-              },
-            },
-          });
+          await getDatabase2(`vocab/${id}`).then((response) => {
+            fetchedData = response.vocabs;
+          })
         } else if (id.includes("challenge")) {
           // Fetch data for challenges
           fetchedData = await getDatabase("c3428e69474d46a790fe5e4d37f1600d", {
@@ -214,6 +209,7 @@ export default function DragDrop() {
     }
 
     const shuffledData = [...data].sort(() => Math.random() - 0.5);
+    if(ht2.includes(id)){
     const selectedQuestions = shuffledData
       .slice(0, totalMatchingPairs)
       .map((item) => ({
@@ -228,6 +224,7 @@ export default function DragDrop() {
         dropped: false, // Add 'dropped' property
         source: "Drag and Drop",
       }));
+      
 
     console.log("Initializing game with questions:", selectedQuestions);
 
@@ -238,6 +235,32 @@ export default function DragDrop() {
       () => Math.random() - 0.5
     );
     setUniqueAnswers(uniqueAnswersArray);
+  }
+  else if (!ht2.includes(id) && !id.includes("challenge")){
+    const selectedQuestions = shuffledData
+      .slice(0, totalMatchingPairs)
+      .map((item) => ({
+        Q:
+        item.Img ?? // Image URL
+          "N/A",
+        answer:
+        item.Word ?? // Meaning
+          "N/A",
+        dropped: false, // Add 'dropped' property
+        source: "Drag and Drop",
+      }));
+      
+
+    console.log("Initializing game with questions:", selectedQuestions);
+
+    setQuestions(selectedQuestions);
+
+    const uniqueAnswersSet = new Set(selectedQuestions.map((q) => q.answer));
+    const uniqueAnswersArray = Array.from(uniqueAnswersSet).sort(
+      () => Math.random() - 0.5
+    );
+    setUniqueAnswers(uniqueAnswersArray);
+  }
 
     setLoading(false);
   };

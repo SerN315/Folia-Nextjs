@@ -9,7 +9,7 @@ import { onAuthStateChanged } from "firebase/auth";
 import { getFirestore, doc, setDoc, getDoc } from "firebase/firestore";
 import { useSearchParams } from "next/navigation";
 import { auth } from "../firebase/authenciation";
-import { getDatabase } from "../js/api/databaseAPI";
+import { getDatabase,getDatabase2 } from "../js/api/databaseAPI";
 import { fetchTopic } from "../js/api/specificPageApi";
 import Link from "next/link";
 import DOMPurify from "dompurify";
@@ -82,47 +82,47 @@ export default function FlashCard() {
 
   const fetchVocabBasedOnTopic = (favoriteList, favoriteRef, firestore) => {
     setLoading(true); // Start loading
-    const databaseId = ht2.includes(topicID)
-      ? "c3428e69474d46a790fe5e4d37f1600d"
-      : "8240dd072127443f8e51d09de242c2d9";
-
-    getDatabase(databaseId, {
-      filter: {
-        property: ht2.includes(topicID) ? "topic" : "Topic",
-        relation: {
-          contains: topicID,
-        },
-      },
-    })
+    const isHt2 = ht2.includes(topicID);
+  
+    const databasePromise = isHt2
+      ? getDatabase("c3428e69474d46a790fe5e4d37f1600d", {
+          filter: {
+            property: "topic",
+            relation: {
+              contains: topicID,
+            },
+          },
+        })
+      : getDatabase2(`vocab/${topicID}`);
+  
+    databasePromise
       .then((response) => {
-        if (!response || response.length === 0) {
+        if (!response || (isHt2 && response.length === 0) || (!isHt2 && !response.vocabs)) {
           console.error("No data returned from the database.");
           setLoading(false);
           setData([]); // Set an empty array in case of no data
           return;
         }
-
+  
         console.log("API Response:", response);
-
-        // Limit response to 30 items
-        // const limitedResponse = response.slice(0, 30);
-
-        const newData = response
+  
+        // Extract vocabulary data
+        const vocabs = isHt2 ? response : response.vocabs;
+        const newData = vocabs
           .map((item) => {
             try {
-              if (ht2.includes(topicID)) {
+              if (isHt2) {
                 // Handle ht2 data structure
                 const word = item.properties.Name.title[0]?.plain_text;
                 const meaning = item.properties.Answer_Content.formula.string;
-
                 const pronunciation =
                   item.properties.explanation.rich_text[0]?.plain_text;
                 const img = item.properties.Img.files?.[0]?.url;
-
+  
                 if (!word || !meaning || !pronunciation || !img) {
                   console.warn("Incomplete data for item:", item);
                 }
-
+  
                 return {
                   word,
                   meaning,
@@ -130,36 +130,39 @@ export default function FlashCard() {
                   img,
                 };
               } else {
-                // Handle regular data structure
-                const uniqueId = item.properties.ID.unique_id.number;
-                const word = item.properties.Name.title[0]?.plain_text;
-                const set = item.properties.Set.multi_select[0]?.name;
-                const meaning =
-                  item.properties.Meaning.rich_text[0]?.plain_text;
-                const pronunciation =
-                  item.properties.Pronunciation.rich_text[0]?.plain_text;
-                const img = item.properties.img.rich_text[0]?.plain_text;
-                let jp = item.properties.jp.rich_text[0]?.plain_text; // Check 'Meaning'
-                let cn = item.properties.cn.rich_text[0]?.plain_text; // Check 'Meaning'
+                // Handle data structure returned by getDatabase2
+                const uniqueId = item?.Id ?? null;
+                const topicID = item?._id ?? null;
+                const wordText = item?.Word ?? null;
+                const pronunciation = item?.Pronunciation ?? null;
+                const set = item?.Set ?? null;
+                const meaning = item?.Meaning ?? null;
+                const img = item?.Img ?? null;
+                let jp = item?.jp ?? null;
+                const exampleText = item?.example ?? null;
+                let cn = item?.cn ?? null;
+  
                 if (jp?.endsWith(",")) {
                   jp = jp.slice(0, -1); // Remove the last character (comma)
                 }
                 if (cn?.endsWith(",")) {
                   cn = cn.slice(0, -1); // Remove the last character (comma)
                 }
-                if (!uniqueId || !word || !meaning || !pronunciation || !img) {
+  
+                if (!uniqueId || !wordText || !meaning || !pronunciation || !img) {
                   console.warn("Incomplete data for item:", item);
                 }
-
+  
                 return {
                   Cn: cn,
                   Jp: jp,
                   Id: uniqueId,
-                  Word: word,
+                  Word: wordText,
                   Set: set,
                   Meaning: meaning,
                   Pronunciation: pronunciation,
                   Img: img,
+                  Example: exampleText,
                 };
               }
             } catch (error) {
@@ -168,33 +171,23 @@ export default function FlashCard() {
             }
           })
           .filter((item) => item !== null); // Filter out any null values
-
+  
         setAllData(newData);
         setData(newData.slice(0, 30));
         setLoading(false); // Stop loading
-
-        fetchTopic(topicID)
-          .then((topic) => {
-            if (!topic || !topic.topicName) {
-              console.warn("No topic data available:", topic);
-              document.querySelector(".topic").innerHTML = "No topic available";
-              return;
-            }
-
-            console.log("Topic:", topic);
-
-            // Select the element with the class 'topic'
-            const topicElement = document.querySelector(".topic");
-            const cateElement = document.querySelector(".category");
-
-            topicElement.innerHTML = topic.topicName; // Set the topic name
-            cateElement.innerHTML =
-              topic.categories?.[0]?.categoryName || "No category available"; // Set category name or fallback
-          })
-          .catch((error) => {
-            console.error("Error fetching topic:", error);
-            document.querySelector(".topic").innerHTML = "Error fetching topic";
-          });
+  
+        if (!isHt2) {
+          // Extract topic and category data from getDatabase2 response
+          const topicName = response.topics || "Unknown Topic";
+          const categoryName = response.category || "Unknown Category";
+  
+          // Update DOM with topic and category details
+          const topicElement = document.querySelector(".topic");
+          const cateElement = document.querySelector(".category");
+  
+          topicElement.innerHTML = topicName; // Set the topic name
+          cateElement.innerHTML = categoryName; // Set category name
+        }
       })
       .catch((error) => {
         console.error("Error fetching vocabularies:", error);
@@ -202,6 +195,7 @@ export default function FlashCard() {
         setLoading(false); // Stop loading even on error
       });
   };
+  
 
   const shuffleArray = (array) => {
     const shuffled = [...array];

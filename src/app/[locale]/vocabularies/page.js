@@ -96,75 +96,58 @@ export default function Vocabularies() {
   const fetchVocabBasedOnTopic = (favoriteList, favoriteRef, firestore) => {
     setLoading(true); // Start loading
     if (topicID) {
-      getDatabase("8240dd072127443f8e51d09de242c2d9", {
-        filter: {
-          property: "Topic",
-          relation: {
-            contains: topicID,
-          },
-        },
-      })
+      getDatabase2(`vocab/${topicID}`)
         .then((response) => {
           console.log("API Response:", response);
 
-          const newData = response
-            .map((item) => {
+          const newData = response.vocabs
+            .map((word) => {
               try {
-                const uniqueId = item.properties.ID.unique_id.number; // Ensure 'ID' exists
-                const word = item.properties.Name.title[0]?.plain_text; // Ensure 'Name' exists
-                const set = item.properties.Set.multi_select[0]?.name; // Ensure 'Set' exists
-                const meaning =
-                  item.properties.Meaning.rich_text[0]?.plain_text; // Ensure 'Meaning' exists
-                let jp = item.properties.jp.rich_text[0]?.plain_text; // Ensure 'jp' exists
-                const exampleText =
-                  item.properties.example.rich_text[0]?.plain_text;
+                const uniqueId = word?.Id ?? null;
+                const topicID = word?._id ?? null;
+                const wordText = word?.Word ?? null;
+                const pronunciation = word?.Pronunciation ?? null;
+                const set = word?.Set ?? null;
+                const meaning = word?.Meaning ?? null;
+                const img = word?.Img ?? null;
+                let jp = word?.jp ?? null;
+                const exampleText = word?.example ?? null;
+                let cn = word?.cn ?? null;
 
-                // Split sentences based on punctuation marks and handle extra spaces
-                const sentence = exampleText;
-                let cn = item.properties.cn.rich_text[0]?.plain_text; // Ensure 'cn' exists
-                const pronunciation =
-                  item.properties.Pronunciation.rich_text[0]?.plain_text; // Ensure 'Pronunciation' exists
-                const img = item.properties.img.rich_text[0]?.plain_text; // Ensure 'img' exists
-
+                // Remove trailing commas if they exist
                 if (jp?.endsWith(",")) {
-                  jp = jp.slice(0, -1); // Remove the last character (comma)
+                  jp = jp.slice(0, -1);
                 }
                 if (cn?.endsWith(",")) {
-                  cn = cn.slice(0, -1); // Remove the last character (comma)
+                  cn = cn.slice(0, -1);
                 }
 
                 // Highlight the word in each sentence by wrapping it in a <span> tag
-                const highlightedSentence = sentence.replace(
-                  new RegExp(`\\b${searchWord}\\b`, "gi"), // Match the word in the sentence (case insensitive)
-                  `<span class="highlight">${searchWord}</span>` // Wrap the word in a <span> tag for highlighting
-                );
+                const highlightedSentence =
+                  exampleText?.replace(
+                    new RegExp(`\\b${searchWord}\\b`, "gi"), // Match the word in the sentence (case insensitive)
+                    `<span class="highlight">${searchWord}</span>` // Wrap the word in a <span> tag for highlighting
+                  ) ?? null;
+
+                // Construct the object, only including properties that exist
+                const vocabData = {
+                  ...(uniqueId && { Id: uniqueId }),
+                  ...(wordText && { Word: wordText }),
+                  ...(set && { Set: set }),
+                  ...(meaning && { Meaning: meaning }),
+                  ...(pronunciation && { Pronunciation: pronunciation }),
+                  ...(img && { Img: img }),
+                  ...(jp && { Jp: jp }),
+                  ...(cn && { Cn: cn }),
+                  ...(highlightedSentence && { Sentence: highlightedSentence }),
+                };
 
                 // Log each extracted value for debugging
-                console.log({
-                  exampleText,
-                  uniqueId,
-                  word,
-                  set,
-                  meaning,
-                  pronunciation,
-                  img,
-                  jp,
-                  cn,
-                });
+                console.log(vocabData);
 
-                return {
-                  sentence: highlightedSentence, // Return the highlighted sentences
-                  Id: uniqueId,
-                  Word: word,
-                  Set: set,
-                  Meaning: meaning,
-                  Pronunciation: pronunciation,
-                  Img: img,
-                  Jp: jp,
-                  Cn: cn,
-                };
+                return vocabData;
               } catch (error) {
-                console.error("Error processing item:", item, error);
+                console.error("Error processing item:", word, error);
                 return null; // Return null in case of error
               }
             })
@@ -177,36 +160,16 @@ export default function Vocabularies() {
             return updatedData;
           });
 
-          fetchTopic(topicID)
-            .then((topic) => {
-              if (!topic || !topic.topicName) {
-                console.warn("No topic data available:", topic);
-                document.querySelector(".topic").innerHTML =
-                  "No topic available";
-                return;
-              }
+          // Extract topic and category data from getDatabase2 response
+          const topicName = response.topics || "Unknown Topic";
+          const categoryName = response.category || "Unknown Category";
 
-              console.log("Topic:", topic);
+          // Update DOM with topic and category details
+          const topicElement = document.querySelector(".topic");
+          const cateElement = document.querySelector(".category");
 
-              // Select the element with the class 'topic'
-              const topicElement = document.querySelector(".topic");
-              const cateElement = document.querySelector(".category");
-
-              // Update the topic name and category name in the UI
-              topicElement.innerHTML = topic.topicName; // Set the topic name
-              const categoryName =
-                topic.categories?.[0]?.categoryName || "No category available"; // Get category name or fallback
-              cateElement.innerHTML = categoryName; // Set category name
-
-              // Store the topic and category in localStorage
-              localStorage.setItem("Topic", topic.topicName);
-              localStorage.setItem("Category", categoryName);
-            })
-            .catch((error) => {
-              console.error("Error fetching topic:", error);
-              document.querySelector(".topic").innerHTML =
-                "Error fetching topic";
-            });
+          topicElement.innerHTML = topicName; // Set the topic name
+          cateElement.innerHTML = categoryName; // Set category name
 
           setLoading(false); // Stop loading
         })

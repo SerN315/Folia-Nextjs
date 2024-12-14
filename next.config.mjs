@@ -5,13 +5,9 @@ import i18nConfig from './next-i18next.config.js';
 const nextConfig = {
   i18n: i18nConfig.i18n, // Access the `i18n` property here
   reactStrictMode: false,
-  webpack(config, { isServer }) {
-    // Enable source maps for client-side code (only in production)
-    if (!isServer) {
-      config.devtool = 'source-map'; // This generates source maps for client-side code
-    }
-    return config;
-  },
+  // useSuspense: false,
+  // wait: true,
+  // escapeValue: false, // Prevent HTML/React elements from being escaped
 };
 
 export default nextConfig;
