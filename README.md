@@ -1,36 +1,41 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+## Bắt đầu
 
-## Getting Started
-
-First, run the development server:
+Đầu tiên, chạy máy chủ phát triển:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+```
+Hoặc chạy bản production build:
+```bash
+npm run build
+npm run start
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Mở [http://localhost:3000](http://localhost:3000) bằng trình duyệt của bạn để xem kết quả.
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+Dự án này sử dụng [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) để tự động tối ưu hóa và tải Inter, một phông chữ tùy chỉnh của Google.
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+Dự án này sử dụng các thư viện sau:
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+- [`@fortawesome/fontawesome-free`](https://www.npmjs.com/package/@fortawesome/fontawesome-free): để sử dụng các biểu tượng từ FontAwesome.
+- [`@google-cloud/translate`](https://www.npmjs.com/package/@google-cloud/translate): để sử dụng dịch vụ dịch thuật của Google Cloud.
+- [`@netlify/plugin-nextjs`](https://www.npmjs.com/package/@netlify/plugin-nextjs): để tích hợp Next.js với Netlify.
+- [`autoprefixer`](https://www.npmjs.com/package/autoprefixer): để tự động thêm tiền tố CSS.
+- [`axios`](https://www.npmjs.com/package/axios): để thực hiện các yêu cầu HTTP.
+- [`bootstrap`](https://www.npmjs.com/package/bootstrap): để sử dụng framework CSS Bootstrap.
+- [`date-fns`](https://www.npmjs.com/package/date-fns): để xử lý và định dạng ngày tháng.
+- [`deepl-node`](https://www.npmjs.com/package/deepl-node): để sử dụng dịch vụ dịch thuật của DeepL.
+- [`dompurify`](https://www.npmjs.com/package/dompurify): để làm sạch HTML.
+- [`firebase`](https://www.npmjs.com/package/firebase): để tích hợp với Firebase.
+- [`googleapis`](https://www.npmjs.com/package/googleapis): để sử dụng các API của Google.
+- [`i18next`](https://www.npmjs.com/package/i18next): để hỗ trợ đa ngôn ngữ.
+- [`i18next-resources-to-backend`](https://www.npmjs.com/package/i18next-resources-to-backend): để tải tài nguyên i18next từ backend.
+- [`jquery`](https://www.npmjs.com/package/jquery): để sử dụng thư viện jQuery.
+- [`next`](https://www.npmjs.com/package/next): framework React để xây dựng ứng dụng web.
+- [`next-i18n-router`](https://www.npmjs.com/package/next-i18n-router): để hỗ trợ định tuyến đa ngôn ngữ trong Next.js.
+- [`next-i18next`](https://www.npmjs.com/package/next-i18next): để tích hợp i18next với Next.js.
+- [`react`](https://www.npmjs.com/package/react): thư viện React.
+- [`react-calendar`](https://www.npmjs.com/package/react-calendar): để sử dụng lịch trong React.
+- [`react-dom`](https://www.npmjs.com/package/react-dom): để tích hợp React với DOM.
+- [`react-i18next`](https://www.npmjs.com/package/react-i18next): để tích hợp i18next với React.
+- [`sass`](https://www.npmjs.com/package/sass): để sử dụng Sass trong dự án.
