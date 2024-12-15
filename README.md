@@ -1,6 +1,12 @@
 ## Bắt đầu
 
-Đầu tiên, chạy máy chủ phát triển:
+Đầu tiên, cài đặt các trình cài đặt npm
+Sau đó sử dụng npm để cài các thư viện có trong project: 
+```bash
+npm install
+```
+
+Khi đó t có thể chạy máy chủ phát triển:
 
 ```bash
 npm run dev
