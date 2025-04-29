@@ -1,8 +1,8 @@
-'use client'
+"use client";
 import { auth } from "../firebase/authenciation";
 import { db } from "../firebase/authenciation";
 import { storageRef, storage } from "../firebase/authenciation";
-import initTranslations from '../../i18n';
+import initTranslations from "../../i18n";
 import {
   getFirestore,
   collection,
@@ -37,6 +37,7 @@ import {
 
 // Utility function to check if an element exists
 function getElement(selector) {
+  if (typeof document === "undefined") return null; // Ensure this runs only on the client
   return document.querySelector(selector);
 }
 function getCookie(name) {
@@ -44,7 +45,7 @@ function getCookie(name) {
   const parts = value.split(`; ${name}=`);
 
   if (parts.length === 2) {
-    return parts.pop().split(';').shift();
+    return parts.pop().split(";").shift();
   }
   return null; // Return null if the cookie doesn't exist
 }
@@ -80,21 +81,25 @@ onAuthStateChanged(auth, (user) => {
 
     if (usernameText) usernameText.textContent = user.displayName;
     if (userIdText) userIdText.textContent = user.email;
- // Translation function
+    // Translation function
     async function Translation(month, year) {
       // Get the locale from cookies
-      const locale = getCookie('NEXT_LOCALE') || 'en'; // Default to 'en' if no locale is found
-    
-      const { t } = await initTranslations(locale, ['profile+setting']); // Load the 'profile+setting' namespace
-    
+      const locale = getCookie("NEXT_LOCALE") || "en"; // Default to 'en' if no locale is found
+
+      const { t } = await initTranslations(locale, ["profile+setting"]); // Load the 'profile+setting' namespace
+
       const createdText = document.querySelector(".created_text");
-    
+
       // Translate and set the text content
       if (createdText) {
-        createdText.textContent = t('timeprofile', { ns: 'profile+setting', month, year });
+        createdText.textContent = t("timeprofile", {
+          ns: "profile+setting",
+          month,
+          year,
+        });
       }
     }
-    
+
     // Call the Translation function and pass the month and year
     Translation(month, year);
     // Handle avatar list display

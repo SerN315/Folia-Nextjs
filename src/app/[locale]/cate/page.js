@@ -2,7 +2,7 @@
 import "../scss/cate.scss";
 import ScrollableList from "../Component/scrollableComponent";
 import { useEffect, useState } from "react";
-import { getDatabase2 } from "../js/api/databaseAPI";
+import { getDatabase } from "../js/api/databaseAPI";
 import { useSearchParams } from "next/navigation";
 import Head from "next/head";
 import Link from "next/link";
@@ -53,7 +53,7 @@ export default function Category() {
 
   const fetchCategories = async () => {
     try {
-      const response = await getDatabase2("category");
+      const response = await getDatabase("category");
       setCategories(response);
     } catch (error) {
       console.error("Error fetching categories:", error);
@@ -88,7 +88,10 @@ export default function Category() {
               {categories.map((category) => (
                 <div key={category.categoryName} className="item">
                   <h1>{category.categoryName}</h1>
-                  <ScrollableList id={category.categoryName} className="topic-container">
+                  <ScrollableList
+                    id={category.categoryName}
+                    className="topic-container"
+                  >
                     {category.topicList.map((topic) => {
                       const topicId = topic.topicId;
                       const topicName = topic.topicName;
@@ -98,7 +101,11 @@ export default function Category() {
                       const progress = calculateProgress(topicId, totalWords);
 
                       return (
-                        <Link href={`vocabularies?topic=${topicId}`} className="topic" key={topicId}>
+                        <Link
+                          href={`vocabularies?topic=${topicId}`}
+                          className="topic"
+                          key={topicId}
+                        >
                           <div className="topic__img">
                             <img src={img} alt={topicName} />
                           </div>
@@ -108,7 +115,10 @@ export default function Category() {
                             <div className="progress">
                               <div
                                 className="progress-bar"
-                                style={{ width: `${progress}%`, backgroundColor: "#3fbd00" }}
+                                style={{
+                                  width: `${progress}%`,
+                                  backgroundColor: "#3fbd00",
+                                }}
                               >
                                 {progress}%
                               </div>
@@ -134,8 +144,12 @@ export default function Category() {
         <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>{id === "folia-asvab" ? "Folia - ASVAB" : "Folia"}</title>
-        {id === "folia-asvab" && <link rel="stylesheet" href="/scss/cate_2.scss" />}
-        {id === "folia-language" && <link rel="stylesheet" href="/scss/cate.scss" />}
+        {id === "folia-asvab" && (
+          <link rel="stylesheet" href="/scss/cate_2.scss" />
+        )}
+        {id === "folia-language" && (
+          <link rel="stylesheet" href="/scss/cate.scss" />
+        )}
       </Head>
       {renderContent()}
     </>
