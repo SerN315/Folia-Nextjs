@@ -18,7 +18,7 @@ import {
 } from "firebase/firestore";
 import { useSearchParams } from "next/navigation";
 import { auth } from "../firebase/authenciation";
-import { getDatabase, getDatabase } from "../js/api/databaseAPI";
+import { getDatabase, getDatabase2 } from "../js/api/databaseAPI";
 import { fetchTopic } from "../js/api/specificPageApi";
 import { getCookie } from "../js/cookie";
 
