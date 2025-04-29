@@ -12,15 +12,24 @@ export default function LanguageChanger() {
   const currentPathname = usePathname();
   const searchParams = useSearchParams();
 
-  const getCookie = (name) => {
+  // Utility function to get a cookie value
+  function getCookie(name) {
+    if (typeof document === "undefined") return null; // Ensure this runs only on the client
     const value = `; ${document.cookie}`;
     const parts = value.split(`; ${name}=`);
     if (parts.length === 2) return parts.pop().split(";").shift();
     return null;
-  };
+  }
 
-  const [selectedLocale, setSelectedLocale] = useState(getCookie("NEXT_LOCALE") || "en");
+  const [selectedLocale, setSelectedLocale] = useState("en");
   const [isDropdownOpen, setDropdownOpen] = useState(false); // Toggle for dropdown visibility
+
+  useEffect(() => {
+    const cookieLocale = getCookie("NEXT_LOCALE");
+    if (cookieLocale) {
+      setSelectedLocale(cookieLocale);
+    }
+  }, []); // Run only once on the client side
 
   const handleChange = (locale) => {
     setSelectedLocale(locale);
@@ -43,18 +52,43 @@ export default function LanguageChanger() {
   if (isLoading) return <p>Loading translations...</p>;
 
   const languages = [
-    { code: "en", name: t("English"), flag: "/img/Icons/en.png", flagi: "fa-flag-us" },
-    { code: "vi", name: t("Vietnamese"), flag: "/img/Icons/vi.png", flagi: "fa-flag-vn" },
-    { code: "ja", name: t("Japanese"), flag: "/img/Icons/ja.png", flagi: "fa-flag-jp" },
-    { code: "zh", name: t("Chinese"), flag: "/img/Icons/zh.png", flagi: "fa-flag-cn" },
+    {
+      code: "en",
+      name: t("English"),
+      flag: "/img/Icons/en.png",
+      flagi: "fa-flag-us",
+    },
+    {
+      code: "vi",
+      name: t("Vietnamese"),
+      flag: "/img/Icons/vi.png",
+      flagi: "fa-flag-vn",
+    },
+    {
+      code: "ja",
+      name: t("Japanese"),
+      flag: "/img/Icons/ja.png",
+      flagi: "fa-flag-jp",
+    },
+    {
+      code: "zh",
+      name: t("Chinese"),
+      flag: "/img/Icons/zh.png",
+      flagi: "fa-flag-cn",
+    },
   ];
 
-  const selectedLanguage = languages.find((lang) => lang.code === selectedLocale);
+  const selectedLanguage = languages.find(
+    (lang) => lang.code === selectedLocale
+  );
 
   return (
     <div className="language-changer">
       {/* Custom Selected View */}
-      <div className="selected-flag" onClick={() => setDropdownOpen(!isDropdownOpen)}>
+      <div
+        className="selected-flag"
+        onClick={() => setDropdownOpen(!isDropdownOpen)}
+      >
         <img
           src={selectedLanguage.flag}
           alt={selectedLanguage.code}
@@ -71,11 +105,7 @@ export default function LanguageChanger() {
               className="dropdown-item"
               onClick={() => handleChange(lang.code)}
             >
-              <img
-                src={lang.flag}
-                alt={lang.code}
-                className="dropdown-flag"
-              />
+              <img src={lang.flag} alt={lang.code} className="dropdown-flag" />
               {lang.name}
             </div>
           ))}

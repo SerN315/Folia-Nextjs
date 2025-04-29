@@ -96,7 +96,7 @@ export default function Vocabularies() {
   const fetchVocabBasedOnTopic = (favoriteList, favoriteRef, firestore) => {
     setLoading(true); // Start loading
     if (topicID) {
-      getDatabase2(`vocab/${topicID}`)
+      getDatabase(`vocab/${topicID}`)
         .then((response) => {
           console.log("API Response:", response);
 
@@ -160,7 +160,7 @@ export default function Vocabularies() {
             return updatedData;
           });
 
-          // Extract topic and category data from getDatabase2 response
+          // Extract topic and category data from getDatabase response
           const topicName = response.topics || "Unknown Topic";
           const categoryName = response.category || "Unknown Category";
 
@@ -180,7 +180,7 @@ export default function Vocabularies() {
         });
     }
     if (!topicID && phrase) {
-      getDatabase2(`vocabularies?search=${phrase}&limit=30`)
+      getDatabase(`vocabularies?search=${phrase}&limit=30`)
         .then((response) => {
           console.log("API Response:", response);
 
