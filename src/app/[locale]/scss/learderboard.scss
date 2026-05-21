@@ -1,7 +1,7 @@
-@import "styles";
-@import "topnav";
-@import "footer";
-@import "login";
+﻿@use 'styles' as *;
+@use 'topnav' as *;
+@use 'footer' as *;
+@use 'login' as *;
 
 $top1color: linear-gradient(325deg, #ebc600 -21.8%, #e8dc9d 94.17%);
 $top2color: linear-gradient(138deg, #e7e7e7 9.28%, #a8a8a8 118.44%);

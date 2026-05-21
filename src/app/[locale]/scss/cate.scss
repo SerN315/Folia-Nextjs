@@ -1,6 +1,6 @@
-//File chỉ dùng cho file home
-@import "styles";
-@import "footer";
+﻿//File chỉ dùng cho file home
+@use 'styles' as *;
+@use 'footer' as *;
 
 // NEW CODE
 * {

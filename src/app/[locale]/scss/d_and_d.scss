@@ -1,9 +1,9 @@
+﻿@use 'styles' as *;
+@use 'footer' as *;
+@use 'topnav' as *;
+@use 'login' as *;
+@use 'navigation' as *;
 @import url("https://fonts.googleapis.com/css?family=Montserrat");
-@import "styles";
-@import "footer";
-@import "topnav";
-@import "login";
-@import "navigation";
 @mixin interactB {
   @include flexR;
   width: 200px;

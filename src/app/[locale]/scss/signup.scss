@@ -1,6 +1,6 @@
-@import "topnav";
-@import "footer";
-@import "styles";
+﻿@use 'topnav' as *;
+@use 'footer' as *;
+@use 'styles' as *;
 
 * {
   margin: 0;

@@ -38,15 +38,18 @@ export default function LanguageChanger() {
   };
 
   useEffect(() => {
-    const localeRegex = /^\/(en|vi|ja|zh)(\/|$)/; // Adjust locale regex if needed
-    const pathWithoutLocale = currentPathname.replace(localeRegex, "/");
+    const localeRegex = /^\/(en|vi|ja|zh)(\/|$)/;
+    const currentLocaleMatch = currentPathname.match(localeRegex);
+    const currentLocale = currentLocaleMatch ? currentLocaleMatch[1] : "en";
 
+    if (currentLocale === selectedLocale) return;
+
+    const pathWithoutLocale = currentPathname.replace(localeRegex, "/");
     const newPath = `/${selectedLocale}${pathWithoutLocale}`;
     const query = searchParams.toString();
     const finalPath = query ? `${newPath}?${query}` : newPath;
 
-    // Perform shallow routing to avoid reloading the page
-    router.push(finalPath, undefined, { shallow: true });
+    router.push(finalPath);
   }, [selectedLocale, currentPathname, searchParams, router]);
 
   if (isLoading) return <p>Loading translations...</p>;

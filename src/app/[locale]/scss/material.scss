@@ -1,8 +1,8 @@
-@import "topnav";
-@import "login";
-@import "navigation";
-@import "footer";
-@import "styles";
+﻿@use 'topnav' as *;
+@use 'login' as *;
+@use 'navigation' as *;
+@use 'footer' as *;
+@use 'styles' as *;
 
 // MIXIN
 @mixin itemAlign {

@@ -1,8 +1,8 @@
-@import "styles";
-@import "subnav";
-@import "funcList";
-@import "level";
-@import "navigation";
+﻿@use 'styles' as *;
+@use 'subnav' as *;
+@use 'funcList' as *;
+@use 'level' as *;
+@use 'navigation' as *;
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap");
 
 // GLOBAL PADDING

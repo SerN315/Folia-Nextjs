@@ -1,8 +1,8 @@
-// IMPORT COMPONENTS
-@import "styles";
-@import "topnav";
-@import "footer";
-@import "login";
+﻿// IMPORT COMPONENTS
+@use 'styles' as *;
+@use 'topnav' as *;
+@use 'footer' as *;
+@use 'login' as *;
 
 // COLORS
 $main-color: #ffce51;

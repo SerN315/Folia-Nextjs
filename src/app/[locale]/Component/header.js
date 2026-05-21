@@ -8,7 +8,7 @@ import LanguageChanger from "./languageChanger";
 // TODO Step 2: ranking update → POST /api/folia/leaderboard/:userId
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useTranslation } from './TranslationProvider';
+import { useTranslation } from "./TranslationProvider";
 
 export default function TopNav() {
   const { t } = useTranslation();
@@ -19,7 +19,17 @@ export default function TopNav() {
   const resultContainerRef = useRef(null);
   const searchInputRef = useRef(null);
   const pathname = usePathname();
-  const hideTopNavPaths = ["/vi", "/vi/hub","/en","/en/hub","/hub","/ja","/ja/hub","/zh/hub","/zh"];
+  const hideTopNavPaths = [
+    "/vi",
+    "/vi/hub",
+    "/en",
+    "/en/hub",
+    "/hub",
+    "/ja",
+    "/ja/hub",
+    "/zh/hub",
+    "/zh",
+  ];
 
   const handleLogoutClick = () => {
     signOut(auth)
@@ -53,18 +63,18 @@ export default function TopNav() {
   const handleSearchInput = async (e) => {
     const value = e.target.value.toLowerCase().trim();
     setSearchValue(value);
-  
+
     if (value === "") {
       setSearchResultsVisible(false);
       setVocab([]); // Clear results when input is empty
     } else {
       setSearchResultsVisible(true);
-  
+
       try {
         // Fetch data from the database
         const response = await getDatabase2(`vocabularies?search=${value}`);
         const sliceResponse = response.slice(0, 5);
-  
+
         // Map and update state
         const vocabData = sliceResponse.map((word) => ({
           name: word.Word,
@@ -90,11 +100,12 @@ export default function TopNav() {
 
   const handleArrowNavigation = (e) => {
     if (!searchResultsVisible) return;
-    const searchResults = resultContainerRef.current.querySelectorAll(".cards.show");
+    const searchResults =
+      resultContainerRef.current.querySelectorAll(".cards.show");
     if (searchResults.length === 0) return;
 
     let currentIndex = Array.from(searchResults).findIndex(
-      (item) => document.activeElement === item
+      (item) => document.activeElement === item,
     );
 
     if (e.key === "ArrowDown") {
@@ -129,34 +140,40 @@ export default function TopNav() {
           <input
             type="search"
             className="inside-search-bar"
-            placeholder={t('search', { ns: 'topnav' })}
+            placeholder={t("search", { ns: "topnav" })}
             onChange={handleSearchInput}
             onKeyPress={handleEnterKeyPress}
             ref={searchInputRef}
           />
           {searchResultsVisible && vocab.length > 0 && (
-      <div className="search__result" ref={resultContainerRef} style={{display : "flex"}}>
-        {vocab.map((word, index) => (
-          <div
-            key={index}
-            className="cards show"
-            tabIndex={index}
-            onClick={() => handleSearchResultClick(word)}
-          >
-            {word.name}
-          </div>
-        ))}
-      </div>
-    )}
-    {searchResultsVisible && vocab.length === 0 && (
-      <div className="search__result no-results">
-        <p>No results found</p>
-      </div>
-    )}
+            <div
+              className="search__result"
+              ref={resultContainerRef}
+              style={{ display: "flex" }}
+            >
+              {vocab.map((word, index) => (
+                <div
+                  key={index}
+                  className="cards show"
+                  tabIndex={index}
+                  onClick={() => handleSearchResultClick(word)}
+                >
+                  {word.name}
+                </div>
+              ))}
+            </div>
+          )}
+          {searchResultsVisible && vocab.length === 0 && (
+            <div className="search__result no-results">
+              <p>No results found</p>
+            </div>
+          )}
         </div>
 
         <div className="buttons">
-          <button className="open-popup login-button">{t('login', { ns: 'topnav' })}</button>
+          <button className="open-popup login-button">
+            {t("login", { ns: "topnav" })}
+          </button>
           <Link href="/challenge" className="ranking hidden">
             <Image
               src="/img/features-icon/ranking-ico.svg"
@@ -190,30 +207,35 @@ export default function TopNav() {
                 />
                 <div className="info__text">
                   <h4 className="streak-cnt">0</h4>
-                  <p className="days-cnt">{t('streak1', { ns: 'topnav' })}</p>
-                  <p className="tips">{t('streak2', { ns: 'topnav' })}</p>
+                  <p className="days-cnt">{t("streak1", { ns: "topnav" })}</p>
+                  <p className="tips">{t("streak2", { ns: "topnav" })}</p>
                 </div>
               </div>
               <hr />
               <Link href="/streak" className="link">
-              {t('view', { ns: 'topnav' })}
+                {t("view", { ns: "topnav" })}
               </Link>
             </div>
           </div>
-          <LanguageChanger/>
+          <LanguageChanger />
 
           <div className="profile">
             <button
               className="profile__btn hidden"
               onClick={() => toggleDropdown(".profile__dropdown")}
             >
-              <Image src="" className="avatar" width={25} height={25} />
+              <Image
+                src="React\Folia\folia\public\next.svg"
+                className="avatar"
+                width={25}
+                height={25}
+              />
             </button>
             <div className="profile__dropdown">
               <a className="detail" href="/profile">
                 <Image
                   className="detail__avatar"
-                  src=""
+                  src="React\Folia\folia\public\next.svg"
                   width={25}
                   height={25}
                 />
@@ -224,14 +246,14 @@ export default function TopNav() {
               </a>
               <hr />
               <Link href="/favorite" className="link">
-                {t('favorite', { ns: 'topnav' })}
+                {t("favorite", { ns: "topnav" })}
               </Link>
               <hr />
               <a href="/setting" className="link">
-              {t('settings', { ns: 'topnav' })}
+                {t("settings", { ns: "topnav" })}
               </a>
               <div className="logout link hidden" onClick={handleLogoutClick}>
-              {t('logout', { ns: 'topnav' })}
+                {t("logout", { ns: "topnav" })}
               </div>
             </div>
           </div>
