@@ -1,7 +1,7 @@
-@import "topnav";
-@import "subnav";
-@import "footer";
-@import "styles";
+﻿@use 'topnav' as *;
+@use 'subnav' as *;
+@use 'footer' as *;
+@use 'styles' as *;
 
   .subhubMain {
     padding-top: 150px;

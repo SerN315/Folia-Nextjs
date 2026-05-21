@@ -1,5 +1,5 @@
-//File chỉ dùng cho file home
-@import "styles";
+﻿//File chỉ dùng cho file home
+@use 'styles' as *;
 
 
 @keyframes hoverAnimationHorizontal {

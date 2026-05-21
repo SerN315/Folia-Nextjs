@@ -1,8 +1,8 @@
-@import "styles";
-@import "footer";
-@import "topnav";
-@import "login";
-@import "hub";
+﻿@use 'styles' as *;
+@use 'footer' as *;
+@use 'topnav' as *;
+@use 'login' as *;
+@use 'hub' as *;
 
 @mixin bars {
   .right {

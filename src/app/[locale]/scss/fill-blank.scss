@@ -1,9 +1,9 @@
-// IMPORTS
-@import "styles";
-@import "topnav";
-@import "footer";
-@import "login";
-@import "navigation";
+﻿// IMPORTS
+@use 'styles' as *;
+@use 'topnav' as *;
+@use 'footer' as *;
+@use 'login' as *;
+@use 'navigation' as *;
 
 //GLOBAL COLOR
 $fill-blank-text-color: #2e2e2e;

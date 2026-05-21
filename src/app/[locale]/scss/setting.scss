@@ -1,7 +1,7 @@
-@import "styles";
-@import "topnav";
-@import "footer";
-@import "login";
+﻿@use 'styles' as *;
+@use 'topnav' as *;
+@use 'footer' as *;
+@use 'login' as *;
 
 * {
   margin: 0;

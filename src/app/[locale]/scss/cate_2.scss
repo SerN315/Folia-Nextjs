@@ -1,8 +1,8 @@
-//File chỉ dùng cho file home
-@import "styles";
-@import "topnav";
-@import "footer";
-@import "login";
+﻿//File chỉ dùng cho file home
+@use 'styles' as *;
+@use 'topnav' as *;
+@use 'footer' as *;
+@use 'login' as *;
 
 // KEYFRAMES
 @keyframes hoverAnimationHorizontal {

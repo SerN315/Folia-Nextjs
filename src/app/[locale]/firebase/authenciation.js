@@ -78,8 +78,11 @@ export const signInWithEmailAndPassword = async (_authObj, email, password) => {
     method: "POST",
     body: JSON.stringify({ email, password }),
   });
+  if (!res.ok) {
+    const data = await res.json().catch(() => ({}));
+    throw new Error(data.error || "Login failed");
+  }
   const data = await res.json();
-  if (!res.ok) throw new Error(data.error || "Login failed");
   const user = normalizeUser(data.user);
   _currentUser = user;
   notifyListeners(user);
@@ -96,8 +99,11 @@ export const createUserWithEmailAndPassword = async (
     method: "POST",
     body: JSON.stringify({ email, password, username }),
   });
+  if (!res.ok) {
+    const data = await res.json().catch(() => ({}));
+    throw new Error(data.error || "Signup failed");
+  }
   const data = await res.json();
-  if (!res.ok) throw new Error(data.error || "Signup failed");
   const user = normalizeUser(data.user);
   _currentUser = user;
   notifyListeners(user);

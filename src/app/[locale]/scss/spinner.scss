@@ -1,6 +1,8 @@
+@use 'sass:math';
+
 $thickness : 5px;
 $duration : 2500;
-$delay : $duration/6;
+$delay : math.div($duration, 6);
 
 @mixin polka($size, $dot, $base, $accent){
   background: $base;
@@ -193,7 +195,7 @@ $delay : $duration/6;
     @include polka(10px, 30%, #3fbd00, rgba(255,255,255,0.5));
     top: 200%;
     left: 5%;
-    animation: move #{$duration/10}ms linear infinite;
+    animation: move #{math.div($duration, 10)}ms linear infinite;
   }
   
   &:after {

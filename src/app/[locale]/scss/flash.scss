@@ -1,8 +1,8 @@
-@import "topnav";
-@import "footer";
-@import "styles";
-@import "login";
-@import "navigation";
+﻿@use 'topnav' as *;
+@use 'footer' as *;
+@use 'styles' as *;
+@use 'login' as *;
+@use 'navigation' as *;
 
 // GLOBAL PADDING
 @mixin itemALign {
