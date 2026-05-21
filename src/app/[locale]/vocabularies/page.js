@@ -6,20 +6,11 @@ import Head from "next/head";
 import "../scss/vocabularies.scss";
 import "../scss/subnav.scss";
 import Link from "next/link";
-import { onAuthStateChanged } from "firebase/auth";
-import {
-  getFirestore,
-  doc,
-  setDoc,
-  getDoc,
-  collection,
-  addDoc,
-  count,
-} from "firebase/firestore";
+import { onAuthStateChanged } from "../firebase/authenciation";
 import { useSearchParams } from "next/navigation";
 import { auth } from "../firebase/authenciation";
-import { getDatabase, getDatabase2 } from "../js/api/databaseAPI";
-import { fetchTopic } from "../js/api/specificPageApi";
+import { getTopicFlashcards, searchVocab } from "../js/api/foliaAPI";
+// TODO Step 2: favorites, progress, reports via backend API
 import { getCookie } from "../js/cookie";
 
 export default function Vocabularies() {
@@ -37,229 +28,62 @@ export default function Vocabularies() {
   const [progress, setProgress] = useState({}); // State to track progress
 
   useEffect(() => {
-    const firestore = getFirestore();
-
-    // Auth State Listener
     const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        setUser(user);
-        const userId = user.uid;
-        console.log("User ID:", userId); // Log userId to verify it's correct
-        console.log("Topic ID:", topicID); // Log topicID to verify it's correct
-
-        // Fetch favorite list
-        const favoriteRef = doc(firestore, "favorites", userId);
-        getDoc(favoriteRef)
-          .then((docSnapshot) => {
-            const favoriteList = docSnapshot.exists()
-              ? docSnapshot.data().favoriteList
-              : [];
-            setFavoriteList(favoriteList); // Set favorite list
-            fetchVocabBasedOnTopic(favoriteList, favoriteRef, firestore);
-
-            // Fetch progress data based on user and topicID
-            if (topicID) {
-              const progressRef = doc(
-                firestore,
-                `users/${userId}/progress/${topicID}`
-              );
-              getDoc(progressRef)
-                .then((progressSnapshot) => {
-                  if (progressSnapshot.exists()) {
-                    const fetchedProgress = progressSnapshot.data();
-                    console.log("Fetched progress data:", fetchedProgress);
-                    setProgress(fetchedProgress);
-                  } else {
-                    console.log("No progress data found.");
-                    setProgress({});
-                  }
-                })
-                .catch((error) => {
-                  console.error("Error fetching progress:", error);
-                });
-            }
-          })
-          .catch((error) => {
-            console.error("Error fetching favorite list:", error);
-          });
-      } else {
-        // No user, reset both favorite list and progress
-        setFavoriteList([]);
-        setProgress({});
-        fetchVocabBasedOnTopic([], null, firestore); // Clear vocab based on topic
-      }
+      setUser(user);
+      // TODO Step 2: fetch favorites + progress via /api/folia/favorites/:userId and /api/folia/progress/:userId
     });
+    return () => unsubscribe();
+  }, [topicID]);
 
-    return () => unsubscribe(); // Cleanup listener on unmount
-  }, [topicID]); // Trigger effect on topicID change
-
-  const fetchVocabBasedOnTopic = (favoriteList, favoriteRef, firestore) => {
-    setLoading(true); // Start loading
-    if (topicID) {
-      getDatabase(`vocab/${topicID}`)
-        .then((response) => {
-          console.log("API Response:", response);
-
-          const newData = response.vocabs
-            .map((word) => {
-              try {
-                const uniqueId = word?.Id ?? null;
-                const topicID = word?._id ?? null;
-                const wordText = word?.Word ?? null;
-                const pronunciation = word?.Pronunciation ?? null;
-                const set = word?.Set ?? null;
-                const meaning = word?.Meaning ?? null;
-                const img = word?.Img ?? null;
-                let jp = word?.jp ?? null;
-                const exampleText = word?.example ?? null;
-                let cn = word?.cn ?? null;
-
-                // Remove trailing commas if they exist
-                if (jp?.endsWith(",")) {
-                  jp = jp.slice(0, -1);
-                }
-                if (cn?.endsWith(",")) {
-                  cn = cn.slice(0, -1);
-                }
-
-                // Highlight the word in each sentence by wrapping it in a <span> tag
-                const highlightedSentence =
-                  exampleText?.replace(
-                    new RegExp(`\\b${searchWord}\\b`, "gi"), // Match the word in the sentence (case insensitive)
-                    `<span class="highlight">${searchWord}</span>` // Wrap the word in a <span> tag for highlighting
-                  ) ?? null;
-
-                // Construct the object, only including properties that exist
-                const vocabData = {
-                  ...(uniqueId && { Id: uniqueId }),
-                  ...(wordText && { Word: wordText }),
-                  ...(set && { Set: set }),
-                  ...(meaning && { Meaning: meaning }),
-                  ...(pronunciation && { Pronunciation: pronunciation }),
-                  ...(img && { Img: img }),
-                  ...(jp && { Jp: jp }),
-                  ...(cn && { Cn: cn }),
-                  ...(highlightedSentence && { Sentence: highlightedSentence }),
-                };
-
-                // Log each extracted value for debugging
-                console.log(vocabData);
-
-                return vocabData;
-              } catch (error) {
-                console.error("Error processing item:", word, error);
-                return null; // Return null in case of error
-              }
-            })
-            .filter((item) => item !== null); // Filter out any null values
-
-          // Use the previous state to append new vocabulary items
-          setData((prevData) => {
-            const updatedData = [...prevData, ...newData];
-            console.log("Updated Data:", updatedData); // Log the updated data
-            return updatedData;
-          });
-
-          // Extract topic and category data from getDatabase response
-          const topicName = response.topics || "Unknown Topic";
-          const categoryName = response.category || "Unknown Category";
-
-          // Update DOM with topic and category details
-          const topicElement = document.querySelector(".topic");
-          const cateElement = document.querySelector(".category");
-
-          topicElement.innerHTML = topicName; // Set the topic name
-          cateElement.innerHTML = categoryName; // Set category name
-
-          setLoading(false); // Stop loading
-        })
-        .catch((error) => {
-          console.error("Error fetching vocabularies:", error);
-          setData([]);
-          setLoading(false); // Stop loading even on error
-        });
-    }
-    if (!topicID && phrase) {
-      getDatabase(`vocabularies?search=${phrase}&limit=30`)
-        .then((response) => {
-          console.log("API Response:", response);
-
-          const newData = response
-            .map((word, id) => {
-              try {
-                const uniqueId = word?.Id ?? null;
-                const topicID = word?._id ?? null;
-                const wordText = word?.Word ?? null;
-                const pronunciation = word?.Pronunciation ?? null;
-                const set = word?.Set ?? null;
-                const meaning = word?.Meaning ?? null;
-                const img = word?.Img ?? null;
-                let jp = word?.jp ?? null;
-                const exampleText = word?.example ?? null;
-                let cn = word?.cn ?? null;
-
-                // Remove trailing commas if they exist
-                if (jp?.endsWith(",")) {
-                  jp = jp.slice(0, -1);
-                }
-                if (cn?.endsWith(",")) {
-                  cn = cn.slice(0, -1);
-                }
-
-                // Highlight the word in each sentence by wrapping it in a <span> tag
-                const highlightedSentence =
-                  exampleText?.replace(
-                    new RegExp(`\\b${searchWord}\\b`, "gi"), // Match the word in the sentence (case insensitive)
-                    `<span class="highlight">${searchWord}</span>` // Wrap the word in a <span> tag for highlighting
-                  ) ?? null;
-
-                // Construct the object, only including properties that exist
-                const vocabData = {
-                  ...(uniqueId && { Id: uniqueId }),
-                  ...(wordText && { Word: wordText }),
-                  ...(set && { Set: set }),
-                  ...(meaning && { Meaning: meaning }),
-                  ...(pronunciation && { Pronunciation: pronunciation }),
-                  ...(img && { Img: img }),
-                  ...(jp && { Jp: jp }),
-                  ...(cn && { Cn: cn }),
-                  ...(highlightedSentence && { Sentence: highlightedSentence }),
-                };
-
-                // Log each extracted value for debugging
-                console.log(vocabData);
-
-                return vocabData;
-              } catch (error) {
-                console.error("Error processing item:", word, error);
-                return null; // Return null in case of error
-              }
-            })
-            .filter((item) => item !== null); // Filter out any null values
-
-          // Count the number of valid results
-          const count = newData.length;
-
-          // Use the previous state to append new vocabulary items and update the count
-          setData((prevData) => {
-            const updatedData = [...prevData, ...newData];
-            console.log("Updated Data:", updatedData); // Log the updated data
-            return updatedData;
-          });
-
-          // Set the count
-          setCount(count);
-
-          setLoading(false); // Stop loading
-        })
-        .catch((error) => {
-          console.error("Error fetching vocabularies:", error);
-          setData([]);
-          setCount(0); // Reset count on error
-          setLoading(false); // Stop loading even on error
-        });
-    }
+  const mapVocab = (word) => {
+    let jp = word?.jp ?? null;
+    let cn = word?.cn ?? null;
+    if (jp?.endsWith(",")) jp = jp.slice(0, -1);
+    if (cn?.endsWith(",")) cn = cn.slice(0, -1);
+    const exampleText = word?.example ?? null;
+    const highlightedSentence = searchWord
+      ? exampleText?.replace(new RegExp(`\\b${searchWord}\\b`, "gi"), `<span class="highlight">${searchWord}</span>`) ?? null
+      : exampleText;
+    return {
+      ...(word.Id && { Id: word.Id }),
+      ...(word.Word && { Word: word.Word }),
+      ...(word.Set && { Set: word.Set }),
+      ...(word.Meaning && { Meaning: word.Meaning }),
+      ...(word.Pronunciation && { Pronunciation: word.Pronunciation }),
+      ...(word.Img && { Img: word.Img }),
+      ...(jp && { Jp: jp }),
+      ...(cn && { Cn: cn }),
+      ...(highlightedSentence && { Sentence: highlightedSentence }),
+    };
   };
+
+  useEffect(() => {
+    if (!topicID) return;
+    setLoading(true);
+    getTopicFlashcards(topicID)
+      .then((response) => {
+        setData((response.vocabs || []).map(mapVocab));
+        const topicEl = document.querySelector(".topic");
+        const cateEl = document.querySelector(".category");
+        if (topicEl) topicEl.innerHTML = response.topics || "";
+        if (cateEl) cateEl.innerHTML = response.category || "";
+      })
+      .catch((err) => { console.error(err); setData([]); })
+      .finally(() => setLoading(false));
+  }, [topicID]);
+
+  useEffect(() => {
+    if (topicID || !phrase) return;
+    setLoading(true);
+    searchVocab(phrase, 30)
+      .then((results) => {
+        const newData = results.map(mapVocab);
+        setData(newData);
+        setCount(newData.length);
+      })
+      .catch((err) => { console.error(err); setData([]); setCount(0); })
+      .finally(() => setLoading(false));
+  }, [phrase]);
 
   const handleFavoriteToggle = (word) => {
     const index = favoriteList.findIndex((item) => item.id === word.Id);
@@ -283,21 +107,10 @@ export default function Vocabularies() {
       ];
     }
 
-    setFavoriteList(updatedFavorites); // Update state
-
-    const firestore = getFirestore();
-    const userid = auth.currentUser.uid;
-    const favoriteRef = doc(firestore, "favorites", userid);
-    setDoc(favoriteRef, { favoriteList: updatedFavorites }, { merge: true })
-      .then(() => {
-        console.log("Favorites updated successfully");
-      })
-      .catch((error) => {
-        console.error("Error updating favorites: ", error);
-      });
+    setFavoriteList(updatedFavorites);
+    // TODO Step 2: persist via POST /api/folia/favorites/:userId
   };
   const handleReport = (word) => {
-    const firestore = getFirestore();
     const palceholderText =
       "We appreciate your help in maintaining accurate information. Please take a moment to provide us with an explanation of the false information you've encountered.";
 
@@ -321,7 +134,8 @@ export default function Vocabularies() {
       e.preventDefault();
       const text = document.querySelector("#reportInput").value;
 
-      addDoc(collection(firestore, "reports"), { content: text, word: word });
+      // TODO Step 2: POST report to backend
+      console.log("Report submitted:", { content: text, word });
       document.querySelector(".word-box-overlay").classList.add("hidden");
       document.querySelector(".word-box-overlay").innerHTML = "";
     });
@@ -418,24 +232,8 @@ export default function Vocabularies() {
   };
 
   const updateProgress = (vocabId, status) => {
-    const firestore = getFirestore();
-    const userId = auth.currentUser?.uid;
-
-    if (userId) {
-      const progressRef = doc(firestore, `users/${userId}/progress/${topicID}`);
-
-      // Update progress locally
-      setProgress((prevProgress) => {
-        const updatedProgress = { ...prevProgress, [vocabId]: status };
-
-        // Sync with Firebase
-        setDoc(progressRef, updatedProgress, { merge: true })
-          .then(() => console.log("Progress updated successfully"))
-          .catch((error) => console.error("Error updating progress: ", error));
-
-        return updatedProgress;
-      });
-    }
+    setProgress((prev) => ({ ...prev, [vocabId]: status }));
+    // TODO Step 2: persist via POST /api/folia/progress/:userId
   };
 
   const handleScroll = () => {

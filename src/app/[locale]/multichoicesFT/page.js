@@ -5,27 +5,10 @@ import Script from "next/script";
 //import Footer from "../Component/footer";
 // import TopNav from "../Component/header";
 import "../scss/multi.scss";
-import { getDatabase } from "../js/api/databaseAPI";
-import { db, auth } from "../firebase/authenciation";
-
-import {
-  getFirestore,
-  collection,
-  onSnapshot,
-  addDoc,
-  deleteDoc,
-  doc,
-  getDoc,
-  setDoc,
-  query,
-  where,
-  orderBy,
-  serverTimestamp,
-  updateDoc,
-  Timestamp,
-} from "firebase/firestore";
-import { onAuthStateChanged } from "firebase/auth";
-import { update } from "firebase/database";
+import { auth } from "../firebase/authenciation";
+import { onAuthStateChanged } from "../firebase/authenciation";
+import { getTopicQuiz } from "../js/api/foliaAPI";
+// TODO Step 2: practice history via /api/folia/history/practices
 
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
@@ -92,42 +75,18 @@ export default function MultiQFT() {
 
   // Fetch data based on the ID
   function fetchDatas() {
-    if (!id.includes("challenge")) {
-        getDatabase("8240dd072127443f8e51d09de242c2d9", {
-            filter: {
-              property: "Topic",
-              relation: {
-                contains: id,
-              },
-            },
-          }).then((response) => {
-            const shuffledQuestions = shuffleArray([...response]); // Shuffle the questions
-            setOriginalFetch(shuffledQuestions);
-            const questions = shuffledQuestions.slice(0, 10); // Select the first 10 questions
-            setOriginalQuestions(questions);
-            setLoading(false);
-            startTimer();
-            // localStorage.setItem("originalQuestions", JSON.stringify(originalQuestions));
-        });
-    } 
-    else if (id.includes("challenge")) {
-        getDatabase("8240dd072127443f8e51d09de242c2d9", {
-            filter: {
-                property: "Challenge",
-                relation: {
-                    contains: idd,
-                },
-            },
-        }).then((response) => {
-            const shuffledQuestions = shuffleArray([...response]); // Shuffle the questions
-            setOriginalFetch(shuffledQuestions);
-            const questions = shuffledQuestions.slice(0, 10); // Select the first 10 questions
-            setOriginalQuestions(questions);
-            startTimer();
-            setLoading(false);
-        });
-    } 
-}
+    if (!id) return;
+    getTopicQuiz(id).then((response) => {
+      const shuffled = shuffleArray([...(response.questions || [])]);
+      setOriginalFetch(shuffled);
+      setOriginalQuestions(shuffled.slice(0, 10));
+      setLoading(false);
+      startTimer();
+    }).catch((err) => {
+      console.error("Error fetching quiz:", err);
+      setLoading(false);
+    });
+  }
 
   useEffect(() => {
     // console.log("Component mounted, calling fetchData...");
@@ -196,7 +155,7 @@ function getRandomQuestions(questionsArray, count) {
 
   function handleTimeUp() {
     // Get the correct answer for the current question
-    const correctAnswer = originalQuestions[currentIndex]?.properties?.Answer?.rich_text[0]?.plain_text;
+    const correctAnswer = originalQuestions[currentIndex]?.Meaning;
 
     // Reset streak if no answer is selected
     setStreak(0);
@@ -386,7 +345,7 @@ useEffect(() => {
   if (!originalQuestions.length) return;
 
   const allWords = originalQuestions.map(
-    (q) => q.properties.Name.title[0]?.plain_text
+    (q) => q.Word
   );
 
   // Shuffle the pool of all words (excluding current question words)
@@ -404,11 +363,11 @@ function getDistractorsForQuestion(currentWord, count = 3) {
 // Generate and shuffle options for a question
 function generateOptions() {
   const currentQuestion = originalQuestions[currentIndex];
-  const currentWord = currentQuestion?.properties.Name.title[0]?.plain_text || null;
+  const currentWord = currentQuestion?.Word || null;
 
   const correctAnswerContent =
     randomizedQuestionType === "word"
-      ? currentQuestion?.properties.Meaning.rich_text[0]?.plain_text
+      ? currentQuestion?.Meaning
       : currentWord;
 
   // Get distractors for the current question
@@ -446,12 +405,12 @@ function renderQuestion() {
   }
 
   const item = originalQuestions[currentIndex];
-  const img = item.properties.img.rich_text[0]?.plain_text || null;
+  const img = item.Img || null;
 
-  const word = item.properties.Name.title[0]?.plain_text || null;
-  const definition = item.properties.definition?.rich_text[0]?.plain_text || null;
-  const example = item.properties.example.rich_text[0]?.plain_text || null;
-  const pronunciation = item.properties.Pronunciation.rich_text[0]?.plain_text || null;
+  const word = item.Word || null;
+  const definition = item.Meaning || null;
+  const example = item.example || null;
+  const pronunciation = item.Pronunciation || null;
 
   let Q = ""; // The question text
   switch (randomizedQuestionType) {
@@ -584,11 +543,11 @@ async function saveQuizData(
 
   // Helper function to get the question text based on the randomized question type
   function getQuestionText(question, randomizedQuestionType) {
-    const word = question.properties.Name.title[0]?.plain_text || "";
-    const definition = question.properties.definition?.rich_text[0]?.plain_text || "";
-    const pronunciation = question.properties.Pronunciation?.rich_text[0]?.plain_text || "";
-    const example = question.properties.example?.rich_text[0]?.plain_text || "";
-    const img = question.properties.img?.rich_text[0]?.plain_text || "";
+    const word = question.Word || "";
+    const definition = question.Meaning || "";
+    const pronunciation = question.Pronunciation || "";
+    const example = question.example || "";
+    const img = question.Img || "";
 
     switch (randomizedQuestionType) {
       case "pronunciation":
@@ -612,11 +571,11 @@ async function saveQuizData(
   try {
     // Gather the answered questions data
     const answeredQuestions = originalQuestions.map((question, index) => {
-      const word = question.properties.Name.title[0]?.plain_text || ""; // Correct answer comes from 'word'
-      const definition = question.properties.definition?.rich_text[0]?.plain_text || "";
-      const pronunciation = question.properties.Pronunciation?.rich_text[0]?.plain_text || "";
-      const example = question.properties.example?.rich_text[0]?.plain_text || "";
-      const img = question.properties.img?.rich_text[0]?.plain_text || "";
+      const word = question.Word || ""; // Correct answer comes from 'word'
+      const definition = question.Meaning || "";
+      const pronunciation = question.Pronunciation || "";
+      const example = question.example || "";
+      const img = question.Img || "";
 
       // The correct answer comes from the word field, not Answer_Content
       const correctAnswer = word; 
@@ -641,22 +600,10 @@ async function saveQuizData(
       };
     });
 
-    // Prepare the data to save
-    const data = {
-      points: points,
-      highestStreak: highestStreak,
-      questions: answeredQuestions,
-      userId: userIdFromAuth, // Use the user ID from authentication
-      timestamp: serverTimestamp(),
-      type: "Multiple Choices",
-    };
-
-    // Save data to Firestore in user-specific collection
-    const userDocRef = doc(db, `user_history/${userIdFromAuth}`);
-    const docRef = await addDoc(collection(userDocRef, "practices"), data);
-    console.log("Document written with ID: ", docRef.id); // Ensure docRef is used to log the correct ID
+    // TODO Step 2: save via POST /api/folia/history/practices
+    console.log("Quiz complete — points:", points, "userId:", userIdFromAuth);
   } catch (error) {
-    console.error("Error adding document to Firestore: ", error);
+    console.error("Error saving quiz data: ", error);
   }
 }
 

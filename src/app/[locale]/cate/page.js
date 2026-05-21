@@ -2,11 +2,11 @@
 import "../scss/cate.scss";
 import ScrollableList from "../Component/scrollableComponent";
 import { useEffect, useState } from "react";
-import { getDatabase } from "../js/api/databaseAPI";
+import { getCategories } from "../js/api/foliaAPI";
 import { useSearchParams } from "next/navigation";
 import Head from "next/head";
 import Link from "next/link";
-import { getFirestore, collection, getDocs } from "firebase/firestore";
+// TODO Step 2: replace Firestore progress with /api/folia/progress/:userId
 import { auth } from "../firebase/authenciation";
 
 export default function Category() {
@@ -20,40 +20,14 @@ export default function Category() {
   }, [id]);
 
   useEffect(() => {
-    const fetchUserProgress = async (userId) => {
-      try {
-        const db = getFirestore();
-        const userProgressSnapshot = await getDocs(
-          collection(db, "users", userId, "progress")
-        );
-
-        const progress = {};
-        userProgressSnapshot.forEach((doc) => {
-          const topicId = doc.id;
-          const contentData = doc.data();
-          if (contentData) progress[topicId] = contentData;
-        });
-
-        setUserProgress(progress);
-        console.log("User progress fetched:", progress);
-      } catch (error) {
-        console.error("Error fetching user progress:", error);
-      }
-    };
-
-    // Listen for auth state changes and fetch progress
-    const unsubscribe = auth.onAuthStateChanged((user) => {
-      if (user) {
-        fetchUserProgress(user.uid);
-      }
-    });
-
+    // TODO Step 2: fetch user progress from /api/folia/progress/:userId
+    const unsubscribe = auth.onAuthStateChanged(() => {});
     return () => unsubscribe();
   }, []);
 
   const fetchCategories = async () => {
     try {
-      const response = await getDatabase("category");
+      const response = await getCategories();
       setCategories(response);
     } catch (error) {
       console.error("Error fetching categories:", error);

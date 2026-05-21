@@ -5,24 +5,13 @@ import Head from "next/head";
 // import TopNav from "../Component/header";
 import "../scss/d_and_d.scss";
 import { useEffect, useState } from "react";
-import { db, auth } from "../firebase/authenciation";
-import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "../firebase/authenciation";
+import { onAuthStateChanged } from "../firebase/authenciation";
 import DOMPurify from "dompurify";
 import { getCookie } from "../js/cookie";
-import {
-  getFirestore,
-  doc,
-  getDoc,
-  setDoc,
-  updateDoc,
-  serverTimestamp,
-  addDoc,
-  Timestamp,
-  collection,
-} from "firebase/firestore";
 import { useSearchParams } from "next/navigation";
-import { getDatabase,getDatabase2 } from "../js/api/databaseAPI";
-import { fetchTopic } from "../js/api/specificPageApi";
+import { getTopicFlashcards } from "../js/api/foliaAPI";
+// TODO Step 2: streak via /api/folia/streaks/:userId, practice history via /api/folia/history/practices
 
 
 export default function DragDrop() {
@@ -57,72 +46,10 @@ export default function DragDrop() {
   const [progress, setProgress] = useState(0);
   const [gameCompleted, setGameCompleted] = useState(false);
 
-  // Constants
-  const ht2 = [
-    "8e3fdb05-5ef5-4e77-b400-0d8767fb539e",
-    "730846b3-4f7b-4367-b004-f3842d630b7e",
-    "61e2d92a-e3a6-418f-939f-99ede4c5b185",
-    "53114cf6-dadc-4c5d-b08a-c04d1b433274",
-    "d7585a20-67e8-48d1-b097-05f5f498edd9",
-    "3264dc41-5c6f-4e4f-9ece-71136a57afe3",
-    "28704707-dc7e-45cb-9765-16865d32b9c5",
-    "46852722-fb9f-4935-b2d3-add5bff13640",
-    "94879267-de61-4edb-baf7-ac99849ebe21",
-  ];
-
-  // Effect: Handle Firebase Authentication and Firestore Streaks
+  // TODO Step 2: streak update via POST /api/folia/streaks/:userId
   useEffect(() => {
-    const firestore = getFirestore();
-
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        const userId = user.uid;
-        const streakRef = doc(firestore, "streaks", userId);
-        getDoc(streakRef)
-          .then((docSnapshot) => {
-            if (docSnapshot.exists()) {
-              const { streakCheck, streakCnt } = docSnapshot.data();
-              if (!streakCheck) {
-                updateDoc(streakRef, {
-                  streakCheck: true,
-                  streakCnt: streakCnt + 1,
-                  lastUpdated: Timestamp.now(),
-                })
-                  .then(() => {
-                    setStreak(streakCnt + 1);
-                  })
-                  .catch((error) => {
-                    console.error("Error updating streak: ", error);
-                  });
-              } else {
-                updateDoc(streakRef, {
-                  lastUpdated: Timestamp.now(),
-                }).catch((error) => {
-                  console.error("Error updating lastUpdated: ", error);
-                });
-              }
-            } else {
-              const userStreakData = {
-                streakCnt: 1,
-                streakCheck: true,
-                lastUpdated: Timestamp.now(),
-              };
-              setDoc(streakRef, userStreakData)
-                .then(() => {
-                  setStreak(1);
-                })
-                .catch((error) => {
-                  console.error("Error setting streak: ", error);
-                });
-            }
-          })
-          .catch((error) => {
-            console.error("Error getting streak document: ", error);
-          });
-      }
-    });
-
-    return () => unsubscribe(); // Cleanup listener on unmount
+    const unsubscribe = onAuthStateChanged(auth, () => {});
+    return () => unsubscribe();
   }, [id]);
 
   // Effect: Fetch Data based on Topic or Challenge
@@ -133,32 +60,8 @@ export default function DragDrop() {
       try {
         let fetchedData = [];
 
-        if (ht2.includes(id)) {
-          // Fetch data for ht2 topics
-          fetchedData = await getDatabase("c3428e69474d46a790fe5e4d37f1600d", {
-            filter: {
-              property: "topic",
-              relation: {
-                contains: id,
-              },
-            },
-          });
-        } else if (!ht2.includes(id) && !id.includes("challenge")) {
-          // Fetch data for non-ht2, non-challenge topics
-          await getDatabase2(`vocab/${id}`).then((response) => {
-            fetchedData = response.vocabs;
-          })
-        } else if (id.includes("challenge")) {
-          // Fetch data for challenges
-          fetchedData = await getDatabase("c3428e69474d46a790fe5e4d37f1600d", {
-            filter: {
-              property: "challenge",
-              relation: {
-                contains: idd,
-              },
-            },
-          });
-        }
+        const response = await getTopicFlashcards(id);
+        fetchedData = response.vocabs || [];
 
         console.log("Fetched data:", fetchedData);
 
@@ -209,59 +112,21 @@ export default function DragDrop() {
     }
 
     const shuffledData = [...data].sort(() => Math.random() - 0.5);
-    if(ht2.includes(id)){
     const selectedQuestions = shuffledData
       .slice(0, totalMatchingPairs)
       .map((item) => ({
-        Q:
-          item.properties.img?.rich_text[0]?.plain_text ??
-          item.properties.Name?.title[0]?.text.content ??
-          "N/A",
-        answer:
-          item.properties.Answer_Content?.formula.string ??
-          item.properties.Name?.title[0]?.plain_text ??
-          "N/A",
-        dropped: false, // Add 'dropped' property
+        Q: item.Img ?? "N/A",
+        answer: item.Word ?? "N/A",
+        dropped: false,
         source: "Drag and Drop",
       }));
-      
-
-    console.log("Initializing game with questions:", selectedQuestions);
 
     setQuestions(selectedQuestions);
 
-    const uniqueAnswersSet = new Set(selectedQuestions.map((q) => q.answer));
-    const uniqueAnswersArray = Array.from(uniqueAnswersSet).sort(
+    const uniqueAnswersArray = [...new Set(selectedQuestions.map((q) => q.answer))].sort(
       () => Math.random() - 0.5
     );
     setUniqueAnswers(uniqueAnswersArray);
-  }
-  else if (!ht2.includes(id) && !id.includes("challenge")){
-    const selectedQuestions = shuffledData
-      .slice(0, totalMatchingPairs)
-      .map((item) => ({
-        Q:
-        item.Img ?? // Image URL
-          "N/A",
-        answer:
-        item.Word ?? // Meaning
-          "N/A",
-        dropped: false, // Add 'dropped' property
-        source: "Drag and Drop",
-      }));
-      
-
-    console.log("Initializing game with questions:", selectedQuestions);
-
-    setQuestions(selectedQuestions);
-
-    const uniqueAnswersSet = new Set(selectedQuestions.map((q) => q.answer));
-    const uniqueAnswersArray = Array.from(uniqueAnswersSet).sort(
-      () => Math.random() - 0.5
-    );
-    setUniqueAnswers(uniqueAnswersArray);
-  }
-
     setLoading(false);
   };
 
@@ -360,54 +225,9 @@ export default function DragDrop() {
   };
 
   // Function: Save Quiz Data to Firestore
-  const saveQuizData = async (
-    currentScore,
-    currentHighestStreak,
-    currentQuestions,
-    userId
-  ) => {
-    const firestore = getFirestore();
-    const userDocRef = doc(db, `user_history/${userId}`);
-
-    let originalQuestions = [];
-    if (id.includes("challenge")) {
-      // Retrieve original questions from localStorage
-      const storedOriginalQuestions = localStorage.getItem("originalQuestions");
-      if (storedOriginalQuestions) {
-        originalQuestions = JSON.parse(storedOriginalQuestions);
-      }
-    }
-
-    const data = {
-      score: currentScore,
-      originalQuestions: originalQuestions.map((question) => ({
-        userAnswer: question.UserAnswer || "N/A",
-        question: question.properties.Name.title[0].plain_text || "N/A",
-        correctAnswer:
-          question.properties.Answer_Content.formula.string || "N/A",
-        source: "Multiple Choices",
-      })),
-      highestStreak: currentHighestStreak,
-      questions: currentQuestions,
-      userId: userId,
-      id: id,
-      type: "Drag and Drop",
-      tag: id.includes("challenge") ? "Challenge" : "Practices",
-      timestamp: serverTimestamp(),
-    };
-
-    try {
-      await addDoc(
-        collection(
-          userDocRef,
-          id.includes("challenge") ? "challenge" : "practices"
-        ),
-        data
-      );
-      console.log("Quiz attempt saved for user:", userId);
-    } catch (error) {
-      console.error("Error saving quiz attempt:", error);
-    }
+  const saveQuizData = async (currentScore, currentHighestStreak, currentQuestions, userId) => {
+    // TODO Step 2: save via POST /api/folia/history/practices
+    console.log("Quiz complete — score:", currentScore, "userId:", userId);
   };
 
   // Function: Check Game Completion
@@ -432,37 +252,7 @@ export default function DragDrop() {
     }
   };
 
-  // Function: Check Streak (Used inside saveQuizData)
-  const checkStreak = async (userId) => {
-    const firestore = getFirestore();
-    const streakRef = doc(firestore, "streaks", userId);
-    try {
-      const docSnapshot = await getDoc(streakRef);
-      if (docSnapshot.exists()) {
-        const { streakCheck, streakCnt } = docSnapshot.data();
-        if (!streakCheck) {
-          await updateDoc(streakRef, {
-            streakCheck: true,
-            streakCnt: streakCnt + 1,
-            lastUpdated: Timestamp.now(),
-          });
-        } else {
-          await updateDoc(streakRef, {
-            lastUpdated: Timestamp.now(),
-          });
-        }
-      } else {
-        const userStreakData = {
-          streakCnt: 1,
-          streakCheck: true,
-          lastUpdated: Timestamp.now(),
-        };
-        await setDoc(streakRef, userStreakData);
-      }
-    } catch (error) {
-      console.error("Error checking streak:", error);
-    }
-  };
+  // TODO Step 2: checkStreak via POST /api/folia/streaks/:userId
 
   // Rendering Draggable Items
   const renderDraggableItems = () => {
@@ -624,7 +414,7 @@ export default function DragDrop() {
       <main className="dragdropMain">
       {/* <TopNav/> */}
               {/* NAVIGATION PANEL */}
-              {!id.includes("challenge") && !ht2.includes(id) && (
+              {!id.includes("challenge") && (
         <div className="nav-panel">
           <p className="nav-panel__navigation">
             <Link href="/cate?topic=folia-language" className="cate-link">

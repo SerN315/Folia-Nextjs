@@ -4,7 +4,7 @@ import Image from "next/image";
 import Head from "next/head";
 import Calendar from "react-calendar";
 import { auth } from "../firebase/authenciation";
-import { onAuthStateChanged } from "firebase/auth";
+import { onAuthStateChanged } from "../firebase/authenciation";
 import { doc, getDoc, setDoc, updateDoc, Timestamp, getFirestore } from "firebase/firestore";
 import "../scss/streak.scss";
 import initTranslations from "../../i18n";

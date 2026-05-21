@@ -5,12 +5,11 @@ import Head from "next/head";
 // import TopNav from "../Component/header";
 import { useState, useEffect, useRef } from "react";
 import "../scss/flash.scss";
-import { onAuthStateChanged } from "firebase/auth";
-import { getFirestore, doc, setDoc, getDoc } from "firebase/firestore";
+import { onAuthStateChanged } from "../firebase/authenciation";
 import { useSearchParams } from "next/navigation";
 import { auth } from "../firebase/authenciation";
-import { getDatabase,getDatabase2 } from "../js/api/databaseAPI";
-import { fetchTopic } from "../js/api/specificPageApi";
+import { getTopicFlashcards } from "../js/api/foliaAPI";
+// TODO Step 2: favorites via /api/folia/favorites/:userId
 import Link from "next/link";
 import DOMPurify from "dompurify";
 import { getCookie } from "../js/cookie";
@@ -31,170 +30,49 @@ export default function FlashCard() {
   const [showLoginPrompt, setShowLoginPrompt] = useState(false);
   const [allData, setAllData] = useState([]); // State to hold all fetched data
 
-  const ht2 = [
-    "8e3fdb05-5ef5-4e77-b400-0d8767fb539e",
-    "730846b3-4f7b-4367-b004-f3842d630b7e",
-    "61e2d92a-e3a6-418f-939f-99ede4c5b185",
-    "53114cf6-dadc-4c5d-b08a-c04d1b433274",
-    "d7585a20-67e8-48d1-b097-05f5f498edd9",
-    "3264dc41-5c6f-4e4f-9ece-71136a57afe3",
-    "28704707-dc7e-45cb-9765-16865d32b9c5",
-    "46852722-fb9f-4935-b2d3-add5bff13640",
-    "94879267-de61-4edb-baf7-ac99849ebe21",
-  ];
-
-  const codelabid = [
-    "602c19aa0a48437aa38b322e5863d7b6",
-    "9b15c0bb39e4484a95cb054040485d0c",
-    "8b5d55aff1be4580b23e4e34142c7d09",
-    "aac0459b84bf48019510a8f2c73f7eab",
-    "3dc16a1a73064fdf8b4c1b199077383e",
-  ];
 
   const isFavorited = favoriteList.some(
     (item) => item.id === data[currentIndex]?.Id
   );
 
   useEffect(() => {
-    const firestore = getFirestore();
-
-    // Auth State Listener
     const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        setUser(user);
-        const userid = auth.currentUser.uid;
-        const favoriteRef = doc(firestore, "favorites", userid);
-
-        getDoc(favoriteRef).then((docSnapshot) => {
-          const favoriteList = docSnapshot.exists()
-            ? docSnapshot.data().favoriteList
-            : [];
-          setFavoriteList(favoriteList); // Set favorite list
-          fetchVocabBasedOnTopic(favoriteList, favoriteRef, firestore);
-        });
-      } else {
-        fetchVocabBasedOnTopic([], null, firestore);
-      }
+      setUser(user);
+      // TODO Step 2: fetch favorites from /api/folia/favorites/:userId
     });
+    return () => unsubscribe();
+  }, []);
 
-    return () => unsubscribe(); // Cleanup listener on unmount
-  }, [topicID]);
-
-  const fetchVocabBasedOnTopic = (favoriteList, favoriteRef, firestore) => {
-    setLoading(true); // Start loading
-    const isHt2 = ht2.includes(topicID);
-  
-    const databasePromise = isHt2
-      ? getDatabase("c3428e69474d46a790fe5e4d37f1600d", {
-          filter: {
-            property: "topic",
-            relation: {
-              contains: topicID,
-            },
-          },
-        })
-      : getDatabase2(`vocab/${topicID}`);
-  
-    databasePromise
+  useEffect(() => {
+    if (!topicID) return;
+    setLoading(true);
+    getTopicFlashcards(topicID)
       .then((response) => {
-        if (!response || (isHt2 && response.length === 0) || (!isHt2 && !response.vocabs)) {
-          console.error("No data returned from the database.");
-          setLoading(false);
-          setData([]); // Set an empty array in case of no data
-          return;
-        }
-  
-        console.log("API Response:", response);
-  
-        // Extract vocabulary data
-        const vocabs = isHt2 ? response : response.vocabs;
-        const newData = vocabs
-          .map((item) => {
-            try {
-              if (isHt2) {
-                // Handle ht2 data structure
-                const word = item.properties.Name.title[0]?.plain_text;
-                const meaning = item.properties.Answer_Content.formula.string;
-                const pronunciation =
-                  item.properties.explanation.rich_text[0]?.plain_text;
-                const img = item.properties.Img.files?.[0]?.url;
-  
-                if (!word || !meaning || !pronunciation || !img) {
-                  console.warn("Incomplete data for item:", item);
-                }
-  
-                return {
-                  word,
-                  meaning,
-                  pronunciation,
-                  img,
-                };
-              } else {
-                // Handle data structure returned by getDatabase2
-                const uniqueId = item?.Id ?? null;
-                const topicID = item?._id ?? null;
-                const wordText = item?.Word ?? null;
-                const pronunciation = item?.Pronunciation ?? null;
-                const set = item?.Set ?? null;
-                const meaning = item?.Meaning ?? null;
-                const img = item?.Img ?? null;
-                let jp = item?.jp ?? null;
-                const exampleText = item?.example ?? null;
-                let cn = item?.cn ?? null;
-  
-                if (jp?.endsWith(",")) {
-                  jp = jp.slice(0, -1); // Remove the last character (comma)
-                }
-                if (cn?.endsWith(",")) {
-                  cn = cn.slice(0, -1); // Remove the last character (comma)
-                }
-  
-                if (!uniqueId || !wordText || !meaning || !pronunciation || !img) {
-                  console.warn("Incomplete data for item:", item);
-                }
-  
-                return {
-                  Cn: cn,
-                  Jp: jp,
-                  Id: uniqueId,
-                  Word: wordText,
-                  Set: set,
-                  Meaning: meaning,
-                  Pronunciation: pronunciation,
-                  Img: img,
-                  Example: exampleText,
-                };
-              }
-            } catch (error) {
-              console.error("Error processing item:", item, error);
-              return null; // Return null in case of error
-            }
-          })
-          .filter((item) => item !== null); // Filter out any null values
-  
+        const newData = (response.vocabs || []).map((item) => ({
+          Id: item.Id,
+          Word: item.Word,
+          Meaning: item.Meaning,
+          Pronunciation: item.Pronunciation,
+          Img: item.Img,
+          Set: item.Set,
+          Cn: item.cn,
+          Jp: item.jp,
+          Example: item.example,
+        }));
         setAllData(newData);
         setData(newData.slice(0, 30));
-        setLoading(false); // Stop loading
-  
-        if (!isHt2) {
-          // Extract topic and category data from getDatabase2 response
-          const topicName = response.topics || "Unknown Topic";
-          const categoryName = response.category || "Unknown Category";
-  
-          // Update DOM with topic and category details
-          const topicElement = document.querySelector(".topic");
-          const cateElement = document.querySelector(".category");
-  
-          topicElement.innerHTML = topicName; // Set the topic name
-          cateElement.innerHTML = categoryName; // Set category name
-        }
+
+        const topicEl = document.querySelector(".topic");
+        const cateEl = document.querySelector(".category");
+        if (topicEl) topicEl.innerHTML = response.topics || "";
+        if (cateEl) cateEl.innerHTML = response.category || "";
       })
-      .catch((error) => {
-        console.error("Error fetching vocabularies:", error);
-        setData([]); // Ensure data is reset on error
-        setLoading(false); // Stop loading even on error
-      });
-  };
+      .catch((err) => {
+        console.error("Error fetching flashcards:", err);
+        setData([]);
+      })
+      .finally(() => setLoading(false));
+  }, [topicID]);
   
 
   const shuffleArray = (array) => {
@@ -241,19 +119,7 @@ export default function FlashCard() {
     }
 
     setFavoriteList(updatedFavorites); // Update state
-
-    // Firestore update logic
-    const firestore = getFirestore();
-    const userid = auth.currentUser.uid;
-    const favoriteRef = doc(firestore, "favorites", userid);
-
-    setDoc(favoriteRef, { favoriteList: updatedFavorites }, { merge: true })
-      .then(() => {
-        console.log("Favorites updated successfully");
-      })
-      .catch((error) => {
-        console.error("Error updating favorites: ", error);
-      });
+    // TODO Step 2: persist favorites via POST /api/folia/favorites/:userId
   };
 
   // Function to close the login prompt
@@ -433,7 +299,7 @@ export default function FlashCard() {
               <div
                 class="card"
                 style={{
-                  height: ht2.includes(topicID) ? "300px" : "",
+                  height: "",
                 }}
               >
                 <div class="content">
@@ -470,7 +336,7 @@ export default function FlashCard() {
                             }}
                             dangerouslySetInnerHTML={{
                               __html: DOMPurify.sanitize(
-                                ht2.includes(topicID) ? item.word : item.Word,
+                                item.Word,
                                 {
                                   ALLOWED_TAGS: [
                                     "small",
@@ -484,27 +350,18 @@ export default function FlashCard() {
                               ),
                             }}
                           ></div>
-                          {ht2.includes(topicID) ? (
-                            <>
-                              <h3>{item.pronunciation}</h3>
-                              {item.img && <img src={item}></img>}
-                            </>
-                          ) : (
-                            <>
-                              <h3>{item.Pronunciation}</h3>
-                              <h3>{item.Set}</h3>
-                            </>
-                          )}
+                          <>
+                            <h3>{item.Pronunciation}</h3>
+                            <h3>{item.Set}</h3>
+                          </>
                         </div>
 
                         {/* Image section */}
-                        {item.Img && !ht2.includes(topicID) && (
+                        {item.Img && (
                           <div className="flashcardimg">
                             <img
                               src={item.Img}
-                              alt={
-                                ht2.includes(topicID) ? item.word : item.Word
-                              }
+                              alt={item.Word}
                               width={200}
                               height={200}
                             />
@@ -515,17 +372,6 @@ export default function FlashCard() {
                                 ? item.Cn
                                 : item.Meaning}
                             </h2>
-                          </div>
-                        )}
-                        {ht2.includes(topicID) && (
-                          <div className="flashcardimg">
-                            <h1
-                              style={{
-                                fontSize: "25px",
-                              }}
-                            >
-                              {item.meaning}
-                            </h1>
                           </div>
                         )}
                       </div>

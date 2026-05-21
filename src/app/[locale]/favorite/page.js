@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { getFirestore, doc, getDoc, updateDoc } from "firebase/firestore";
-import { onAuthStateChanged } from "firebase/auth";
+import { onAuthStateChanged } from "../firebase/authenciation";
 import { auth } from "../firebase/authenciation";
 //import Footer from "../Component/footer";
 // import TopNav from "../Component/header";
