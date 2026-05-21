@@ -4,15 +4,11 @@ import Image from "next/image";
 import LoadingSpinner from "../Component/loadingSpinner";
 import Head from "next/head";
 import ScrollableList from "../Component/scrollableComponent";
-import { getDatabase } from "../js/api/databaseAPI";
+import { getCategories } from "../js/api/foliaAPI";
 import Link from "next/link";
 import initTranslations from "../../i18n";
 import { auth } from "../firebase/authenciation";
-import {
-  getFirestore,
-  collection,
-  getDocs,
-} from "firebase/firestore";
+// TODO Step 2: user progress via /api/folia/progress/:userId
 
 export default function Home1({ params: { locale } }) {
   const [t, setT] = useState(() => (key) => key);
@@ -32,107 +28,38 @@ export default function Home1({ params: { locale } }) {
   }, [locale]);
 
   useEffect(() => {
-    const fetchData = async (userId) => {
-      try {
-        const db = getFirestore();
-
-        // Fetch Firestore and database in parallel
-        const [mostLearnedResponse, categoryResponse, userProgressSnapshot] = await Promise.all([
-          getDatabase("509c3cca958545f0949070dec832e093"), // Most learned topics
-          getDatabase("529b7e6a8ba74d799e05c8a7bca72252"), // Suggested categories
-          getDocs(collection(db, "users", userId, "progress")), // Firestore progress
-        ]);
-
-        const userProgress = {};
-        userProgressSnapshot.forEach((doc) => {
-          const topicId = doc.id;
-          const contentData = doc.data();
-          if (contentData) userProgress[topicId] = contentData;
-        });
-
-        console.log("User progress fetched:", userProgress);
-
-        const topics = mostLearnedResponse.map((item) => ({
-          topicId: item.properties.TopicName.relation[0].id,
-          topicName: item.properties.TopicNameDev.formula.string,
-          categoryName: item.properties.CategoryNameDev.formula.string,
-          image: item.properties.ImageDev.rollup.array[0]?.rich_text[0]?.plain_text || "",
-          totalWords: item.properties.WordsCountDev.formula.number,
-          progress: 0, // Placeholder for progress
+    getCategories()
+      .then((cats) => {
+        // First two categories → most learned topics section
+        const topics = (cats[0]?.topicList || []).map((t) => ({
+          topicId: t.topicId,
+          topicName: t.topicName,
+          categoryName: cats[0]?.categoryName || "",
+          image: t.img || "",
+          totalWords: t.wordCount,
+          progress: 0, // TODO Step 2: fill from /api/folia/progress/:userId
         }));
+        setMostLearnedTopics(topics);
 
-        // Update progress for most learned topics
-        const updatedTopics = topics.map((topic) => {
-          const progressData = userProgress[topic.topicId] || {};
-          const knownWords = Object.values(progressData).filter(
-            (status) => status === "known"
-          ).length;
-          const progress = (knownWords / topic.totalWords) * 100;
-          return { ...topic, progress };
-        });
-        setMostLearnedTopics(updatedTopics);
-
-        console.log("Updated topics with progress:", updatedTopics);
-
-        const categories = categoryResponse.map((item) => ({
-          cateId: item.properties.CategoryName.relation[0].id,
-          cateName: item.properties.CategoryNameDev.formula.string,
+        // All categories → suggested categories section
+        const suggested = cats.map((cat) => ({
+          cateId: cat.categoryId,
+          cateName: cat.categoryName,
+          topics: cat.topicList.map((t) => ({
+            topicId: t.topicId,
+            topicName: t.topicName,
+            topicImage: t.img || "",
+            totalWords: t.wordCount,
+            progress: 0,
+          })),
         }));
+        setSuggestedCategories(suggested);
+      })
+      .catch((err) => console.error("Error fetching categories:", err))
+      .finally(() => setLoading(false));
 
-        // Fetch topics for each category and calculate their progress
-        const topicsPromises = categories.map(async (category) => {
-          const topicResponse = await getDatabase(
-            "10087f66f2404f85ac4eee90c2203dc3",
-            {
-              filter: {
-                property: "Category",
-                relation: { contains: category.cateId },
-              },
-            }
-          );
-
-          const topicsWithProgress = topicResponse.map((topic) => {
-            const topicId = topic.id;
-            const totalWords = topic.properties.WordCountDev.formula.number;
-            const progressData = userProgress[topicId] || {};
-            const knownWords = Object.values(progressData).filter(
-              (status) => status === "known"
-            ).length;
-            const progress = (knownWords / totalWords) * 100;
-
-            return {
-              topicId,
-              topicName: topic.properties.Name.title[0]?.plain_text || "",
-              topicImage: topic.properties.SVG.rich_text[0]?.plain_text || "",
-              totalWords,
-              progress,
-            };
-          });
-
-          return { ...category, topics: topicsWithProgress };
-        });
-
-        const categoriesWithTopics = await Promise.all(topicsPromises);
-        setSuggestedCategories(categoriesWithTopics);
-
-        console.log("Updated categories with progress:", categoriesWithTopics);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    // Listen for auth state changes
-    const unsubscribe = auth.onAuthStateChanged((user) => {
-      if (user) {
-        fetchData(user.uid);
-      } else {
-        console.error("User not authenticated");
-        setLoading(false);
-      }
-    });
-
+    // Auth state — used for progress in Step 2
+    const unsubscribe = auth.onAuthStateChanged(() => {});
     return () => unsubscribe();
   }, []);
 

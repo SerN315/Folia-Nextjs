@@ -1,23 +1,15 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { auth } from "../firebase/authenciation";
 import {
+  auth,
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   updateProfile,
   signOut,
   onAuthStateChanged,
-} from "firebase/auth";
-import {
-  getFirestore,
-  doc,
-  getDoc,
-  updateDoc,
-  setDoc,
-  Timestamp,
-} from "firebase/firestore";
-import { saveUserData } from "../js/setting"; // Ensure this path is correct
+} from "../firebase/authenciation";
+// TODO Step 2: Firestore streak → replace with backend API call to /api/folia/streaks/:userId
 import Link from "next/link";
 export default function Login() {
   // State for login form
@@ -67,19 +59,10 @@ export default function Login() {
       alert("Passwords do not match");
       return;
     }
-    createUserWithEmailAndPassword(auth, registerEmail, registerPassword)
-      .then((cred) => {
-        return updateProfile(auth.currentUser, {
-          displayName: registerUsername,
-        });
-      })
-      .then(() => {
-        console.log("Sign-up successful, username updated");
-        saveUserData();
-      })
-      .catch((err) => {
-        console.error("Sign-up error:", err.message);
-      });
+    // Pass username directly so the backend stores it in user_metadata on creation.
+    createUserWithEmailAndPassword(auth, registerEmail, registerPassword, registerUsername)
+      .then(() => console.log("Sign-up successful"))
+      .catch((err) => console.error("Sign-up error:", err.message));
   };
 
   // Handle logout
@@ -97,7 +80,7 @@ export default function Login() {
         document.querySelector(".logout").classList.remove("hidden");
         document.querySelector(".user-name").textContent = user.displayName;
         document.querySelector(".user-email").textContent = user.email;
-        getStreak(user.uid);
+        // TODO Step 2: fetch streak from /api/folia/streaks/:userId and update .streak-cnt
         if (user.photoURL) {
           document.querySelector(".avatar").src = user.photoURL;
           document.querySelector(".detail__avatar").src = user.photoURL;
@@ -111,54 +94,7 @@ export default function Login() {
 
     const authListener = onAuthStateChanged(auth, handleAuthStateChange);
 
-    const getStreak = (uid) => {
-      const firestore = getFirestore();
-      const streakRef = doc(firestore, "streaks", uid);
-      getDoc(streakRef).then((docSnapshot) => {
-        if (docSnapshot.exists()) {
-          let streak = docSnapshot.data().streakCnt;
-          let lastUpdated = docSnapshot.data().lastUpdated.toDate(); // Convert to Date object
-          const currentTime = new Date(); // Current date
-
-          // Check if last login and current login are on consecutive days
-          if (
-            lastUpdated.getDate() === currentTime.getDate() - 1 && // Last updated was yesterday
-            lastUpdated.getMonth() === currentTime.getMonth() && // Same month
-            lastUpdated.getFullYear() === currentTime.getFullYear() // Same year
-          ) {
-            // Increment streak
-            streak += 1;
-            updateDoc(streakRef, {
-              lastUpdated: Timestamp.now(), // Update lastUpdated time
-              streakCnt: streak, // Update streak count
-            });
-          } else if (
-            lastUpdated.getDate() === currentTime.getDate() && // Last updated is today
-            lastUpdated.getMonth() === currentTime.getMonth() &&
-            lastUpdated.getFullYear() === currentTime.getFullYear()
-          ) {
-            // If logged in today, do nothing
-            console.log("Already logged in today.");
-          } else {
-            // If last updated is not today or yesterday, reset streak
-            streak = 0;
-            updateDoc(streakRef, {
-              lastUpdated: Timestamp.now(), // Update to current time
-              streakCnt: streak, // Reset streak count
-            });
-          }
-
-          document.querySelector(".streak-cnt").textContent = streak; // Update streak display
-        } else {
-          // If no document exists, create one
-          const userStreakData = {
-            streakCnt: 0,
-            lastUpdated: Timestamp.now(),
-          };
-          setDoc(streakRef, userStreakData);
-        }
-      });
-    };
+    // TODO Step 2: getStreak moved to backend API (/api/folia/streaks/:userId)
 
     // const dayStart = () => {
     //   const now = new Date();

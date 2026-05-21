@@ -33,7 +33,7 @@ import {
   updatePassword,
   reauthenticateWithCredential,
   onAuthStateChanged,
-} from "firebase/auth";
+} from "../firebase/authenciation";
 
 // Utility function to check if an element exists
 function getElement(selector) {

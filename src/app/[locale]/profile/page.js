@@ -9,7 +9,7 @@ import {
   query,
 } from "firebase/firestore";
 import { auth } from "../firebase/authenciation";
-import { onAuthStateChanged } from "firebase/auth";
+import { onAuthStateChanged } from "../firebase/authenciation";
 // import TopNav from "../Component/header";
 //import Footer from "../Component/footer";
 import Image from "next/image";

@@ -3,17 +3,9 @@ import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Login from "../Component/loginUI";
 import { getDatabase, getDatabase2 } from "../js/api/databaseAPI";
-import { auth } from "../firebase/authenciation";
-import { signOut } from "firebase/auth";
+import { auth, signOut } from "../firebase/authenciation";
 import LanguageChanger from "./languageChanger";
-import {
-  collection,
-  doc,
-  getFirestore,
-  onSnapshot,
-  query,
-  setDoc,
-} from "firebase/firestore";
+// TODO Step 2: ranking update → POST /api/folia/leaderboard/:userId
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslation } from './TranslationProvider';
@@ -26,7 +18,6 @@ export default function TopNav() {
   const [user, setUser] = useState(null);
   const resultContainerRef = useRef(null);
   const searchInputRef = useRef(null);
-  const firestore = getFirestore();
   const pathname = usePathname();
   const hideTopNavPaths = ["/vi", "/vi/hub","/en","/en/hub","/hub","/ja","/ja/hub","/zh/hub","/zh"];
 
@@ -50,82 +41,14 @@ export default function TopNav() {
     const unsubscribe = auth.onAuthStateChanged((user) => {
       if (user) {
         setUser(user);
-        const idnguoidung = user.uid;
-
-        // Fetch userInfo and challenge data
-        const userInfoQuery = query(
-          collection(firestore, `user_history`, idnguoidung, `userInfo`)
-        );
-        const unsubscribeUserInfo = onSnapshot(
-          userInfoQuery,
-          (userInfoSnapshot) => {
-            userInfoSnapshot.forEach((userInfoDoc) => {
-              const userInfoData = userInfoDoc.data();
-
-              const challengeQuery = query(
-                collection(firestore, `user_history`, idnguoidung, `challenge`)
-              );
-              const unsubscribeChallenges = onSnapshot(
-                challengeQuery,
-                (challengeSnapshot) => {
-                  let challengePoints = {};
-                  challengeSnapshot.forEach((challengeDoc) => {
-                    const challengeData = challengeDoc.data();
-                    const challengeId = challengeDoc.id;
-
-                    if (
-                      !challengePoints[challengeId] ||
-                      challengePoints[challengeId] < challengeData.score
-                    ) {
-                      challengePoints[challengeId] = challengeData.score;
-                    }
-                  });
-
-                  let totalPoints = Object.values(challengePoints).reduce(
-                    (sum, score) => sum + score,
-                    0
-                  );
-
-                  const rankingData = {
-                    userId: userInfoData.userId,
-                    avatar: userInfoData.photoURL,
-                    username: userInfoData.displayname,
-                    email: userInfoData.email,
-                    totalPoints,
-                  };
-
-                  setDoc(doc(firestore, "ranking", idnguoidung), rankingData)
-                    .then(() => {
-                      console.log(
-                        "Data saved to ranking collection:",
-                        rankingData
-                      );
-                    })
-                    .catch((error) => {
-                      console.error("Error saving ranking data:", error);
-                    });
-                }
-              );
-
-              return () => {
-                unsubscribeChallenges();
-              };
-            });
-          }
-        );
-
-        return () => {
-          unsubscribeUserInfo();
-        };
+        // TODO Step 2: update leaderboard via POST /api/folia/leaderboard/:userId
       } else {
         setUser(null);
       }
     });
 
-    return () => {
-      unsubscribe();
-    };
-  }, [firestore]);
+    return () => unsubscribe();
+  }, []);
 
   const handleSearchInput = async (e) => {
     const value = e.target.value.toLowerCase().trim();

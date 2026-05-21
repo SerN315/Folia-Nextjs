@@ -5,27 +5,10 @@ import Script from "next/script";
 //import Footer from "../Component/footer";
 // import TopNav from "../Component/header";
 import "../scss/multi.scss";
-import { getDatabase } from "../js/api/databaseAPI";
-import { db, auth } from "../firebase/authenciation";
-
-import {
-  getFirestore,
-  collection,
-  onSnapshot,
-  addDoc,
-  deleteDoc,
-  doc,
-  getDoc,
-  setDoc,
-  query,
-  where,
-  orderBy,
-  serverTimestamp,
-  updateDoc,
-  Timestamp,
-} from "firebase/firestore";
-import { onAuthStateChanged } from "firebase/auth";
-import { update } from "firebase/database";
+import { auth } from "../firebase/authenciation";
+import { onAuthStateChanged } from "../firebase/authenciation";
+import { getTopicQuiz } from "../js/api/foliaAPI";
+// TODO Step 2: challenge history via /api/folia/history/challenges
 
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
@@ -83,57 +66,18 @@ export default function MultiQ() {
 
   // Fetch data based on the ID
   function fetchDatas() {
-    if (!codelabid.includes(id) && id.includes("challenge")) {
-        getDatabase("c3428e69474d46a790fe5e4d37f1600d", {
-            filter: {
-                property: "challenge",
-                relation: {
-                    contains: idd,
-                },
-            },
-        }).then((response) => {
-            const shuffledQuestions = shuffleArray([...response]); // Shuffle the questions
-            setOriginalFetch(shuffledQuestions);
-            const questions = shuffledQuestions.slice(0, 10); // Select the first 10 questions
-            setOriginalQuestions(questions);
-            setLoading(false);
-            startTimer();
-            // localStorage.setItem("originalQuestions", JSON.stringify(originalQuestions));
-        });
-    } else if (!codelabid.includes(id) && !id.includes("challenge")) {
-        getDatabase("c3428e69474d46a790fe5e4d37f1600d", {
-            filter: {
-                property: "topic",
-                relation: {
-                    contains: id,
-                },
-            },
-        }).then((response) => {
-            const shuffledQuestions = shuffleArray([...response]); // Shuffle the questions
-            setOriginalFetch(shuffledQuestions);
-            const questions = shuffledQuestions.slice(0, 10); // Select the first 10 questions
-            setOriginalQuestions(questions);
-            startTimer();
-            setLoading(false);
-        });
-    } else if (codelabid.includes(id)) {
-        getDatabase(id, {
-            filter: {
-                property: "tags",
-                multi_select: {
-                    contains: tag,
-                },
-            },
-        }).then((response) => {
-            const shuffledQuestions = shuffleArray([...response]); // Shuffle the questions
-            setOriginalFetch(shuffledQuestions);
-            const questions = shuffledQuestions.slice(0, 10); // Select the first 10 questions
-            setLoading(false);
-            startTimer();
-            setOriginalQuestions(questions);
-        });
-    }
-}
+    if (!id) return;
+    getTopicQuiz(id).then((response) => {
+      const shuffled = shuffleArray([...(response.questions || [])]);
+      setOriginalFetch(shuffled);
+      setOriginalQuestions(shuffled.slice(0, 10));
+      setLoading(false);
+      startTimer();
+    }).catch((err) => {
+      console.error("Error fetching quiz:", err);
+      setLoading(false);
+    });
+  }
 
   useEffect(() => {
     // console.log("Component mounted, calling fetchData...");
@@ -418,22 +362,19 @@ useEffect(() => {
 
 function renderQuestion() {
   const item = originalQuestions[currentIndex];
-  const img = item.properties.Img?.files[0]?.file.url || item.properties.img?.rich_text[0] || null;
-  const Q =
-      item.properties.Name.title[0]?.text.content ||
-      item.properties.question.rich_text[0]?.text.content;
+  const img = item.Img || null;
+  const Q = `What is the meaning of: "${item.Word}"?`;
+  const correctAnswer = "A"; // always letter A after shuffle below
+  const answerContent = item.Meaning;
 
-  const correctAnswer = item.properties.Answer.rich_text[0]?.text.content || item.properties.correct.rich_text[0].text.content;
-  const answerContent = item.properties.Answer_Content.formula.string;
-
-  // Create answer options, only including those that have content
-  const answerOptions = ["A", "B", "C", "D", "E"].reduce((acc, option) => {
-      const content = item.properties[option]?.rich_text[0]?.text.content;
-      if (content) {
-          acc.push({ letter: option, content });
-      }
-      return acc;
-  }, []);
+  // Build options: correct answer first, then distractors; assign letters A-D
+  const rawOptions = [item.Meaning, ...(item.distractors || [])].slice(0, 4);
+  const shuffled = [...rawOptions].sort(() => Math.random() - 0.5);
+  const answerOptions = shuffled.map((content, i) => ({
+    letter: ["A", "B", "C", "D"][i],
+    content,
+  }));
+  const correctLetter = answerOptions.find((o) => o.content === item.Meaning)?.letter || "A";
 
   return (
       <div className="multiChoice">
@@ -453,7 +394,7 @@ function renderQuestion() {
                   {answerOptions.map(({ letter, content }) => {
                       // Determine the class based on selected answer and correct answer
                       const isSelected = selectedAnswer === letter;
-                      const isCorrect = letter === correctAnswer;
+                      const isCorrect = letter === correctLetter;
 
                       let className = "choice";
                       // If the user has selected an answer, adjust the classes accordingly
@@ -545,43 +486,8 @@ async function saveQuizData(
     return; // Exit the function if the user is not logged in
   }
 
-  try {
-    // Gather the answered questions data
-    const answeredQuestions = originalQuestions.slice(0, currentIndex).map((question, index) => {
-      const questionText = question.properties.Name.title[0]?.text.content ||
-        question.properties.question.rich_text[0]?.text.content;
-
-      const correctAnswer = question.properties.Answer_Content.formula.string ||
-      question.properties.correct.rich_text[0].text.content 
-
-      // Get user's answer content based on the selected index in userAnswers
-      const userAnswer = userAnswers[index] || "No Answer"; // Get user's answer or set default
-
-      return {
-        question: questionText,
-        correctAnswer: correctAnswer,
-        userAnswer: userAnswer,
-        sources:"Multiple Choices",
-      };
-    });
-
-    // Prepare the data to save
-    const data = {
-      points: points,
-      highestStreak: highestStreak,
-      questions: answeredQuestions,
-      userId: userIdFromAuth, // Use the user ID from authentication
-      timestamp: serverTimestamp(),
-      type: "Multiple Choices",
-    };
-
-    // Save data to Firestore in user-specific collection
-    const userDocRef = doc(db, `user_history/${userIdFromAuth}`);
-    const docRef = await addDoc(collection(userDocRef,"practices"), data);
-    console.log("Document written with ID: ", userDocRef.id);
-  } catch (error) {
-    console.error("Error adding document: ", error);
-  }
+  // TODO Step 2: save via POST /api/folia/history/challenges
+  console.log("Quiz complete — points:", points, "userId:", userIdFromAuth);
 }
 
 
