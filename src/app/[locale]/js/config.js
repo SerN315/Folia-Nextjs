@@ -1,8 +1,6 @@
 const config = {
-  apiUrl: "https://personalhub-back.onrender.com",
-  // apiUrl: "https://folia-backend.vercel.app/api/v1",
+  apiUrl: "/api",
   apiLocalUrl: "http://127.0.0.1:8000/api/v1",
-  // Các thông tin cấu hình khác có thể được thêm vào đây
 };
 
 export default config;
